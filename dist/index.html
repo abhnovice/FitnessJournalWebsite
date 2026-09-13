@@ -15,7 +15,7 @@
 &lt;meta charset=&quot;utf-8&quot;&gt;
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
 &lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
-&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
 &lt;title&gt;training-checklist.html&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -290,7 +290,7 @@
   --radius-2xl: calc(var(--radius) * 1.6);
   --radius-full: 9999px;
   --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
-  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 17'%3E%3Cpath d='M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z'/%3E%3C/svg%3E&quot;);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
 
   /* Legacy aliases; not part of the current agent contract. */
   --viz-bg: transparent;
@@ -1219,7 +1219,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     const sandboxDocument = globalThis.frameElement?.ownerDocument;
     if (sandboxDocument != null &amp;&amp; globals?.visualizationTheme != null) {
       let colorSchemeMeta = sandboxDocument.querySelector(
-        'meta[name=&quot;color-scheme&quot;]',
+        &#x27;meta[name=&quot;color-scheme&quot;]&#x27;,
       );
       if (colorSchemeMeta == null) {
         colorSchemeMeta = sandboxDocument.createElement(&quot;meta&quot;);
@@ -1245,7 +1245,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 &lt;div id=&quot;training-checklist-v1&quot;&gt;
   &lt;div class=&quot;viz-row&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;14 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
-  &lt;div id=&quot;tc-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+  &lt;div id=&quot;tc-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;div id=&quot;tc-autosave&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;Loading saved progress…&lt;/div&gt;
   &lt;div class=&quot;progress&quot; id=&quot;tc-progress&quot; role=&quot;progressbar&quot; aria-label=&quot;Current phase compliance&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;100&quot;&gt;&lt;div class=&quot;progress-bar&quot; id=&quot;tc-bar&quot; style=&quot;width:0%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-phases&quot;&gt;&lt;/div&gt;
   &lt;details id=&quot;tc-backup&quot;&gt;&lt;summary&gt;Save / restore progress&lt;/summary&gt;&lt;div class=&quot;tc-backup-body&quot;&gt;&lt;label class=&quot;form-label&quot; for=&quot;tc-code&quot;&gt;Progress record · copy and keep this text&lt;/label&gt;&lt;textarea class=&quot;form-control&quot; id=&quot;tc-code&quot; rows=&quot;4&quot; spellcheck=&quot;false&quot;&gt;&lt;/textarea&gt;&lt;div class=&quot;viz-row&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;tc-restore&quot;&gt;Restore pasted record&lt;/button&gt;&lt;span id=&quot;tc-save-status&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/details&gt;
@@ -1268,81 +1268,104 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;/style&gt;
 &lt;script&gt;
 (() =&gt; {
-  const root=document.getElementById('training-checklist-v1');
-  const phasesEl=root.querySelector('#tc-phases'), status=root.querySelector('#tc-status'), bar=root.querySelector('#tc-bar'), progress=root.querySelector('#tc-progress'), code=root.querySelector('#tc-code'), saveStatus=root.querySelector('#tc-save-status');
-  const KEY='training-checklist-20260914-v1';
+  const root=document.getElementById(&#x27;training-checklist-v1&#x27;);
+  const phasesEl=root.querySelector(&#x27;#tc-phases&#x27;), status=root.querySelector(&#x27;#tc-status&#x27;), bar=root.querySelector(&#x27;#tc-bar&#x27;), progress=root.querySelector(&#x27;#tc-progress&#x27;), code=root.querySelector(&#x27;#tc-code&#x27;), saveStatus=root.querySelector(&#x27;#tc-save-status&#x27;);
+  const KEY=&#x27;training-checklist-20260914-v1&#x27;;
   const date=(offset)=&gt;new Date(Date.UTC(2026,8,14+offset));
-  const fmt=(d)=&gt;d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
-  const short=(d)=&gt;d.toLocaleDateString('en-GB',{day:'numeric',month:'short',timeZone:'UTC'});
-  const weekdays=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const fmt=(d)=&gt;d.toLocaleDateString(&#x27;en-GB&#x27;,{day:&#x27;numeric&#x27;,month:&#x27;short&#x27;,year:&#x27;numeric&#x27;,timeZone:&#x27;UTC&#x27;});
+  const short=(d)=&gt;d.toLocaleDateString(&#x27;en-GB&#x27;,{day:&#x27;numeric&#x27;,month:&#x27;short&#x27;,timeZone:&#x27;UTC&#x27;});
+  const weekdays=[&#x27;Monday&#x27;,&#x27;Tuesday&#x27;,&#x27;Wednesday&#x27;,&#x27;Thursday&#x27;,&#x27;Friday&#x27;,&#x27;Saturday&#x27;,&#x27;Sunday&#x27;];
   const phases=[];
   function addPhase(id,name,start,weeks,note,taskFn,days=weeks*7){
     const phase={id,name,start,weeks,note,days,items:[]};
-    for(let i=0;i&lt;days;i++)taskFn(i,Math.floor(i/7),i%7).forEach((label,n)=&gt;phase.items.push({id:id+'-'+i+'-'+n,day:i,label}));
+    for(let i=0;i&lt;days;i++)taskFn(i,Math.floor(i/7),i%7).forEach((label,n)=&gt;phase.items.push({id:id+&#x27;-&#x27;+i+&#x27;-&#x27;+n,day:i,label}));
     phases.push(phase);
   }
   const km=[[1,2,2,3,3],[3,4,4,4,4],[5,5,5,5,5]];
-  addPhase('cardio','Cardio staircase',0,3,'Easy jogging · weekend walks included',(i,w,d)=&gt;[d&lt;5?'Jog '+km[w][d]+' km':'Walk 5 km']);
+  addPhase(&#x27;cardio&#x27;,&#x27;Cardio staircase&#x27;,0,3,&#x27;Easy jogging · weekend walks included&#x27;,(i,w,d)=&gt;[d&lt;5?&#x27;Jog &#x27;+km[w][d]+&#x27; km&#x27;:&#x27;Walk 5 km&#x27;]);
   const circuitDays=[[0],[0,4],[0,2,4],[0,1,3,4],[0,1,2,3,4]];
-  addPhase('circuit','Jog + circuit',21,10,'One set = 5 pull-ups / 10 push-ups / 15 squats · assisted variations count',(i,w,d)=&gt;{
-    if(d&gt;4)return ['Walk 5 km'];
-    const stage=Math.floor(w/2),tasks=['Easy jog 5 km'];
-    if(circuitDays[stage].includes(d))tasks.push('Circuit: '+(stage+1)+' set'+(stage?'s':'')+' of 5 / 10 / 15');
+  addPhase(&#x27;circuit&#x27;,&#x27;Jog + circuit&#x27;,21,10,&#x27;One set = 5 pull-ups / 10 push-ups / 15 squats · assisted variations count&#x27;,(i,w,d)=&gt;{
+    if(d&gt;4)return [&#x27;Walk 5 km&#x27;];
+    const stage=Math.floor(w/2),tasks=[&#x27;Easy jog 5 km&#x27;];
+    if(circuitDays[stage].includes(d))tasks.push(&#x27;Circuit: &#x27;+(stage+1)+&#x27; set&#x27;+(stage?&#x27;s&#x27;:&#x27;&#x27;)+&#x27; of 5 / 10 / 15&#x27;);
     return tasks;
   });
-  const programNames=['General Fitness','Fat Loss','Strength &amp; Size','Rounds of Fury','Juggernaut','U.N.I.T.'];
+  const programNames=[&#x27;General Fitness&#x27;,&#x27;Fat Loss&#x27;,&#x27;Strength &amp; Size&#x27;,&#x27;Rounds of Fury&#x27;,&#x27;Juggernaut&#x27;,&#x27;U.N.I.T.&#x27;];
   function workoutLabel(p,w,d){
     const slot=d/2;
-    if(p===0)return w===3?'Workout B · GPP #'+(slot+1):['Workout A · aerobic','Workout B · GPP #'+(w+1),'Workout C · aerobic intervals'][slot];
-    if(p===1)return 'Workout '+(w&lt;2?'A':'B')+(slot+1)+' · '+(w%2?'no-rest scheme':'rest scheme')+' + prescribed cardio';
-    if(p===2)return ['Workout A + core + cardio','Workout B · GPP / week-specific scheme','Workout C + core + cardio'][slot];
-    if(p===3)return '2-minute rounds · Workout '+((w+slot)%2?'B':'A');
-    if(p===4)return ['Workout A · endurance + aerobic','Workout B · explosive + aerobic intervals','Workout C · maximum + intervals'][slot];
-    return 'Workout '+((w+slot)%2?'B':'A')+' + week-specific cardio';
+    if(p===0)return w===3?&#x27;Workout B · GPP #&#x27;+(slot+1):[&#x27;Workout A · aerobic&#x27;,&#x27;Workout B · GPP #&#x27;+(w+1),&#x27;Workout C · aerobic intervals&#x27;][slot];
+    if(p===1)return &#x27;Workout &#x27;+(w&lt;2?&#x27;A&#x27;:&#x27;B&#x27;)+(slot+1)+&#x27; · &#x27;+(w%2?&#x27;no-rest scheme&#x27;:&#x27;rest scheme&#x27;)+&#x27; + prescribed cardio&#x27;;
+    if(p===2)return [&#x27;Workout A + core + cardio&#x27;,&#x27;Workout B · GPP / week-specific scheme&#x27;,&#x27;Workout C + core + cardio&#x27;][slot];
+    if(p===3)return &#x27;2-minute rounds · Workout &#x27;+((w+slot)%2?&#x27;B&#x27;:&#x27;A&#x27;);
+    if(p===4)return [&#x27;Workout A · endurance + aerobic&#x27;,&#x27;Workout B · explosive + aerobic intervals&#x27;,&#x27;Workout C · maximum + intervals&#x27;][slot];
+    return &#x27;Workout &#x27;+((w+slot)%2?&#x27;B&#x27;:&#x27;A&#x27;)+&#x27; + week-specific cardio&#x27;;
   }
-  programNames.forEach((name,p)=&gt;addPhase('gladiator-'+p,'Block '+(p+1)+' · '+name,91+p*28,4,'Four weeks · follow the program’s exercise blocks and cardio',(i,w,d)=&gt;[d&gt;4?'Walk 5 km':d%2?'Active recovery'+(p===3?' / easy cardio':''):workoutLabel(p,w,d)]));
-  for(let b=0;b&lt;8;b++)addPhase('byow-'+b,'BYOW · Block '+(b+1),259+b*28,b===7?3:4,'Power circuit + core superset + finishing interval',(i,w,d)=&gt;[d&gt;4?'Walk 5 km':d%2?'Easy cardio / recovery':'Workout '+((w+d/2)%2?'B':'A')+' · '+['strength','muscle','endurance'][d/2]+' scheme'],b===7?19:28);
+  programNames.forEach((name,p)=&gt;addPhase(&#x27;gladiator-&#x27;+p,&#x27;Block &#x27;+(p+1)+&#x27; · &#x27;+name,91+p*28,4,&#x27;Four weeks · follow the program’s exercise blocks and cardio&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Active recovery&#x27;+(p===3?&#x27; / easy cardio&#x27;:&#x27;&#x27;):workoutLabel(p,w,d)]));
+  for(let b=0;b&lt;8;b++)addPhase(&#x27;byow-&#x27;+b,&#x27;BYOW · Block &#x27;+(b+1),259+b*28,b===7?3:4,&#x27;Power circuit + core superset + finishing interval&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Easy cardio / recovery&#x27;:&#x27;Workout &#x27;+((w+d/2)%2?&#x27;B&#x27;:&#x27;A&#x27;)+&#x27; · &#x27;+[&#x27;strength&#x27;,&#x27;muscle&#x27;,&#x27;endurance&#x27;][d/2]+&#x27; scheme&#x27;],b===7?19:28);
   const valid=new Set(phases.flatMap(p=&gt;p.items.map(x=&gt;x.id)));
-  let checked={}; let storage=false; let selectedWeek={};
-  function sanitize(v){if(!v||v.version!==1||!v.checked||typeof v.checked!=='object')throw new Error('Invalid record');return Object.fromEntries(Object.entries(v.checked).filter(([k,v])=&gt;valid.has(k)&amp;&amp;v===true));}
-  try{const prior=localStorage.getItem(KEY);if(prior)checked=sanitize(JSON.parse(prior));localStorage.setItem(KEY,JSON.stringify({version:1,checked}));storage=true;}catch(e){}
+  let checked={}; let storage=false; let loaded=false; let revision=0; let selectedWeek={};
+  const CHANNEL=&quot;training-progress-v1&quot;;
+  const restoreButton=root.querySelector(&quot;#tc-restore&quot;);
+  const autosave=root.querySelector(&quot;#tc-autosave&quot;);
+  function showSave(message){saveStatus.textContent=message;autosave.textContent=message;}
+  function sanitize(v){if(!v||v.version!==1||!v.checked||typeof v.checked!==&#x27;object&#x27;)throw new Error(&#x27;Invalid record&#x27;);return Object.fromEntries(Object.entries(v.checked).filter(([k,v])=&gt;valid.has(k)&amp;&amp;v===true));}
+
   const count=p=&gt;p.items.filter(x=&gt;checked[x.id]).length;
   const complete=p=&gt;count(p)===p.items.length;
   function unlocked(index){return index&lt;2||phases.slice(0,index).every(complete);}
-  function persist(){const record=JSON.stringify({version:1,checked});code.value=record;if(storage){try{localStorage.setItem(KEY,record);saveStatus.textContent='Saved on this browser';}catch(e){storage=false;}}if(!storage)saveStatus.textContent='Auto-save unavailable here · keep the progress record';}
+  function persist(){
+    const record={version:1,checked};code.value=JSON.stringify(record);
+    if(storage){showSave(&#x27;Saving…&#x27;);window.parent.postMessage({channel:CHANNEL,type:&#x27;save&#x27;,revision:++revision,record},&#x27;*&#x27;);}
+    else showSave(loaded?&#x27;Auto-save unavailable · use Save / restore progress&#x27;:&#x27;Loading saved progress…&#x27;);
+  }
+  window.addEventListener(&#x27;message&#x27;,(event)=&gt;{
+    if(event.source!==window.parent||event.data?.channel!==CHANNEL)return;
+    const message=event.data;
+    if(message.type===&#x27;loaded&#x27;&amp;&amp;!loaded){
+      try{checked=sanitize(message.record);}catch(e){message.ok=false;}
+      loaded=true;storage=message.ok===true;restoreButton.disabled=false;
+      code.value=JSON.stringify({version:1,checked});render();
+      showSave(storage?&#x27;Auto-save on · saved in this browser&#x27;:&#x27;Auto-save unavailable · use Save / restore progress&#x27;);
+    }else if(message.type===&#x27;saved&#x27;&amp;&amp;message.revision===revision){
+      if(message.ok===true)showSave(&#x27;Saved automatically · this browser&#x27;);
+      else{storage=false;showSave(&#x27;Could not save · keep a progress record&#x27;);}
+    }
+  });
   function render(){
     phasesEl.replaceChildren();
     const active=phases.find(p=&gt;!complete(p))||phases[phases.length-1];const n=count(active),total=active.items.length,pct=Math.round(n/total*100);
-    status.textContent=active.name+' · '+n+' / '+total+' checked';bar.style.width=pct+'%';progress.setAttribute('aria-valuenow',String(pct));
+    status.textContent=active.name+&#x27; · &#x27;+n+&#x27; / &#x27;+total+&#x27; checked&#x27;;bar.style.width=pct+&#x27;%&#x27;;progress.setAttribute(&#x27;aria-valuenow&#x27;,String(pct));
     phases.forEach((p,index)=&gt;{
       if(index&gt;8&amp;&amp;!unlocked(index))return;
-      const section=document.createElement('section');section.className='tc-phase';
-      const head=document.createElement('div');head.className='tc-heading';
-      const heading=document.createElement('h3');heading.textContent=p.name;
-      const state=document.createElement('span');state.className='text-small';state.textContent=unlocked(index)?count(p)+' / '+p.items.length+(complete(p)?' · Complete':''):'Locked';head.append(heading,state);section.append(head);
-      if(!unlocked(index)){const lock=document.createElement('div');lock.className='tc-locked text-small';lock.textContent=index===2?'Opens after all cardio and circuit checkboxes are complete':'Opens after '+phases[index-1].name+' is complete';section.append(lock);phasesEl.append(section);return;}
-      const range=document.createElement('div');range.className='text-small';range.textContent=fmt(date(p.start))+' – '+fmt(date(p.start+p.days-1))+' · '+p.note;section.append(range);
-      const weeks=document.createElement('div');weeks.className='tc-weeks';
+      const section=document.createElement(&#x27;section&#x27;);section.className=&#x27;tc-phase&#x27;;
+      const head=document.createElement(&#x27;div&#x27;);head.className=&#x27;tc-heading&#x27;;
+      const heading=document.createElement(&#x27;h3&#x27;);heading.textContent=p.name;
+      const state=document.createElement(&#x27;span&#x27;);state.className=&#x27;text-small&#x27;;state.textContent=unlocked(index)?count(p)+&#x27; / &#x27;+p.items.length+(complete(p)?&#x27; · Complete&#x27;:&#x27;&#x27;):&#x27;Locked&#x27;;head.append(heading,state);section.append(head);
+      if(!unlocked(index)){const lock=document.createElement(&#x27;div&#x27;);lock.className=&#x27;tc-locked text-small&#x27;;lock.textContent=index===2?&#x27;Opens after all cardio and circuit checkboxes are complete&#x27;:&#x27;Opens after &#x27;+phases[index-1].name+&#x27; is complete&#x27;;section.append(lock);phasesEl.append(section);return;}
+      const range=document.createElement(&#x27;div&#x27;);range.className=&#x27;text-small&#x27;;range.textContent=fmt(date(p.start))+&#x27; – &#x27;+fmt(date(p.start+p.days-1))+&#x27; · &#x27;+p.note;section.append(range);
+      const weeks=document.createElement(&#x27;div&#x27;);weeks.className=&#x27;tc-weeks&#x27;;
       const firstIncomplete=Array.from({length:p.weeks},(_,w)=&gt;w).find(w=&gt;p.items.some(x=&gt;Math.floor(x.day/7)===w&amp;&amp;!checked[x.id]));
       for(let w=0;w&lt;p.weeks;w++){
-        const week=document.createElement('details');week.className='tc-week';week.dataset.phase=p.id;week.dataset.week=w;week.open=selectedWeek[p.id]===undefined?w===(firstIncomplete===undefined?0:firstIncomplete):selectedWeek[p.id]===w;
-        const items=p.items.filter(x=&gt;Math.floor(x.day/7)===w),summary=document.createElement('summary');summary.textContent='Week '+(w+1)+' · '+short(date(p.start+w*7))+'–'+short(date(p.start+Math.min(w*7+6,p.days-1)));
-        const tally=document.createElement('span');tally.className='tc-week-count text-small tabular-nums';tally.textContent=items.filter(x=&gt;checked[x.id]).length+'/'+items.length;summary.append(tally);week.append(summary);
-        week.addEventListener('toggle',()=&gt;{if(week.open)selectedWeek[p.id]=w;});
-        const days=document.createElement('div');days.className='tc-days';
+        const week=document.createElement(&#x27;details&#x27;);week.className=&#x27;tc-week&#x27;;week.dataset.phase=p.id;week.dataset.week=w;week.open=selectedWeek[p.id]===undefined?w===(firstIncomplete===undefined?0:firstIncomplete):selectedWeek[p.id]===w;
+        const items=p.items.filter(x=&gt;Math.floor(x.day/7)===w),summary=document.createElement(&#x27;summary&#x27;);summary.textContent=&#x27;Week &#x27;+(w+1)+&#x27; · &#x27;+short(date(p.start+w*7))+&#x27;–&#x27;+short(date(p.start+Math.min(w*7+6,p.days-1)));
+        const tally=document.createElement(&#x27;span&#x27;);tally.className=&#x27;tc-week-count text-small tabular-nums&#x27;;tally.textContent=items.filter(x=&gt;checked[x.id]).length+&#x27;/&#x27;+items.length;summary.append(tally);week.append(summary);
+        week.addEventListener(&#x27;toggle&#x27;,()=&gt;{if(week.open)selectedWeek[p.id]=w;});
+        const days=document.createElement(&#x27;div&#x27;);days.className=&#x27;tc-days&#x27;;
         for(let d=0;d&lt;7&amp;&amp;w*7+d&lt;p.days;d++){
-          const day=document.createElement('div');day.className='tc-day';const dayTitle=document.createElement('div');dayTitle.className='tc-date text-small';dayTitle.textContent=weekdays[d]+' · '+short(date(p.start+w*7+d));day.append(dayTitle);
+          const day=document.createElement(&#x27;div&#x27;);day.className=&#x27;tc-day&#x27;;const dayTitle=document.createElement(&#x27;div&#x27;);dayTitle.className=&#x27;tc-date text-small&#x27;;dayTitle.textContent=weekdays[d]+&#x27; · &#x27;+short(date(p.start+w*7+d));day.append(dayTitle);
           items.filter(x=&gt;x.day===w*7+d).forEach(item=&gt;{
-            const label=document.createElement('label');label.className='form-check';const input=document.createElement('input');input.type='checkbox';input.className='form-check-input';input.id='tc-'+item.id;input.checked=!!checked[item.id];input.dataset.task=item.id;
-            const text=document.createElement('span');text.className='form-check-label';text.textContent=item.label;input.setAttribute('aria-label',fmt(date(p.start+item.day))+' · '+item.label);
-            input.addEventListener('change',()=&gt;{const id=input.id;if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=w;persist();render();const replacement=document.getElementById(id);if(replacement)replacement.focus({preventScroll:true});});label.append(input,text);day.append(label);
+            const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;form-check&#x27;;const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.className=&#x27;form-check-input&#x27;;input.id=&#x27;tc-&#x27;+item.id;input.checked=!!checked[item.id];input.disabled=!loaded;input.dataset.task=item.id;
+            const text=document.createElement(&#x27;span&#x27;);text.className=&#x27;form-check-label&#x27;;text.textContent=item.label;input.setAttribute(&#x27;aria-label&#x27;,fmt(date(p.start+item.day))+&#x27; · &#x27;+item.label);
+            input.addEventListener(&#x27;change&#x27;,()=&gt;{const id=input.id;if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=w;persist();render();const replacement=document.getElementById(id);if(replacement)replacement.focus({preventScroll:true});});label.append(input,text);day.append(label);
           });days.append(day);
         }week.append(days);weeks.append(week);
       }section.append(weeks);phasesEl.append(section);
     });
   }
-  root.querySelector('#tc-restore').addEventListener('click',()=&gt;{try{checked=sanitize(JSON.parse(code.value));persist();render();saveStatus.removeAttribute('role');saveStatus.textContent=storage?'Progress restored and saved':'Progress restored · keep the record for next time';}catch(e){saveStatus.setAttribute('role','alert');saveStatus.textContent='Record not recognized · progress unchanged';}});
-  persist();render();
+  root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{checked=sanitize(JSON.parse(code.value));persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
+  restoreButton.disabled=true;code.value=JSON.stringify({version:1,checked});render();
+  window.parent.postMessage({channel:CHANNEL,type:&#x27;load&#x27;},&#x27;*&#x27;);
+  setTimeout(()=&gt;{if(!loaded){loaded=true;restoreButton.disabled=false;render();showSave(&#x27;Auto-save unavailable · use Save / restore progress&#x27;);}},3000);
 })();
 &lt;/script&gt;
 
@@ -1618,11 +1641,11 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;/script&gt;
 &lt;script id=&quot;codex-visualization-tabs&quot;&gt;
 (() =&gt; {
-  const selector = '.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]';
-  const disabled = ':disabled,[aria-disabled=&quot;true&quot;]';
+  const selector = &#x27;.nav[role=&quot;tablist&quot;] [role=&quot;tab&quot;]&#x27;;
+  const disabled = &#x27;:disabled,[aria-disabled=&quot;true&quot;]&#x27;;
   const selectTab = (selected) =&gt; {
     const panelId = selected.getAttribute(&quot;aria-controls&quot;);
-    for (const tab of selected.closest('[role=&quot;tablist&quot;]').querySelectorAll('[role=&quot;tab&quot;]')) {
+    for (const tab of selected.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;)) {
       const active = tab === selected;
       tab.classList.toggle(&quot;active&quot;, active);
       tab.setAttribute(&quot;aria-selected&quot;, String(active));
@@ -1646,7 +1669,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       return;
     }
     const tabs = Array.from(
-      tab.closest('[role=&quot;tablist&quot;]').querySelectorAll('[role=&quot;tab&quot;]'),
+      tab.closest(&#x27;[role=&quot;tablist&quot;]&#x27;).querySelectorAll(&#x27;[role=&quot;tab&quot;]&#x27;),
     ).filter((candidate) =&gt; !candidate.matches(disabled));
     const current = tabs.indexOf(tab);
     let next;
@@ -1666,11 +1689,11 @@ html&gt;body{padding:0}&lt;/style&gt;
     selectTab(tabs[next]);
   };
 
-  for (const list of document.querySelectorAll('.nav[role=&quot;tablist&quot;]')) {
+  for (const list of document.querySelectorAll(&#x27;.nav[role=&quot;tablist&quot;]&#x27;)) {
     const selected =
-      list.querySelector('[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]') ??
-      list.querySelector('[role=&quot;tab&quot;].active') ??
-      list.querySelector('[role=&quot;tab&quot;]');
+      list.querySelector(&#x27;[role=&quot;tab&quot;][aria-selected=&quot;true&quot;]&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;].active&#x27;) ??
+      list.querySelector(&#x27;[role=&quot;tab&quot;]&#x27;);
     if (selected != null) {
       selectTab(selected);
     }
@@ -1707,6 +1730,42 @@ html&gt;body{padding:0}&lt;/style&gt;
   if (!(frame instanceof HTMLIFrameElement)) {
     return;
   }
+  // The opaque sandbox can request only this fixed progress record, never arbitrary storage.
+  const progressKey = 'training-checklist-20260914-v1';
+  function validProgress(record) {
+    if (!record || record.version !== 1 || !record.checked ||
+        Array.isArray(record.checked) || typeof record.checked !== 'object') return false;
+    const entries = Object.entries(record.checked);
+    return entries.length <= 1000 && entries.every(([key,value]) =>
+      /^(cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key) && value === true);
+  }
+  globalThis.addEventListener('message', (event) => {
+    if (event.source !== frame.contentWindow || event.origin !== 'null' ||
+        event.data?.channel !== 'training-progress-v1') return;
+    const message = event.data;
+    if (message.type === 'load') {
+      let record = {version:1,checked:{}};
+      let ok = false;
+      try {
+        const saved = localStorage.getItem(progressKey);
+        if (saved !== null) {
+          if (saved.length > 100000) throw new Error('Oversized record');
+          record = JSON.parse(saved);
+          if (!validProgress(record)) throw new Error('Invalid progress');
+        }
+        // Confirm storage access without overwriting the saved record.
+        const probe = progressKey + '-probe';
+        localStorage.setItem(probe, '1');localStorage.removeItem(probe);
+        ok = true;
+      } catch { record = {version:1,checked:{}}; }
+      frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'loaded',ok,record},'*');
+    } else if (message.type === 'save' && Number.isSafeInteger(message.revision) &&
+               message.revision > 0 && validProgress(message.record)) {
+      let ok = false;
+      try {localStorage.setItem(progressKey, JSON.stringify(message.record));ok = true;} catch {}
+      frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'saved',ok,revision:message.revision},'*');
+    }
+  });
   let viewportHeight = globalThis.innerHeight;
 
   const channel = new MessageChannel();
