@@ -4,39 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src 'self' blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Abhyudaya’s 6-pack Journey</title>
 <style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:1180px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
 <style>
 body{padding:0!important}
-#training-nav{position:sticky;top:0;z-index:20;background:light-dark(#f5f1fbf2,#211c2af2);border-bottom:1px solid light-dark(#d9d3e1,#51445f);backdrop-filter:blur(16px);font-family:Roboto,Arial,sans-serif}
-.training-nav-inner{max-width:736px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:18px}
-.training-nav-brand{white-space:nowrap;font-size:.82rem;font-weight:800;color:light-dark(#6f3cc3,#d9c0ff)}
+#training-nav{position:sticky;top:0;z-index:20;background:light-dark(#ffffffef,#1d242bef);border-bottom:1px solid light-dark(#d8e0e8,#46515d);backdrop-filter:blur(16px);font-family:Roboto,Arial,sans-serif}
+.training-nav-inner{max-width:1180px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:18px}
+.training-nav-brand{white-space:nowrap;font-size:.9rem;font-weight:700;color:light-dark(#0f62fe,#78a9ff)}
 .training-nav-links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;min-width:0}
 .training-nav-links button{border:0;background:transparent;color:light-dark(#393043,#eee5f7);padding:10px 12px;white-space:nowrap;border-radius:9px;font:600 .8rem Roboto,Arial,sans-serif;cursor:pointer;min-height:40px}
+.training-nav-links button[aria-current=page]{background:light-dark(#e5eef8,#2d3f55);color:light-dark(#164c7d,#d3e9ff)}
 .training-nav-links button:hover,.training-nav-links button:focus-visible{background:light-dark(#eee9f8,#32283e)}
 .training-nav-links button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:650px){.training-nav-inner{display:block}.training-nav-brand{display:block;padding:2px 4px 7px}.training-nav-links button{min-height:38px}}
 </style>
 </head>
 <body>
-<nav id="training-nav" aria-label="Workout phases">
-  <div class="training-nav-inner">
-    <span class="training-nav-brand">6-pack Journey</span>
-    <div class="training-nav-links">
-      <button data-phase="launchpad" type="button">Launchpad</button>
-      <button data-phase="cardio" type="button">Cardio</button>
-      <button data-phase="circuit" type="button">Jog + Circuit</button>
-      <button data-phase="gladiator-0" type="button">Block 1</button>
-      <button data-phase="gladiator-1" type="button">Block 2</button>
-      <button data-phase="gladiator-2" type="button">Block 3</button>
-      <button data-phase="gladiator-3" type="button">Block 4</button>
-      <button data-phase="gladiator-4" type="button">Block 5</button>
-      <button data-phase="gladiator-5" type="button">Block 6</button>
-      <button data-phase="byow-0" type="button">BYOW</button>
-    </div>
-  </div>
-</nav>
+<nav id="training-nav" aria-label="Journey pages"><div class="training-nav-inner"><span class="training-nav-brand">6-pack Journey</span><div class="training-nav-links"><button data-page="home" type="button">Home</button><button data-page="foundation" type="button">Launchpad · Cardio · Jog + Circuit</button><button data-page="gladiator-0" type="button">General Fitness</button><button data-page="gladiator-1" type="button">Fat Loss</button><button data-page="gladiator-2" type="button">Strength & Size</button><button data-page="gladiator-3" type="button">Rounds of Fury</button><button data-page="gladiator-4" type="button">Juggernaut</button><button data-page="gladiator-5" type="button">U.N.I.T.</button><button data-page="byow-0" type="button">BYOW 1</button><button data-page="byow-1" type="button">BYOW 2</button><button data-page="byow-2" type="button">BYOW 3</button><button data-page="byow-3" type="button">BYOW 4</button><button data-page="byow-4" type="button">BYOW 5</button><button data-page="byow-5" type="button">BYOW 6</button><button data-page="byow-6" type="button">BYOW 7</button><button data-page="byow-7" type="button">BYOW 8</button><button data-page="body-stats" type="button">Body stats</button></div></div></nav>
 <iframe id="codex-visualization" sandbox="allow-scripts" scrolling="no" referrerpolicy="no-referrer" title="Abhyudaya’s 6-pack Journey" data-srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;en-GB&quot;&gt;
 &lt;head&gt;
@@ -1278,11 +1263,21 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;div class=&quot;viz-row tc-overview&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;19 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;div id=&quot;tc-autosave&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;Loading saved progress…&lt;/div&gt;
   &lt;div class=&quot;progress&quot; id=&quot;tc-progress&quot; role=&quot;progressbar&quot; aria-label=&quot;Current phase compliance&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;100&quot;&gt;&lt;div class=&quot;progress-bar&quot; id=&quot;tc-bar&quot; style=&quot;width:0%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div id=&quot;tc-dashboard&quot; class=&quot;tc-dashboard&quot;&gt;
+    &lt;div class=&quot;tc-metric&quot;&gt;&lt;h3&gt;Last workout completed&lt;/h3&gt;&lt;strong id=&quot;tc-last&quot;&gt;—&lt;/strong&gt;&lt;/div&gt;
+    &lt;div class=&quot;tc-metric&quot;&gt;&lt;h3&gt;Current streak&lt;/h3&gt;&lt;strong id=&quot;tc-streak&quot;&gt;0 days&lt;/strong&gt;&lt;/div&gt;
+    &lt;div class=&quot;tc-metric&quot;&gt;&lt;h3&gt;Weight · goal 75 kg&lt;/h3&gt;&lt;strong id=&quot;tc-weight-chart-value&quot;&gt;—&lt;/strong&gt;&lt;span id=&quot;tc-weight-chart-gap&quot;&gt;&lt;/span&gt;&lt;svg id=&quot;tc-weight-chart&quot; viewBox=&quot;0 0 284 80&quot; role=&quot;img&quot; aria-label=&quot;Weight trend and 75 kg goal&quot;&gt;&lt;/svg&gt;&lt;/div&gt;
+    &lt;div class=&quot;tc-metric&quot;&gt;&lt;h3&gt;Estimated body fat · goal 12%&lt;/h3&gt;&lt;strong id=&quot;tc-fat-chart-value&quot;&gt;—&lt;/strong&gt;&lt;span id=&quot;tc-fat-chart-gap&quot;&gt;&lt;/span&gt;&lt;svg id=&quot;tc-fat-chart&quot; viewBox=&quot;0 0 284 80&quot; role=&quot;img&quot; aria-label=&quot;Estimated body fat trend and 12 percent goal&quot;&gt;&lt;/svg&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div id=&quot;tc-stats&quot; class=&quot;tc-stats&quot; hidden&gt;&lt;h2&gt;Body measurements&lt;/h2&gt;&lt;p&gt;Log an updated measurement on any date. Lengths are in inches.&lt;/p&gt;
+    &lt;form&gt;&lt;label&gt;Date &lt;input type=&quot;date&quot; name=&quot;date&quot; required&gt;&lt;/label&gt;&lt;div id=&quot;tc-stat-fields&quot; class=&quot;tc-stat-fields&quot;&gt;&lt;/div&gt;&lt;button class=&quot;tc-save-stats&quot; type=&quot;submit&quot;&gt;Save measurements&lt;/button&gt;&lt;span id=&quot;tc-stat-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;/form&gt;
+    &lt;h3&gt;Goals and reference points&lt;/h3&gt;&lt;div class=&quot;tc-table-wrap&quot;&gt;&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Measurement&lt;/th&gt;&lt;th&gt;Lifetime goal&lt;/th&gt;&lt;th&gt;2026 goal&lt;/th&gt;&lt;th&gt;2025 start&lt;/th&gt;&lt;th&gt;1 Jan 2026&lt;/th&gt;&lt;th&gt;19 Sep 2026&lt;/th&gt;&lt;th&gt;Latest log&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+  &lt;/div&gt;
   &lt;div id=&quot;tc-phases&quot;&gt;&lt;/div&gt;
   &lt;details id=&quot;tc-backup&quot;&gt;&lt;summary&gt;Save / restore progress&lt;/summary&gt;&lt;div class=&quot;tc-backup-body&quot;&gt;&lt;label class=&quot;form-label&quot; for=&quot;tc-code&quot;&gt;Progress record · copy and keep this text&lt;/label&gt;&lt;textarea class=&quot;form-control&quot; id=&quot;tc-code&quot; rows=&quot;4&quot; spellcheck=&quot;false&quot;&gt;&lt;/textarea&gt;&lt;div class=&quot;viz-row&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;tc-restore&quot;&gt;Restore pasted record&lt;/button&gt;&lt;span id=&quot;tc-save-status&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/details&gt;
 &lt;/div&gt;
 &lt;style&gt;
-#training-checklist-v1{--tc-surface:light-dark(#f4f4f7,#16131d);--tc-card:light-dark(#fff,#211c2a);--tc-tonal:light-dark(#eee9f8,#32283e);--tc-primary:light-dark(#6f3cc3,#bd92ff);--tc-on-primary:#fff;--tc-ink:light-dark(#211b2b,#f3eff8);--tc-muted:light-dark(#5f586a,#bdb2ca);--tc-line:light-dark(#d9d3e1,#51445f);font-family:Arial,Helvetica,sans-serif;color:var(--tc-ink);background:var(--tc-surface);padding:0 0 28px;box-sizing:border-box}
+#training-checklist-v1{--tc-surface:light-dark(#f4f6f8,#171b20);--tc-card:light-dark(#fff,#22282f);--tc-tonal:light-dark(#e8eef4,#2e3945);--tc-primary:light-dark(#0f62fe,#78a9ff);--tc-on-primary:#fff;--tc-ink:light-dark(#211b2b,#f3eff8);--tc-muted:light-dark(#5f586a,#bdb2ca);--tc-line:light-dark(#d9d3e1,#51445f);font-family:Arial,Helvetica,sans-serif;color:var(--tc-ink);background:var(--tc-surface);padding:0 0 28px;box-sizing:border-box}
 #training-checklist-v1 *{box-sizing:border-box}
 #training-checklist-v1 .tc-topbar{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 24px;background:#2b173f;color:#fff}
 #training-checklist-v1 .tc-brand{display:flex;align-items:center;gap:12px;font-size:1.05rem;font-weight:700;letter-spacing:.005em}
@@ -1333,6 +1328,22 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-hero p{margin:0;font-weight:500}
 #training-checklist-v1 .tc-eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.16em;color:#d1e9e1}
 #training-checklist-v1 .tc-overview{margin-top:23px}
+#training-checklist-v1 .tc-dashboard{padding:24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#training-checklist-v1 .tc-dashboard[hidden],#training-checklist-v1 .tc-stats[hidden]{display:none}
+#training-checklist-v1 .tc-metric{border:1px solid var(--tc-line);background:var(--tc-card);padding:20px}
+#training-checklist-v1 .tc-metric h3{font-size:.9rem;color:var(--tc-muted);margin:0 0 12px}
+#training-checklist-v1 .tc-metric strong{display:block;font-size:1.3rem;line-height:1.35}
+#training-checklist-v1 .tc-metric svg{display:block;width:100%;height:80px;margin-top:8px}
+#training-checklist-v1 .tc-stats{padding:24px}
+#training-checklist-v1 .tc-stats table{border-collapse:collapse;width:100%;min-width:840px}
+#training-checklist-v1 .tc-stats th,#training-checklist-v1 .tc-stats td{padding:9px 12px;border-bottom:1px solid var(--tc-line);text-align:left}
+#training-checklist-v1 .tc-table-wrap{overflow-x:auto}
+#training-checklist-v1 .tc-stat-fields,#training-checklist-v1 .tc-week-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:14px 0}
+#training-checklist-v1 .tc-stat-fields label,#training-checklist-v1 .tc-week-metrics label{display:grid;gap:6px;font-size:.875rem}
+#training-checklist-v1 .tc-stat-fields input,#training-checklist-v1 .tc-week-metrics input{padding:9px;border:1px solid var(--tc-line);background:var(--tc-card);color:var(--tc-ink);font:inherit}
+#training-checklist-v1 .tc-enter,#training-checklist-v1 .tc-save-stats{background:var(--tc-primary);border:0;color:#fff;padding:10px 16px;min-height:42px;font:inherit;font-weight:700;cursor:pointer}
+#training-checklist-v1 .tc-enter:disabled{background:var(--tc-muted);cursor:default}
+@media(max-width:650px){#training-checklist-v1 .tc-dashboard,#training-checklist-v1 .tc-stat-fields,#training-checklist-v1 .tc-week-metrics{grid-template-columns:1fr}}
 #training-checklist-v1 .tc-phase-title{display:flex;align-items:center;gap:10px;min-width:0}
 #training-checklist-v1 .tc-phase-icon{width:34px;height:34px;border-radius:10px;background:var(--tc-tonal);color:var(--tc-primary);display:inline-flex;align-items:center;justify-content:center;flex:none}
 #training-checklist-v1 .tc-phase-icon svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
@@ -1379,18 +1390,23 @@ html&gt;body{padding:0}&lt;/style&gt;
     launchpad:&#x27;&lt;path d=&quot;M5 18l3-5 3 2 4-8 4 2&quot;/&gt;&lt;path d=&quot;M3 21h18&quot;/&gt;&#x27;,
     cardio:&#x27;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;/&gt;&lt;path d=&quot;M12 7v5l3 2&quot;/&gt;&#x27;,
     circuit:&#x27;&lt;path d=&quot;M3 8h3m12 0h3M3 16h3m12 0h3M6 6v12m12-12v12M6 12h12&quot;/&gt;&#x27;,
-    gladiator:&#x27;&lt;path d=&quot;M12 3v18M7 5l5-2 5 2M7 19l5 2 5-2M5 8l2-3 2 3M15 8l2-3 2 3M5 16l2 3 2-3M15 16l2 3 2-3&quot;/&gt;&#x27;,
+    &#x27;gladiator-0&#x27;:&#x27;&lt;path d=&quot;M4 18h16M6 18V9l6-5 6 5v9M9 18v-5h6v5&quot;/&gt;&#x27;,
+    &#x27;gladiator-1&#x27;:&#x27;&lt;path d=&quot;M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z&quot;/&gt;&#x27;,
+    &#x27;gladiator-2&#x27;:&#x27;&lt;path d=&quot;M4 9h3v6H4zm13 0h3v6h-3zM7 12h10M2 10v4m20-4v4&quot;/&gt;&#x27;,
+    &#x27;gladiator-3&#x27;:&#x27;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot;/&gt;&lt;path d=&quot;M12 3v18M3 12h18M6 6l12 12&quot;/&gt;&#x27;,
+    &#x27;gladiator-4&#x27;:&#x27;&lt;path d=&quot;M4 19h16M7 19V8l5-4 5 4v11M10 12h4M12 10v4&quot;/&gt;&#x27;,
+    &#x27;gladiator-5&#x27;:&#x27;&lt;path d=&quot;M3 18l5-8 4 4 4-8 5 12H3z&quot;/&gt;&lt;path d=&quot;M8 10l2 2m6-6l2 4&quot;/&gt;&#x27;,
     byow:&#x27;&lt;path d=&quot;M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7l7-4z&quot;/&gt;&lt;path d=&quot;M9 12l2 2 4-4&quot;/&gt;&#x27;
   };
-  function phaseIcon(id){const type=id.startsWith(&#x27;gladiator&#x27;)?&#x27;gladiator&#x27;:id.startsWith(&#x27;byow&#x27;)?&#x27;byow&#x27;:id;const span=document.createElement(&#x27;span&#x27;);span.className=&#x27;tc-phase-icon&#x27;;span.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);span.innerHTML=&#x27;&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;&#x27;+iconPaths[type]+&#x27;&lt;/svg&gt;&#x27;;return span;}
+  function phaseIcon(id){const type=id.startsWith(&#x27;byow&#x27;)?&#x27;byow&#x27;:id;const span=document.createElement(&#x27;span&#x27;);span.className=&#x27;tc-phase-icon&#x27;;span.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);span.innerHTML=&#x27;&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;&#x27;+iconPaths[type]+&#x27;&lt;/svg&gt;&#x27;;return span;}
   function sendNavPositions(){const positions=Object.fromEntries([...phasesEl.querySelectorAll(&#x27;.tc-phase&#x27;)].map(section=&gt;[section.id.slice(9),Math.round(section.getBoundingClientRect().top+window.scrollY)]));window.parent.postMessage({channel:&#x27;training-navigation-v1&#x27;,type:&#x27;positions&#x27;,positions},&#x27;*&#x27;);}
   const valid=new Set(phases.flatMap(p=&gt;p.items.map(x=&gt;x.id)));
-  let checked={}; let rewards={claimed:{},custom:{}}; let notes={}; let rewardTimer; let notesTimer; let storage=false; let loaded=false; let revision=0; let selectedWeek={};
+  let checked={}; let rewards={claimed:{},custom:{},locked:{}}; let notes={}; let weekly={}; let measurements=[]; let notesTimer; let storage=false; let loaded=false; let revision=0; let selectedWeek={}; let currentPage=&#x27;home&#x27;;
   const CHANNEL=&quot;training-progress-v1&quot;;
   const restoreButton=root.querySelector(&quot;#tc-restore&quot;);
   const autosave=root.querySelector(&quot;#tc-autosave&quot;);
   function showSave(message){saveStatus.textContent=message;autosave.textContent=message;}
-  function sanitize(v){if(!v||v.version!==1||!v.checked||typeof v.checked!==&#x27;object&#x27;)throw new Error(&#x27;Invalid record&#x27;);return Object.fromEntries(Object.entries(v.checked).filter(([k,v])=&gt;valid.has(k)&amp;&amp;v===true));}
+  function sanitize(v){if(!v||(v.version!==1&amp;&amp;v.version!==2)||!v.checked||typeof v.checked!==&#x27;object&#x27;)throw new Error(&#x27;Invalid record&#x27;);return Object.fromEntries(Object.entries(v.checked).filter(([k,v])=&gt;valid.has(k)&amp;&amp;v===true));}
   const validWeeks=new Set(phases.flatMap(p=&gt;Array.from({length:p.weeks},(_,w)=&gt;p.id+&#x27;-&#x27;+w)));
   function sanitizeNotes(v){if(v?.notes===undefined)return {};if(!v.notes||Array.isArray(v.notes)||typeof v.notes!==&#x27;object&#x27;)throw new Error(&#x27;Invalid notes&#x27;);return Object.fromEntries(Object.entries(v.notes).filter(([k,x])=&gt;validWeeks.has(k)&amp;&amp;typeof x===&#x27;string&#x27;).map(([k,x])=&gt;[k,x.slice(0,1200)]));}
   const rewardKeys=new Set([&#x27;genai&#x27;,&#x27;planning&#x27;,&#x27;cardio&#x27;,&#x27;circuit&#x27;,&#x27;week10&#x27;,...Array.from({length:6},(_,i)=&gt;&#x27;block&#x27;+i)]);
@@ -1399,21 +1415,28 @@ html&gt;body{padding:0}&lt;/style&gt;
     const r=v?.rewards||{};
     const claimed=Object.fromEntries(Object.entries(r.claimed||{}).filter(([k,x])=&gt;rewardKeys.has(k)&amp;&amp;x===true));
     const custom=Object.fromEntries(Object.entries(r.custom||{}).filter(([k,x])=&gt;blockKeys.has(k)&amp;&amp;typeof x===&#x27;string&#x27;).map(([k,x])=&gt;[k,x.slice(0,300)]));
-    return {claimed,custom};
+    const locked=Object.fromEntries(Object.entries(r.locked||{}).filter(([k,x])=&gt;blockKeys.has(k)&amp;&amp;x===true&amp;&amp;!!custom[k]?.trim()));return {claimed,custom,locked};
   }
+  function sanitizeWeekly(v){return Object.fromEntries(Object.entries(v?.weekly||{}).filter(([k,x])=&gt;validWeeks.has(k)&amp;&amp;x&amp;&amp;typeof x===&#x27;object&#x27;).map(([k,x])=&gt;[k,{weight:finite(x.weight,30,300),bodyFat:finite(x.bodyFat,3,70)}]));}
+  function finite(value,min,max){const n=Number(value);return value===null||value===&#x27;&#x27;||!Number.isFinite(n)||n&lt;min||n&gt;max?null:n;}
+  const statKeys=[&#x27;chest&#x27;,&#x27;shoulders&#x27;,&#x27;waistBelly&#x27;,&#x27;waistHandles&#x27;,&#x27;hips&#x27;,&#x27;bicepsRight&#x27;,&#x27;bicepsLeft&#x27;,&#x27;forearmRight&#x27;,&#x27;forearmLeft&#x27;,&#x27;thigh&#x27;,&#x27;calves&#x27;,&#x27;neck&#x27;,&#x27;weight&#x27;,&#x27;bodyFat&#x27;];
+  const statNames=[&#x27;Chest (relaxed)&#x27;,&#x27;Shoulders (bideltoid)&#x27;,&#x27;Waist (around belly)&#x27;,&#x27;Waist (around love handles)&#x27;,&#x27;Hips&#x27;,&#x27;Biceps (flexed) right&#x27;,&#x27;Biceps (flexed) left&#x27;,&#x27;Forearm (flexed) right&#x27;,&#x27;Forearm (flexed) left&#x27;,&#x27;Thigh&#x27;,&#x27;Calves&#x27;,&#x27;Neck&#x27;,&#x27;Weight&#x27;,&#x27;Body fat&#x27;];
+  const lifetime=[46,23,30.5,32,40,15.5,16.5,13,13,25,16,16,78,10], goal2026=[44,22,30.5,32,40,14.5,15.5,12.5,12.5,24,15.5,15.5,75,14], start2025=[41,19.8,32.5,34,38.5,12.5,13.5,10.5,10.5,22,14.5,14.5,78,21], jan2026=[43.7,21.8,35.5,38.5,41.5,14,15.3,11.7,11.7,25.2,14.4,15.4,86.3,24], sep2026=[44,22,38.5,41.5,43.5,14.2,15.7,11.75,11.5,26.5,14.75,15.6,93,32];
+  function sanitizeMeasurements(v){return Array.isArray(v?.measurements)?v.measurements.filter(x=&gt;x&amp;&amp;/^\d{4}-\d{2}-\d{2}$/.test(x.date)).slice(0,200).map(x=&gt;Object.fromEntries([[&#x27;date&#x27;,x.date],...statKeys.filter(k=&gt;Number.isFinite(Number(x[k]))&amp;&amp;x[k]!==&#x27;&#x27;&amp;&amp;x[k]!==null).map(k=&gt;[k,Number(x[k])])])):[];}
   function rewardBox(title,items,note,customIndex){
     const box=document.createElement(&#x27;div&#x27;);box.className=&#x27;tc-reward&#x27;;
     const heading=document.createElement(&#x27;div&#x27;);heading.className=&#x27;tc-reward-title&#x27;;heading.textContent=title;box.append(heading);
     if(note){const hint=document.createElement(&#x27;p&#x27;);hint.className=&#x27;tc-reward-note&#x27;;hint.textContent=note;box.append(hint);}
     if(customIndex!==undefined){
       const key=&#x27;block&#x27;+customIndex,label=document.createElement(&#x27;label&#x27;);label.className=&#x27;tc-reward-note&#x27;;label.htmlFor=&#x27;tc-reward-text-&#x27;+key;label.textContent=&#x27;My reward for Block &#x27;+(customIndex+1);box.append(label);
-      const field=document.createElement(&#x27;input&#x27;);field.type=&#x27;text&#x27;;field.id=&#x27;tc-reward-text-&#x27;+key;field.className=&#x27;tc-custom&#x27;;field.maxLength=300;field.placeholder=&#x27;Add a reward to work toward&#x27;;field.value=rewards.custom[key]||&#x27;&#x27;;field.disabled=!loaded;
-      field.addEventListener(&#x27;input&#x27;,()=&gt;{rewards.custom[key]=field.value;clearTimeout(rewardTimer);rewardTimer=setTimeout(persist,350);});
-      field.addEventListener(&#x27;change&#x27;,()=&gt;{clearTimeout(rewardTimer);persist();});box.append(field);
+      const field=document.createElement(&#x27;input&#x27;);field.type=&#x27;text&#x27;;field.id=&#x27;tc-reward-text-&#x27;+key;field.className=&#x27;tc-custom&#x27;;field.maxLength=300;field.placeholder=&#x27;Add a reward to work toward&#x27;;field.value=rewards.custom[key]||&#x27;&#x27;;field.disabled=!loaded||!!rewards.locked[key];
+      const enter=document.createElement(&#x27;button&#x27;);enter.type=&#x27;button&#x27;;enter.className=&#x27;tc-enter&#x27;;enter.textContent=rewards.locked[key]?&#x27;Entered · locked&#x27;:&#x27;Enter reward&#x27;;enter.disabled=!loaded||!!rewards.locked[key];
+      enter.addEventListener(&#x27;click&#x27;,()=&gt;{const value=field.value.trim();if(!value)return;rewards.custom[key]=value;rewards.locked[key]=true;persist();render();});
+      box.append(field,enter);
     }
     for(const item of items){
       const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;form-check&#x27;;
-      const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.id=&#x27;tc-reward-&#x27;+item.key;input.checked=!!rewards.claimed[item.key];input.disabled=!loaded||!item.eligible||!!item.needsText&amp;&amp;!rewards.custom[item.key]?.trim();
+      const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.id=&#x27;tc-reward-&#x27;+item.key;input.checked=!!rewards.claimed[item.key];input.disabled=!loaded||!item.eligible||!!item.needsText&amp;&amp;!rewards.locked[item.key];
       const text=document.createElement(&#x27;span&#x27;);text.textContent=item.label;input.addEventListener(&#x27;change&#x27;,()=&gt;{if(input.checked)rewards.claimed[item.key]=true;else delete rewards.claimed[item.key];persist();render();document.getElementById(input.id)?.focus({preventScroll:true});});
       label.append(input,text);box.append(label);
     }return box;
@@ -1425,7 +1448,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   const complete=p=&gt;count(p)===p.items.length;
   function unlocked(index){return index&lt;3||phases.slice(0,index).every(complete);}
   function persist(){
-    const record={version:1,checked,rewards,notes};code.value=JSON.stringify(record);
+    const record={version:2,checked,rewards,notes,weekly,measurements};code.value=JSON.stringify(record);
     if(storage){showSave(&#x27;Saving…&#x27;);window.parent.postMessage({channel:CHANNEL,type:&#x27;save&#x27;,revision:++revision,record},&#x27;*&#x27;);}
     else showSave(loaded?&#x27;Auto-save unavailable · use Save / restore progress&#x27;:&#x27;Loading saved progress…&#x27;);
   }
@@ -1433,21 +1456,21 @@ html&gt;body{padding:0}&lt;/style&gt;
     if(event.source!==window.parent||event.data?.channel!==CHANNEL)return;
     const message=event.data;
     if(message.type===&#x27;loaded&#x27;&amp;&amp;!loaded){
-      try{checked=sanitize(message.record);rewards=sanitizeRewards(message.record);notes=sanitizeNotes(message.record);}catch(e){message.ok=false;}
+      try{checked=sanitize(message.record);rewards=sanitizeRewards(message.record);notes=sanitizeNotes(message.record);weekly=sanitizeWeekly(message.record);measurements=sanitizeMeasurements(message.record);}catch(e){message.ok=false;}
       loaded=true;storage=message.ok===true;restoreButton.disabled=false;
-      code.value=JSON.stringify({version:1,checked,rewards,notes});render();
-      showSave(storage?&#x27;Auto-save on · saved in this browser&#x27;:&#x27;Auto-save unavailable · use Save / restore progress&#x27;);
+      code.value=JSON.stringify({version:2,checked,rewards,notes,weekly,measurements});render();
+      showSave(storage?&#x27;Auto-save on · saved to your account&#x27;:&#x27;Auto-save unavailable · use Save / restore progress&#x27;);
     }else if(message.type===&#x27;saved&#x27;&amp;&amp;message.revision===revision){
-      if(message.ok===true)showSave(&#x27;Saved automatically · this browser&#x27;);
+      if(message.ok===true)showSave(&#x27;Saved automatically · all your devices&#x27;);
       else{storage=false;showSave(&#x27;Could not save · keep a progress record&#x27;);}
     }
   });
   function render(){
-    phasesEl.replaceChildren();
+    phasesEl.replaceChildren();renderDashboard();renderStats();
     const active=phases.find(p=&gt;!complete(p))||phases[phases.length-1];const n=count(active),total=active.items.length,pct=Math.round(n/total*100);
     status.textContent=active.name+&#x27; · &#x27;+n+&#x27; / &#x27;+total+&#x27; checked&#x27;;bar.style.width=pct+&#x27;%&#x27;;progress.setAttribute(&#x27;aria-valuenow&#x27;,String(pct));
     phases.forEach((p,index)=&gt;{
-      if(index&gt;8&amp;&amp;!unlocked(index))return;
+      if(index&gt;8&amp;&amp;!unlocked(index))return;if(currentPage===&#x27;home&#x27;||currentPage===&#x27;body-stats&#x27;)return;if(currentPage===&#x27;foundation&#x27;&amp;&amp;index&gt;2)return;if(currentPage!==&#x27;foundation&#x27;&amp;&amp;p.id!==currentPage)return;
       const section=document.createElement(&#x27;section&#x27;);section.className=&#x27;tc-phase&#x27;;section.id=&#x27;tc-phase-&#x27;+p.id;
       const head=document.createElement(&#x27;div&#x27;);head.className=&#x27;tc-heading&#x27;;
       const title=document.createElement(&#x27;div&#x27;);title.className=&#x27;tc-phase-title&#x27;;const heading=document.createElement(&#x27;h3&#x27;);heading.textContent=p.name;title.append(phaseIcon(p.id),heading);
@@ -1470,7 +1493,15 @@ html&gt;body{padding:0}&lt;/style&gt;
             input.addEventListener(&#x27;change&#x27;,()=&gt;{const id=input.id;if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=w;persist();render();const replacement=document.getElementById(id);if(replacement)replacement.focus({preventScroll:true});});label.append(input,text);day.append(label);
           });days.append(day);
         }week.append(days);if(p.id===&#x27;circuit&#x27;&amp;&amp;w===6)week.append(rewardBox(&#x27;Week 10 reward&#x27;,[{key:&#x27;week10&#x27;,label:&#x27;Buy a smartwatch&#x27;,eligible:throughWeek10()}],&#x27;23–29 Nov 2026 · opens when all scheduled sessions through Week 10 are checked.&#x27;));
-        const noteKey=p.id+&#x27;-&#x27;+w,notesBox=document.createElement(&#x27;div&#x27;),notesLabel=document.createElement(&#x27;label&#x27;),notesField=document.createElement(&#x27;textarea&#x27;);
+        const noteKey=p.id+&#x27;-&#x27;+w;
+        const metrics=document.createElement(&#x27;div&#x27;);metrics.className=&#x27;tc-week-metrics&#x27;;
+        for(const [field,label,min,max,unit] of [[&#x27;weight&#x27;,&#x27;Weight&#x27;,30,300,&#x27;kg&#x27;],[&#x27;bodyFat&#x27;,&#x27;Estimated body fat&#x27;,3,70,&#x27;%&#x27;]]){
+          const wrapper=document.createElement(&#x27;label&#x27;);wrapper.textContent=label+&#x27; (&#x27;+unit+&#x27;)&#x27;;
+          const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;number&#x27;;input.step=&#x27;0.1&#x27;;input.min=min;input.max=max;input.value=weekly[noteKey]?.[field]??&#x27;&#x27;;input.disabled=!loaded;
+          input.addEventListener(&#x27;change&#x27;,()=&gt;{const value=finite(input.value,min,max);if(input.value!==&#x27;&#x27;&amp;&amp;value===null){input.setCustomValidity(&#x27;Enter a valid &#x27;+label.toLowerCase());input.reportValidity();return;}input.setCustomValidity(&#x27;&#x27;);weekly[noteKey]??={weight:null,bodyFat:null};weekly[noteKey][field]=value;persist();renderDashboard();});
+          wrapper.append(input);metrics.append(wrapper);
+        }week.append(metrics);
+        const notesBox=document.createElement(&#x27;div&#x27;),notesLabel=document.createElement(&#x27;label&#x27;),notesField=document.createElement(&#x27;textarea&#x27;);
         notesBox.className=&#x27;tc-notes&#x27;;notesLabel.className=&#x27;tc-notes-label&#x27;;notesLabel.htmlFor=&#x27;tc-note-&#x27;+noteKey;notesLabel.textContent=&#x27;Week &#x27;+(w+1)+&#x27; notes&#x27;;
         notesField.id=&#x27;tc-note-&#x27;+noteKey;notesField.className=&#x27;tc-notes-field&#x27;;notesField.rows=3;notesField.maxLength=1200;notesField.placeholder=&#x27;What changed? What helped? What needs adjusting?&#x27;;notesField.value=notes[noteKey]||&#x27;&#x27;;notesField.disabled=!loaded;
         notesField.addEventListener(&#x27;input&#x27;,()=&gt;{if(notesField.value)notes[noteKey]=notesField.value;else delete notes[noteKey];clearTimeout(notesTimer);notesTimer=setTimeout(persist,400);});
@@ -1484,8 +1515,37 @@ html&gt;body{padding:0}&lt;/style&gt;
     });
     sendNavPositions();
   }
-  root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{const record=JSON.parse(code.value);const restored=sanitize(record);const restoredRewards=sanitizeRewards(record);checked=restored;rewards=restoredRewards;notes=sanitizeNotes(record);persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
-  restoreButton.disabled=true;code.value=JSON.stringify({version:1,checked,rewards,notes});render();
+  function renderDashboard(){
+    const host=root.querySelector(&#x27;#tc-dashboard&#x27;);host.hidden=currentPage!==&#x27;home&#x27;;if(host.hidden)return;
+    const done=phases.flatMap(p=&gt;p.items.filter(item=&gt;checked[item.id]).map(item=&gt;({label:item.label,date:date(p.start+item.day)}))).sort((a,b)=&gt;b.date-a.date);
+    const last=done[0];host.querySelector(&#x27;#tc-last&#x27;).textContent=last?last.label+&#x27; · &#x27;+fmt(last.date):&#x27;No workout checked yet&#x27;;
+    const scheduled=new Map();for(const p of phases)for(const item of p.items){const day=date(p.start+item.day).toISOString().slice(0,10);const row=scheduled.get(day)||[];row.push(item.id);scheduled.set(day,row);}
+    let cursor=new Date();cursor.setHours(0,0,0,0);let streak=0;
+    for(let i=0;i&lt;600;i++){const key=cursor.toISOString().slice(0,10),items=scheduled.get(key);if(items&amp;&amp;items.every(id=&gt;checked[id]))streak++;else if(i&gt;0||items)break;cursor.setDate(cursor.getDate()-1);}
+    host.querySelector(&#x27;#tc-streak&#x27;).textContent=streak+&#x27; days&#x27;;
+    const points=[{date:&#x27;2026-09-19&#x27;,weight:93,bodyFat:32},...Object.entries(weekly).filter(([,v])=&gt;v.weight!==null||v.bodyFat!==null).map(([k,v])=&gt;{const [id,w]=k.match(/^(.*)-(\d+)$/)?.slice(1)||[];const p=phases.find(x=&gt;x.id===id);return p?{date:date(p.start+Number(w)*7).toISOString().slice(0,10),...v}:null;}).filter(Boolean)].sort((a,b)=&gt;a.date.localeCompare(b.date));
+    for(const [field,goal,unit,target] of [[&#x27;weight&#x27;,75,&#x27;kg&#x27;,&#x27;#tc-weight-chart&#x27;],[&#x27;bodyFat&#x27;,12,&#x27;%&#x27;,&#x27;#tc-fat-chart&#x27;]]){
+      const data=points.filter(p=&gt;p[field]!=null),lastValue=data.at(-1)?.[field];
+      host.querySelector(target+&#x27;-value&#x27;).textContent=lastValue==null?&#x27;—&#x27;:lastValue+unit;
+      host.querySelector(target+&#x27;-gap&#x27;).textContent=lastValue==null?&#x27;No entries yet&#x27;:Math.abs(lastValue-goal).toFixed(1)+unit+(lastValue&gt;goal?&#x27; above goal&#x27;:&#x27; from goal&#x27;);
+      const svg=host.querySelector(target),values=data.map(p=&gt;p[field]),low=Math.min(goal,...values)-2,high=Math.max(goal,...values)+2;
+      const y=n=&gt;68-(n-low)/(high-low)*52,x=i=&gt;12+(data.length===1?0:i/(data.length-1)*260);
+      svg.innerHTML=&#x27;&lt;line x1=&quot;12&quot; x2=&quot;272&quot; y1=&quot;&#x27;+y(goal)+&#x27;&quot; y2=&quot;&#x27;+y(goal)+&#x27;&quot; stroke=&quot;#9aa5b1&quot; stroke-dasharray=&quot;4 4&quot;/&gt;&#x27;+ (data.length&gt;1?&#x27;&lt;polyline fill=&quot;none&quot; stroke=&quot;#3771a9&quot; stroke-width=&quot;2.5&quot; points=&quot;&#x27;+data.map((p,i)=&gt;x(i)+&#x27;,&#x27;+y(p[field])).join(&#x27; &#x27;)+&#x27;&quot;/&gt;&#x27;:&#x27;&#x27;)+data.map((p,i)=&gt;&#x27;&lt;circle cx=&quot;&#x27;+x(i)+&#x27;&quot; cy=&quot;&#x27;+y(p[field])+&#x27;&quot; r=&quot;3.5&quot; fill=&quot;#3771a9&quot;/&gt;&#x27;).join(&#x27;&#x27;);
+    }
+  }
+  function renderStats(){
+    const host=root.querySelector(&#x27;#tc-stats&#x27;);host.hidden=currentPage!==&#x27;body-stats&#x27;;if(host.hidden)return;
+    const table=host.querySelector(&#x27;tbody&#x27;);table.replaceChildren();
+    const latest=measurements.at(-1)||{};
+    statKeys.forEach((key,i)=&gt;{const tr=document.createElement(&#x27;tr&#x27;);const values=[statNames[i],lifetime[i],goal2026[i],start2025[i],jan2026[i],sep2026[i],latest[key]??&#x27;—&#x27;];for(const value of values){const td=document.createElement(&#x27;td&#x27;);td.textContent=value;tr.append(td);}table.append(tr);});
+    const form=host.querySelector(&#x27;form&#x27;);form.querySelector(&#x27;[name=date]&#x27;).value=new Date().toISOString().slice(0,10);
+    const fields=host.querySelector(&#x27;#tc-stat-fields&#x27;);fields.replaceChildren();
+    statKeys.forEach((key,i)=&gt;{const label=document.createElement(&#x27;label&#x27;);label.textContent=statNames[i]+&#x27; (&#x27;+(i===12?&#x27;kg&#x27;:i===13?&#x27;%&#x27;:&#x27;in&#x27;)+&#x27;)&#x27;;const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;number&#x27;;input.name=key;input.step=&#x27;0.01&#x27;;input.min=0;input.max=300;label.append(input);fields.append(label);});
+    form.onsubmit=e=&gt;{e.preventDefault();const data=new FormData(form),row={date:data.get(&#x27;date&#x27;)};for(const key of statKeys){const raw=data.get(key);if(raw!==&#x27;&#x27;)row[key]=Number(raw);}if(Object.keys(row).length===1){host.querySelector(&#x27;#tc-stat-status&#x27;).textContent=&#x27;Enter at least one measurement.&#x27;;return;}measurements=measurements.filter(x=&gt;x.date!==row.date);measurements.push(row);measurements.sort((a,b)=&gt;a.date.localeCompare(b.date));persist();renderStats();host.querySelector(&#x27;#tc-stat-status&#x27;).textContent=&#x27;Measurements saved.&#x27;;};
+  }
+  window.addEventListener(&#x27;message&#x27;,event=&gt;{if(event.source!==window.parent||event.data?.channel!==&#x27;training-navigation-v1&#x27;||event.data.type!==&#x27;show&#x27;)return;currentPage=event.data.page;render();});
+  root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{const record=JSON.parse(code.value);const restored=sanitize(record);const restoredRewards=sanitizeRewards(record);checked=restored;rewards=restoredRewards;notes=sanitizeNotes(record);weekly=sanitizeWeekly(record);measurements=sanitizeMeasurements(record);persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
+  restoreButton.disabled=true;code.value=JSON.stringify({version:2,checked,rewards,notes,weekly,measurements});render();
   window.parent.postMessage({channel:CHANNEL,type:&#x27;load&#x27;},&#x27;*&#x27;);
   setTimeout(()=&gt;{if(!loaded){loaded=true;restoreButton.disabled=false;render();showSave(&#x27;Auto-save unavailable · use Save / restore progress&#x27;);}},3000);
 })();
@@ -1853,73 +1913,55 @@ html&gt;body{padding:0}&lt;/style&gt;
     return;
   }
   const nav = document.getElementById('training-nav');
-  let phasePositions = {};
-  nav.addEventListener('click', event => {
-    const button = event.target.closest('button[data-phase]');
-    if (!button || !Object.hasOwn(phasePositions,button.dataset.phase)) return;
-    const y = frame.getBoundingClientRect().top + window.scrollY + phasePositions[button.dataset.phase] - nav.offsetHeight - 12;
-    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
-  });
-  globalThis.addEventListener('message', event => {
-    if (event.source !== frame.contentWindow || event.origin !== 'null' || event.data?.channel !== 'training-navigation-v1' || event.data.type !== 'positions') return;
-    const next = event.data.positions;
-    if (!next || typeof next !== 'object' || Array.isArray(next)) return;
-    const allowed = /^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])$/;
-    const entries = Object.entries(next);
-    if (entries.length > 17 || !entries.every(([key,y]) => allowed.test(key) && Number.isFinite(y) && y >= 0 && y < 100000)) return;
-    phasePositions = Object.fromEntries(entries);
-    nav.querySelectorAll('button[data-phase]').forEach(button => button.disabled = !Object.hasOwn(phasePositions,button.dataset.phase));
-  });
-  // The opaque sandbox can request only this fixed progress record, never arbitrary storage.
   const progressKey = 'training-checklist-20260921-v1';
-  function validProgress(record) {
-    if (!record || record.version !== 1 || !record.checked ||
-        Array.isArray(record.checked) || typeof record.checked !== 'object') return false;
-    const entries = Object.entries(record.checked);
-    if (entries.length > 1000 || !entries.every(([key,value]) =>
-      /^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key) && value === true)) return false;
-    if (record.notes !== undefined) {
-      if (!record.notes || Array.isArray(record.notes) || typeof record.notes !== 'object') return false;
-      const notes = Object.entries(record.notes);
-      if (notes.length > 80 || !notes.every(([key,value]) =>
-        /^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}$/.test(key) &&
-        typeof value === 'string' && value.length <= 1200)) return false;
-    }
-    if (record.rewards === undefined) return true;
-    const rewards = record.rewards;
-    if (!rewards || Array.isArray(rewards) || typeof rewards !== 'object' ||
-        !rewards.claimed || Array.isArray(rewards.claimed) || typeof rewards.claimed !== 'object' ||
-        !rewards.custom || Array.isArray(rewards.custom) || typeof rewards.custom !== 'object') return false;
-    const claimed = Object.entries(rewards.claimed), custom = Object.entries(rewards.custom);
-    return claimed.length <= 11 && custom.length <= 6 &&
-      claimed.every(([key,value]) => /^(genai|planning|cardio|circuit|week10|block[0-5])$/.test(key) && value === true) &&
-      custom.every(([key,value]) => /^block[0-5]$/.test(key) && typeof value === 'string' && value.length <= 300);
+  const routes = {home:'/',foundation:'/foundation','gladiator-0':'/general-fitness','gladiator-1':'/fat-loss','gladiator-2':'/strength-size','gladiator-3':'/rounds-of-fury','gladiator-4':'/juggernaut','gladiator-5':'/unit','body-stats':'/body-stats',...Object.fromEntries(Array.from({length:8},(_,i)=>['byow-'+i,'/byow-'+(i+1)]))};
+  let currentPage = Object.keys(routes).find(key=>routes[key]===location.pathname.replace(/\/$/,'')||location.pathname==='/'&&key==='home')||'home';
+  function showPage(page,push=true){
+    if(!Object.hasOwn(routes,page))return;
+    currentPage=page;
+    if(push)history.pushState(null,'',routes[page]);
+    nav.querySelectorAll('button[data-page]').forEach(button=>button.setAttribute('aria-current',button.dataset.page===page?'page':'false'));
+    frame.contentWindow?.postMessage({channel:'training-navigation-v1',type:'show',page},'*');
+    window.scrollTo({top:0,behavior:'instant'});
   }
-  globalThis.addEventListener('message', (event) => {
-    if (event.source !== frame.contentWindow || event.origin !== 'null' ||
-        event.data?.channel !== 'training-progress-v1') return;
-    const message = event.data;
-    if (message.type === 'load') {
-      let record = {version:1,checked:{}};
-      let ok = false;
-      try {
-        const saved = localStorage.getItem(progressKey);
-        if (saved !== null) {
-          if (saved.length > 150000) throw new Error('Oversized record');
-          record = JSON.parse(saved);
-          if (!validProgress(record)) throw new Error('Invalid progress');
-        }
-        // Confirm storage access without overwriting the saved record.
-        const probe = progressKey + '-probe';
-        localStorage.setItem(probe, '1');localStorage.removeItem(probe);
-        ok = true;
-      } catch { record = {version:1,checked:{}}; }
-      frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'loaded',ok,record},'*');
-    } else if (message.type === 'save' && Number.isSafeInteger(message.revision) &&
-               message.revision > 0 && validProgress(message.record)) {
-      let ok = false;
-      try {localStorage.setItem(progressKey, JSON.stringify(message.record));ok = true;} catch {}
-      frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'saved',ok,revision:message.revision},'*');
+  nav.addEventListener('click',event=>{const button=event.target.closest('button[data-page]');if(button)showPage(button.dataset.page);});
+  window.addEventListener('popstate',()=>{const page=Object.keys(routes).find(key=>routes[key]===location.pathname)||'home';showPage(page,false);});
+  frame.addEventListener('load',()=>showPage(currentPage,false));
+  const blank = {version:2,checked:{},rewards:{claimed:{},custom:{},locked:{}},notes:{},weekly:{},measurements:[]};
+  function upgrade(record){
+    if(!record||typeof record!=='object'||(record.version!==1&&record.version!==2))return blank;
+    return {...blank,...record,version:2,rewards:{...blank.rewards,...record.rewards},weekly:record.weekly||{},measurements:record.measurements||[]};
+  }
+  function validProgress(record){
+    if(!record||record.version!==2||!record.checked||typeof record.checked!=='object'||Array.isArray(record.checked))return false;
+    if(Object.keys(record.checked).length>1000)return false;
+    if(!Object.entries(record.checked).every(([key,value])=>/^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key)&&value===true))return false;
+    if(JSON.stringify(record).length>150000)return false;
+    return true;
+  }
+  let saveQueue=Promise.resolve();
+  globalThis.addEventListener('message',event=>{
+    if(event.source!==frame.contentWindow||event.origin!=='null'||event.data?.channel!=='training-progress-v1')return;
+    const message=event.data;
+    if(message.type==='load'){
+      (async()=>{
+        try{
+          const response=await fetch('/api/progress',{credentials:'same-origin',cache:'no-store'});
+          if(!response.ok)throw new Error('Account storage unavailable');
+          const data=await response.json();
+          let record=upgrade(data.record);
+          if(!data.hasSavedRecord){
+            try{const saved=localStorage.getItem(progressKey);if(saved){const old=upgrade(JSON.parse(saved));if(validProgress(old)){record=old;await fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(old)});}}}catch{}
+          }
+          frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'loaded',ok:true,record},'*');
+        }catch{frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'loaded',ok:false,record:blank},'*');}
+      })();
+    }else if(message.type==='save'&&Number.isSafeInteger(message.revision)&&validProgress(message.record)){
+      saveQueue=saveQueue.then(async()=>{
+        let ok=false;
+        try{const response=await fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(message.record)});ok=response.ok;}catch{}
+        frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'saved',revision:message.revision,ok},'*');
+      });
     }
   });
   let viewportHeight = globalThis.innerHeight;
