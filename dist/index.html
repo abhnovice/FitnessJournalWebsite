@@ -1244,7 +1244,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 
 &lt;div id=&quot;training-checklist-v1&quot;&gt;
-  &lt;div class=&quot;viz-row&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;14 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;viz-row&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;21 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;div id=&quot;tc-autosave&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;Loading saved progress…&lt;/div&gt;
   &lt;div class=&quot;progress&quot; id=&quot;tc-progress&quot; role=&quot;progressbar&quot; aria-label=&quot;Current phase compliance&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;100&quot;&gt;&lt;div class=&quot;progress-bar&quot; id=&quot;tc-bar&quot; style=&quot;width:0%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-phases&quot;&gt;&lt;/div&gt;
@@ -1270,8 +1270,8 @@ html&gt;body{padding:0}&lt;/style&gt;
 (() =&gt; {
   const root=document.getElementById(&#x27;training-checklist-v1&#x27;);
   const phasesEl=root.querySelector(&#x27;#tc-phases&#x27;), status=root.querySelector(&#x27;#tc-status&#x27;), bar=root.querySelector(&#x27;#tc-bar&#x27;), progress=root.querySelector(&#x27;#tc-progress&#x27;), code=root.querySelector(&#x27;#tc-code&#x27;), saveStatus=root.querySelector(&#x27;#tc-save-status&#x27;);
-  const KEY=&#x27;training-checklist-20260914-v1&#x27;;
-  const date=(offset)=&gt;new Date(Date.UTC(2026,8,14+offset));
+  const KEY=&#x27;training-checklist-20260921-v1&#x27;;
+  const date=(offset)=&gt;new Date(Date.UTC(2026,8,21+offset));
   const fmt=(d)=&gt;d.toLocaleDateString(&#x27;en-GB&#x27;,{day:&#x27;numeric&#x27;,month:&#x27;short&#x27;,year:&#x27;numeric&#x27;,timeZone:&#x27;UTC&#x27;});
   const short=(d)=&gt;d.toLocaleDateString(&#x27;en-GB&#x27;,{day:&#x27;numeric&#x27;,month:&#x27;short&#x27;,timeZone:&#x27;UTC&#x27;});
   const weekdays=[&#x27;Monday&#x27;,&#x27;Tuesday&#x27;,&#x27;Wednesday&#x27;,&#x27;Thursday&#x27;,&#x27;Friday&#x27;,&#x27;Saturday&#x27;,&#x27;Sunday&#x27;];
@@ -1301,7 +1301,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     return &#x27;Workout &#x27;+((w+slot)%2?&#x27;B&#x27;:&#x27;A&#x27;)+&#x27; + week-specific cardio&#x27;;
   }
   programNames.forEach((name,p)=&gt;addPhase(&#x27;gladiator-&#x27;+p,&#x27;Block &#x27;+(p+1)+&#x27; · &#x27;+name,91+p*28,4,&#x27;Four weeks · follow the program’s exercise blocks and cardio&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Active recovery&#x27;+(p===3?&#x27; / easy cardio&#x27;:&#x27;&#x27;):workoutLabel(p,w,d)]));
-  for(let b=0;b&lt;8;b++)addPhase(&#x27;byow-&#x27;+b,&#x27;BYOW · Block &#x27;+(b+1),259+b*28,b===7?3:4,&#x27;Power circuit + core superset + finishing interval&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Easy cardio / recovery&#x27;:&#x27;Workout &#x27;+((w+d/2)%2?&#x27;B&#x27;:&#x27;A&#x27;)+&#x27; · &#x27;+[&#x27;strength&#x27;,&#x27;muscle&#x27;,&#x27;endurance&#x27;][d/2]+&#x27; scheme&#x27;],b===7?19:28);
+  for(let b=0;b&lt;8;b++)addPhase(&#x27;byow-&#x27;+b,&#x27;BYOW · Block &#x27;+(b+1),259+b*28,b===7?3:4,&#x27;Power circuit + core superset + finishing interval&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Easy cardio / recovery&#x27;:&#x27;Workout &#x27;+((w+d/2)%2?&#x27;B&#x27;:&#x27;A&#x27;)+&#x27; · &#x27;+[&#x27;strength&#x27;,&#x27;muscle&#x27;,&#x27;endurance&#x27;][d/2]+&#x27; scheme&#x27;],b===7?12:28);
   const valid=new Set(phases.flatMap(p=&gt;p.items.map(x=&gt;x.id)));
   let checked={}; let storage=false; let loaded=false; let revision=0; let selectedWeek={};
   const CHANNEL=&quot;training-progress-v1&quot;;
@@ -1731,7 +1731,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     return;
   }
   // The opaque sandbox can request only this fixed progress record, never arbitrary storage.
-  const progressKey = 'training-checklist-20260914-v1';
+  const progressKey = 'training-checklist-20260921-v1';
   function validProgress(record) {
     if (!record || record.version !== 1 || !record.checked ||
         Array.isArray(record.checked) || typeof record.checked !== 'object') return false;
