@@ -1251,20 +1251,38 @@ html&gt;body{padding:0}&lt;/style&gt;
   &lt;details id=&quot;tc-backup&quot;&gt;&lt;summary&gt;Save / restore progress&lt;/summary&gt;&lt;div class=&quot;tc-backup-body&quot;&gt;&lt;label class=&quot;form-label&quot; for=&quot;tc-code&quot;&gt;Progress record · copy and keep this text&lt;/label&gt;&lt;textarea class=&quot;form-control&quot; id=&quot;tc-code&quot; rows=&quot;4&quot; spellcheck=&quot;false&quot;&gt;&lt;/textarea&gt;&lt;div class=&quot;viz-row&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;btn&quot; id=&quot;tc-restore&quot;&gt;Restore pasted record&lt;/button&gt;&lt;span id=&quot;tc-save-status&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/details&gt;
 &lt;/div&gt;
 &lt;style&gt;
-#training-checklist-v1 {color:var(--foreground)}
-#training-checklist-v1 .tc-phase {margin-top:20px}
-#training-checklist-v1 .tc-heading {display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-#training-checklist-v1 .tc-weeks {margin-top:8px}
-#training-checklist-v1 .tc-week {padding:8px 0;border-bottom:1px solid var(--border)}
-#training-checklist-v1 summary {cursor:pointer}
-#training-checklist-v1 .tc-days {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 20px;padding:14px 0}
-#training-checklist-v1 .tc-day {min-width:0}
-#training-checklist-v1 .tc-date {margin-bottom:4px}
-#training-checklist-v1 .tc-locked {color:var(--muted-foreground)}
-#training-checklist-v1 .tc-backup-body {display:grid;gap:8px;padding-top:12px}
-#training-checklist-v1 #tc-backup {margin-top:24px}
-#training-checklist-v1 .tc-week-count {margin-left:8px}
-@media(max-width:480px){#training-checklist-v1 .tc-days {grid-template-columns:1fr}}
+#training-checklist-v1{--tc-surface:light-dark(#f7f9ff,#11131a);--tc-card:light-dark(#fff,#1b1d24);--tc-tonal:light-dark(#e8eaf5,#303442);--tc-primary:light-dark(#445493,#bac6ff);--tc-on-primary:light-dark(#fff,#1d2d65);--tc-ink:light-dark(#1b1b21,#e4e2e9);--tc-muted:light-dark(#5e6069,#c3c4d0);--tc-line:light-dark(#c4c6d0,#454650);font-family:Roboto,&#x27;Arial&#x27;,sans-serif;color:var(--tc-ink);background:var(--tc-surface);padding:24px;box-sizing:border-box;border-radius:24px}
+#training-checklist-v1 *{box-sizing:border-box}
+#training-checklist-v1 h2{font-size:1.8rem;letter-spacing:-.025em;margin:0}
+#training-checklist-v1 h3{font-size:1.2rem;letter-spacing:-.01em;margin:0}
+#training-checklist-v1 .tc-phase{margin-top:20px;padding:20px;background:var(--tc-card);border:1px solid var(--tc-line);border-radius:20px}
+#training-checklist-v1 .tc-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+#training-checklist-v1 .tc-heading .text-small{background:var(--tc-tonal);padding:5px 10px;border-radius:8px;color:var(--tc-muted)}
+#training-checklist-v1 .text-small,#training-checklist-v1 .tc-date{color:var(--tc-muted)}
+#training-checklist-v1 #tc-status{margin-top:18px;font-weight:600}
+#training-checklist-v1 #tc-autosave{margin:6px 0 12px}
+#training-checklist-v1 .progress{height:8px;background:var(--tc-tonal);border-radius:8px;overflow:hidden}
+#training-checklist-v1 .progress-bar{height:100%;background:var(--tc-primary);border-radius:8px}
+#training-checklist-v1 .tc-weeks{margin-top:14px}
+#training-checklist-v1 .tc-week{padding:0;border-top:1px solid var(--tc-line)}
+#training-checklist-v1 summary{cursor:pointer;padding:15px 4px;font-weight:600;list-style-position:inside}
+#training-checklist-v1 .tc-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 20px;padding:8px 0 18px}
+#training-checklist-v1 .tc-day{min-width:0;padding:10px 12px;border-radius:12px;background:var(--tc-surface)}
+#training-checklist-v1 .tc-date{margin-bottom:8px}
+#training-checklist-v1 .form-check{display:flex;align-items:flex-start;gap:10px;min-height:40px;padding:5px 0;cursor:pointer}
+#training-checklist-v1 input[type=checkbox]{accent-color:var(--tc-primary);width:20px;height:20px;flex:none;margin:1px 0}
+#training-checklist-v1 input:disabled{cursor:not-allowed}
+#training-checklist-v1 .tc-locked{color:var(--tc-muted);padding:12px 0}
+#training-checklist-v1 .tc-reward{margin-top:16px;padding:16px;background:var(--tc-tonal);border-radius:16px}
+#training-checklist-v1 .tc-reward-title{font-weight:700;margin:0 0 5px}
+#training-checklist-v1 .tc-reward-note{color:var(--tc-muted);font-size:.875rem;margin:0 0 8px}
+#training-checklist-v1 .tc-reward .form-check{min-height:44px;align-items:center}
+#training-checklist-v1 .tc-custom{width:100%;min-height:44px;margin:8px 0 0;padding:10px 12px;border:1px solid var(--tc-line);border-radius:10px;background:var(--tc-card);color:var(--tc-ink);font:inherit}
+#training-checklist-v1 .tc-backup-body{display:grid;gap:8px;padding-top:12px}
+#training-checklist-v1 #tc-backup{margin-top:24px;border:1px solid var(--tc-line);border-radius:16px;padding:0 16px;background:var(--tc-card)}
+#training-checklist-v1 .tc-week-count{margin-left:8px;font-weight:400;color:var(--tc-muted)}
+#training-checklist-v1 input:focus-visible,#training-checklist-v1 textarea:focus-visible,#training-checklist-v1 summary:focus-visible{outline:3px solid var(--tc-primary);outline-offset:2px}
+@media(max-width:600px){#training-checklist-v1{padding:16px;border-radius:16px}#training-checklist-v1 .tc-phase{padding:16px}#training-checklist-v1 .tc-days{grid-template-columns:1fr}}
 &lt;/style&gt;
 &lt;script&gt;
 (() =&gt; {
@@ -1304,18 +1322,45 @@ html&gt;body{padding:0}&lt;/style&gt;
   programNames.forEach((name,p)=&gt;addPhase(&#x27;gladiator-&#x27;+p,&#x27;Block &#x27;+(p+1)+&#x27; · &#x27;+name,91+p*28,4,&#x27;Four weeks · follow the program’s exercise blocks and cardio&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Active recovery&#x27;+(p===3?&#x27; / easy cardio&#x27;:&#x27;&#x27;):workoutLabel(p,w,d)]));
   for(let b=0;b&lt;8;b++)addPhase(&#x27;byow-&#x27;+b,&#x27;BYOW · Block &#x27;+(b+1),259+b*28,b===7?3:4,&#x27;Power circuit + core superset + finishing interval&#x27;,(i,w,d)=&gt;[d&gt;4?&#x27;Walk 5 km&#x27;:d%2?&#x27;Easy cardio / recovery&#x27;:&#x27;Workout &#x27;+((w+d/2)%2?&#x27;B&#x27;:&#x27;A&#x27;)+&#x27; · &#x27;+[&#x27;strength&#x27;,&#x27;muscle&#x27;,&#x27;endurance&#x27;][d/2]+&#x27; scheme&#x27;],b===7?12:28);
   const valid=new Set(phases.flatMap(p=&gt;p.items.map(x=&gt;x.id)));
-  let checked={}; let storage=false; let loaded=false; let revision=0; let selectedWeek={};
+  let checked={}; let rewards={claimed:{},custom:{}}; let rewardTimer; let storage=false; let loaded=false; let revision=0; let selectedWeek={};
   const CHANNEL=&quot;training-progress-v1&quot;;
   const restoreButton=root.querySelector(&quot;#tc-restore&quot;);
   const autosave=root.querySelector(&quot;#tc-autosave&quot;);
   function showSave(message){saveStatus.textContent=message;autosave.textContent=message;}
   function sanitize(v){if(!v||v.version!==1||!v.checked||typeof v.checked!==&#x27;object&#x27;)throw new Error(&#x27;Invalid record&#x27;);return Object.fromEntries(Object.entries(v.checked).filter(([k,v])=&gt;valid.has(k)&amp;&amp;v===true));}
+  const rewardKeys=new Set([&#x27;genai&#x27;,&#x27;planning&#x27;,&#x27;cardio&#x27;,&#x27;circuit&#x27;,&#x27;week10&#x27;,...Array.from({length:6},(_,i)=&gt;&#x27;block&#x27;+i)]);
+  const blockKeys=new Set(Array.from({length:6},(_,i)=&gt;&#x27;block&#x27;+i));
+  function sanitizeRewards(v){
+    const r=v?.rewards||{};
+    const claimed=Object.fromEntries(Object.entries(r.claimed||{}).filter(([k,x])=&gt;rewardKeys.has(k)&amp;&amp;x===true));
+    const custom=Object.fromEntries(Object.entries(r.custom||{}).filter(([k,x])=&gt;blockKeys.has(k)&amp;&amp;typeof x===&#x27;string&#x27;).map(([k,x])=&gt;[k,x.slice(0,300)]));
+    return {claimed,custom};
+  }
+  function rewardBox(title,items,note,customIndex){
+    const box=document.createElement(&#x27;div&#x27;);box.className=&#x27;tc-reward&#x27;;
+    const heading=document.createElement(&#x27;div&#x27;);heading.className=&#x27;tc-reward-title&#x27;;heading.textContent=title;box.append(heading);
+    if(note){const hint=document.createElement(&#x27;p&#x27;);hint.className=&#x27;tc-reward-note&#x27;;hint.textContent=note;box.append(hint);}
+    if(customIndex!==undefined){
+      const key=&#x27;block&#x27;+customIndex,label=document.createElement(&#x27;label&#x27;);label.className=&#x27;tc-reward-note&#x27;;label.htmlFor=&#x27;tc-reward-text-&#x27;+key;label.textContent=&#x27;My reward for Block &#x27;+(customIndex+1);box.append(label);
+      const field=document.createElement(&#x27;input&#x27;);field.type=&#x27;text&#x27;;field.id=&#x27;tc-reward-text-&#x27;+key;field.className=&#x27;tc-custom&#x27;;field.maxLength=300;field.placeholder=&#x27;Add a reward to work toward&#x27;;field.value=rewards.custom[key]||&#x27;&#x27;;field.disabled=!loaded;
+      field.addEventListener(&#x27;input&#x27;,()=&gt;{rewards.custom[key]=field.value;clearTimeout(rewardTimer);rewardTimer=setTimeout(persist,350);});
+      field.addEventListener(&#x27;change&#x27;,()=&gt;{clearTimeout(rewardTimer);persist();});box.append(field);
+    }
+    for(const item of items){
+      const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;form-check&#x27;;
+      const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.id=&#x27;tc-reward-&#x27;+item.key;input.checked=!!rewards.claimed[item.key];input.disabled=!loaded||!item.eligible||!!item.needsText&amp;&amp;!rewards.custom[item.key]?.trim();
+      const text=document.createElement(&#x27;span&#x27;);text.textContent=item.label;input.addEventListener(&#x27;change&#x27;,()=&gt;{if(input.checked)rewards.claimed[item.key]=true;else delete rewards.claimed[item.key];persist();render();document.getElementById(input.id)?.focus({preventScroll:true});});
+      label.append(input,text);box.append(label);
+    }return box;
+  }
+  const throughWeek10=()=&gt;phases.slice(0,2).every(complete)&amp;&amp;phases[2].items.filter(x=&gt;x.day&lt;49).every(x=&gt;checked[x.id]);
+
 
   const count=p=&gt;p.items.filter(x=&gt;checked[x.id]).length;
   const complete=p=&gt;count(p)===p.items.length;
   function unlocked(index){return index&lt;3||phases.slice(0,index).every(complete);}
   function persist(){
-    const record={version:1,checked};code.value=JSON.stringify(record);
+    const record={version:1,checked,rewards};code.value=JSON.stringify(record);
     if(storage){showSave(&#x27;Saving…&#x27;);window.parent.postMessage({channel:CHANNEL,type:&#x27;save&#x27;,revision:++revision,record},&#x27;*&#x27;);}
     else showSave(loaded?&#x27;Auto-save unavailable · use Save / restore progress&#x27;:&#x27;Loading saved progress…&#x27;);
   }
@@ -1323,9 +1368,9 @@ html&gt;body{padding:0}&lt;/style&gt;
     if(event.source!==window.parent||event.data?.channel!==CHANNEL)return;
     const message=event.data;
     if(message.type===&#x27;loaded&#x27;&amp;&amp;!loaded){
-      try{checked=sanitize(message.record);}catch(e){message.ok=false;}
+      try{checked=sanitize(message.record);rewards=sanitizeRewards(message.record);}catch(e){message.ok=false;}
       loaded=true;storage=message.ok===true;restoreButton.disabled=false;
-      code.value=JSON.stringify({version:1,checked});render();
+      code.value=JSON.stringify({version:1,checked,rewards});render();
       showSave(storage?&#x27;Auto-save on · saved in this browser&#x27;:&#x27;Auto-save unavailable · use Save / restore progress&#x27;);
     }else if(message.type===&#x27;saved&#x27;&amp;&amp;message.revision===revision){
       if(message.ok===true)showSave(&#x27;Saved automatically · this browser&#x27;);
@@ -1342,7 +1387,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       const head=document.createElement(&#x27;div&#x27;);head.className=&#x27;tc-heading&#x27;;
       const heading=document.createElement(&#x27;h3&#x27;);heading.textContent=p.name;
       const state=document.createElement(&#x27;span&#x27;);state.className=&#x27;text-small&#x27;;state.textContent=unlocked(index)?count(p)+&#x27; / &#x27;+p.items.length+(complete(p)?&#x27; · Complete&#x27;:&#x27;&#x27;):&#x27;Locked&#x27;;head.append(heading,state);section.append(head);
-      if(!unlocked(index)){const lock=document.createElement(&#x27;div&#x27;);lock.className=&#x27;tc-locked text-small&#x27;;lock.textContent=index===3?&#x27;Opens after all launchpad, cardio and circuit checkboxes are complete&#x27;:&#x27;Opens after &#x27;+phases[index-1].name+&#x27; is complete&#x27;;section.append(lock);phasesEl.append(section);return;}
+      if(!unlocked(index)){const lock=document.createElement(&#x27;div&#x27;);lock.className=&#x27;tc-locked text-small&#x27;;lock.textContent=index===3?&#x27;Opens after all launchpad, cardio and circuit checkboxes are complete&#x27;:&#x27;Opens after &#x27;+phases[index-1].name+&#x27; is complete&#x27;;section.append(lock);if(index&gt;=3&amp;&amp;index&lt;=8)section.append(rewardBox(&#x27;Block reward&#x27;,[{key:&#x27;block&#x27;+(index-3),label:&#x27;Reward claimed&#x27;,eligible:false,needsText:true}],&#x27;Choose your reward now; claim it after completing this block.&#x27;,index-3));phasesEl.append(section);return;}
       const range=document.createElement(&#x27;div&#x27;);range.className=&#x27;text-small&#x27;;range.textContent=fmt(date(p.start))+&#x27; – &#x27;+fmt(date(p.start+p.days-1))+&#x27; · &#x27;+p.note;section.append(range);
       const weeks=document.createElement(&#x27;div&#x27;);weeks.className=&#x27;tc-weeks&#x27;;
       const firstIncomplete=Array.from({length:p.weeks},(_,w)=&gt;w).find(w=&gt;p.items.some(x=&gt;Math.floor(x.day/7)===w&amp;&amp;!checked[x.id]));
@@ -1359,12 +1404,17 @@ html&gt;body{padding:0}&lt;/style&gt;
             const text=document.createElement(&#x27;span&#x27;);text.className=&#x27;form-check-label&#x27;;text.textContent=item.label;input.setAttribute(&#x27;aria-label&#x27;,fmt(date(p.start+item.day))+&#x27; · &#x27;+item.label);
             input.addEventListener(&#x27;change&#x27;,()=&gt;{const id=input.id;if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=w;persist();render();const replacement=document.getElementById(id);if(replacement)replacement.focus({preventScroll:true});});label.append(input,text);day.append(label);
           });days.append(day);
-        }week.append(days);weeks.append(week);
-      }section.append(weeks);phasesEl.append(section);
+        }week.append(days);if(p.id===&#x27;circuit&#x27;&amp;&amp;w===6)week.append(rewardBox(&#x27;Week 10 reward&#x27;,[{key:&#x27;week10&#x27;,label:&#x27;Buy a smartwatch&#x27;,eligible:throughWeek10()}],&#x27;23–29 Nov 2026 · opens when all scheduled sessions through Week 10 are checked.&#x27;));weeks.append(week);
+      }section.append(weeks);
+      if(p.id===&#x27;launchpad&#x27;)section.append(rewardBox(&#x27;Launchpad rewards&#x27;,[{key:&#x27;genai&#x27;,label:&#x27;Restart my GenAI course&#x27;,eligible:complete(p)},{key:&#x27;planning&#x27;,label:&#x27;Allocate 3 hours on Monday for life planning&#x27;,eligible:complete(p)}],&#x27;Opens after both 10 km walks are checked · Monday is 21 Sep 2026.&#x27;));
+      if(p.id===&#x27;cardio&#x27;)section.append(rewardBox(&#x27;Cardio staircase reward&#x27;,[{key:&#x27;cardio&#x27;,label:&#x27;One healthy cheat meal: homemade sugar-free custard&#x27;,eligible:complete(p)}],&#x27;Opens after the full cardio staircase is checked.&#x27;));
+      if(p.id===&#x27;circuit&#x27;)section.append(rewardBox(&#x27;Jog + circuit reward&#x27;,[{key:&#x27;circuit&#x27;,label:&#x27;One weekend trip&#x27;,eligible:complete(p)}],&#x27;Opens after the full jog + circuit phase is checked.&#x27;));
+      if(index&gt;=3&amp;&amp;index&lt;=8)section.append(rewardBox(&#x27;Block reward&#x27;,[{key:&#x27;block&#x27;+(index-3),label:&#x27;Reward claimed&#x27;,eligible:complete(p),needsText:true}],&#x27;Add your own reward and claim it after this block is complete.&#x27;,index-3));
+      phasesEl.append(section);
     });
   }
-  root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{checked=sanitize(JSON.parse(code.value));persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
-  restoreButton.disabled=true;code.value=JSON.stringify({version:1,checked});render();
+  root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{const record=JSON.parse(code.value);const restored=sanitize(record);const restoredRewards=sanitizeRewards(record);checked=restored;rewards=restoredRewards;persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
+  restoreButton.disabled=true;code.value=JSON.stringify({version:1,checked,rewards});render();
   window.parent.postMessage({channel:CHANNEL,type:&#x27;load&#x27;},&#x27;*&#x27;);
   setTimeout(()=&gt;{if(!loaded){loaded=true;restoreButton.disabled=false;render();showSave(&#x27;Auto-save unavailable · use Save / restore progress&#x27;);}},3000);
 })();
@@ -1737,8 +1787,17 @@ html&gt;body{padding:0}&lt;/style&gt;
     if (!record || record.version !== 1 || !record.checked ||
         Array.isArray(record.checked) || typeof record.checked !== 'object') return false;
     const entries = Object.entries(record.checked);
-    return entries.length <= 1000 && entries.every(([key,value]) =>
-      /^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key) && value === true);
+    if (entries.length > 1000 || !entries.every(([key,value]) =>
+      /^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key) && value === true)) return false;
+    if (record.rewards === undefined) return true;
+    const rewards = record.rewards;
+    if (!rewards || Array.isArray(rewards) || typeof rewards !== 'object' ||
+        !rewards.claimed || Array.isArray(rewards.claimed) || typeof rewards.claimed !== 'object' ||
+        !rewards.custom || Array.isArray(rewards.custom) || typeof rewards.custom !== 'object') return false;
+    const claimed = Object.entries(rewards.claimed), custom = Object.entries(rewards.custom);
+    return claimed.length <= 11 && custom.length <= 6 &&
+      claimed.every(([key,value]) => /^(genai|planning|cardio|circuit|week10|block[0-5])$/.test(key) && value === true) &&
+      custom.every(([key,value]) => /^block[0-5]$/.test(key) && typeof value === 'string' && value.length <= 300);
   }
   globalThis.addEventListener('message', (event) => {
     if (event.source !== frame.contentWindow || event.origin !== 'null' ||
