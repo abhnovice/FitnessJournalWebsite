@@ -1244,7 +1244,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 
 &lt;div id=&quot;training-checklist-v1&quot;&gt;
-  &lt;div class=&quot;viz-row&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;21 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;viz-row&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;19 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;div id=&quot;tc-autosave&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;Loading saved progress…&lt;/div&gt;
   &lt;div class=&quot;progress&quot; id=&quot;tc-progress&quot; role=&quot;progressbar&quot; aria-label=&quot;Current phase compliance&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;100&quot;&gt;&lt;div class=&quot;progress-bar&quot; id=&quot;tc-bar&quot; style=&quot;width:0%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-phases&quot;&gt;&lt;/div&gt;
@@ -1282,6 +1282,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     phases.push(phase);
   }
   const km=[[1,2,2,3,3],[3,4,4,4,4],[5,5,5,5,5]];
+  addPhase(&#x27;launchpad&#x27;,&#x27;Launchpad&#x27;,-2,1,&#x27;19–20 September · 10 km walk each day&#x27;,()=&gt;[&#x27;Walk 10 km&#x27;],2);
   addPhase(&#x27;cardio&#x27;,&#x27;Cardio staircase&#x27;,0,3,&#x27;Easy jogging · weekend walks included&#x27;,(i,w,d)=&gt;[d&lt;5?&#x27;Jog &#x27;+km[w][d]+&#x27; km&#x27;:&#x27;Walk 5 km&#x27;]);
   const circuitDays=[[0],[0,4],[0,2,4],[0,1,3,4],[0,1,2,3,4]];
   addPhase(&#x27;circuit&#x27;,&#x27;Jog + circuit&#x27;,21,10,&#x27;One set = 5 pull-ups / 10 push-ups / 15 squats · assisted variations count&#x27;,(i,w,d)=&gt;{
@@ -1312,7 +1313,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
   const count=p=&gt;p.items.filter(x=&gt;checked[x.id]).length;
   const complete=p=&gt;count(p)===p.items.length;
-  function unlocked(index){return index&lt;2||phases.slice(0,index).every(complete);}
+  function unlocked(index){return index&lt;3||phases.slice(0,index).every(complete);}
   function persist(){
     const record={version:1,checked};code.value=JSON.stringify(record);
     if(storage){showSave(&#x27;Saving…&#x27;);window.parent.postMessage({channel:CHANNEL,type:&#x27;save&#x27;,revision:++revision,record},&#x27;*&#x27;);}
@@ -1341,7 +1342,7 @@ html&gt;body{padding:0}&lt;/style&gt;
       const head=document.createElement(&#x27;div&#x27;);head.className=&#x27;tc-heading&#x27;;
       const heading=document.createElement(&#x27;h3&#x27;);heading.textContent=p.name;
       const state=document.createElement(&#x27;span&#x27;);state.className=&#x27;text-small&#x27;;state.textContent=unlocked(index)?count(p)+&#x27; / &#x27;+p.items.length+(complete(p)?&#x27; · Complete&#x27;:&#x27;&#x27;):&#x27;Locked&#x27;;head.append(heading,state);section.append(head);
-      if(!unlocked(index)){const lock=document.createElement(&#x27;div&#x27;);lock.className=&#x27;tc-locked text-small&#x27;;lock.textContent=index===2?&#x27;Opens after all cardio and circuit checkboxes are complete&#x27;:&#x27;Opens after &#x27;+phases[index-1].name+&#x27; is complete&#x27;;section.append(lock);phasesEl.append(section);return;}
+      if(!unlocked(index)){const lock=document.createElement(&#x27;div&#x27;);lock.className=&#x27;tc-locked text-small&#x27;;lock.textContent=index===3?&#x27;Opens after all launchpad, cardio and circuit checkboxes are complete&#x27;:&#x27;Opens after &#x27;+phases[index-1].name+&#x27; is complete&#x27;;section.append(lock);phasesEl.append(section);return;}
       const range=document.createElement(&#x27;div&#x27;);range.className=&#x27;text-small&#x27;;range.textContent=fmt(date(p.start))+&#x27; – &#x27;+fmt(date(p.start+p.days-1))+&#x27; · &#x27;+p.note;section.append(range);
       const weeks=document.createElement(&#x27;div&#x27;);weeks.className=&#x27;tc-weeks&#x27;;
       const firstIncomplete=Array.from({length:p.weeks},(_,w)=&gt;w).find(w=&gt;p.items.some(x=&gt;Math.floor(x.day/7)===w&amp;&amp;!checked[x.id]));
@@ -1352,7 +1353,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         week.addEventListener(&#x27;toggle&#x27;,()=&gt;{if(week.open)selectedWeek[p.id]=w;});
         const days=document.createElement(&#x27;div&#x27;);days.className=&#x27;tc-days&#x27;;
         for(let d=0;d&lt;7&amp;&amp;w*7+d&lt;p.days;d++){
-          const day=document.createElement(&#x27;div&#x27;);day.className=&#x27;tc-day&#x27;;const dayTitle=document.createElement(&#x27;div&#x27;);dayTitle.className=&#x27;tc-date text-small&#x27;;dayTitle.textContent=weekdays[d]+&#x27; · &#x27;+short(date(p.start+w*7+d));day.append(dayTitle);
+          const day=document.createElement(&#x27;div&#x27;);day.className=&#x27;tc-day&#x27;;const dayTitle=document.createElement(&#x27;div&#x27;);dayTitle.className=&#x27;tc-date text-small&#x27;;dayTitle.textContent=weekdays[(date(p.start+w*7+d).getUTCDay()+6)%7]+&#x27; · &#x27;+short(date(p.start+w*7+d));day.append(dayTitle);
           items.filter(x=&gt;x.day===w*7+d).forEach(item=&gt;{
             const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;form-check&#x27;;const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.className=&#x27;form-check-input&#x27;;input.id=&#x27;tc-&#x27;+item.id;input.checked=!!checked[item.id];input.disabled=!loaded;input.dataset.task=item.id;
             const text=document.createElement(&#x27;span&#x27;);text.className=&#x27;form-check-label&#x27;;text.textContent=item.label;input.setAttribute(&#x27;aria-label&#x27;,fmt(date(p.start+item.day))+&#x27; · &#x27;+item.label);
@@ -1737,7 +1738,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         Array.isArray(record.checked) || typeof record.checked !== 'object') return false;
     const entries = Object.entries(record.checked);
     return entries.length <= 1000 && entries.every(([key,value]) =>
-      /^(cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key) && value === true);
+      /^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key) && value === true);
   }
   globalThis.addEventListener('message', (event) => {
     if (event.source !== frame.contentWindow || event.origin !== 'null' ||
