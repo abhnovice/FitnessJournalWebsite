@@ -56,7 +56,7 @@ export default {
       }
     }
     if (request.method !== "GET" && request.method !== "HEAD") return new Response("Method not allowed", { status: 405 });
-    if (url.pathname === "/" || /^\\/(?:foundation|body-stats|general-fitness|fat-loss|strength-size|rounds-of-fury|juggernaut|unit|byow-[1-8])\\/?$/.test(url.pathname)) {
+    if (url.pathname === "/" || new Set(["/foundation", "/body-stats", "/general-fitness", "/fat-loss", "/strength-size", "/rounds-of-fury", "/juggernaut", "/unit"]).has(url.pathname.replace(/\/$/, "")) || /^\/byow-[1-8]\/?$/.test(url.pathname)) {
       return env.ASSETS.fetch(new Request(new URL("/index.html", url), request));
     }
     return env.ASSETS.fetch(request);
