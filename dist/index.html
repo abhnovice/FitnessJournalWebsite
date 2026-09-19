@@ -1520,8 +1520,8 @@ html&gt;body{padding:0}&lt;/style&gt;
     const done=phases.flatMap(p=&gt;p.items.filter(item=&gt;checked[item.id]).map(item=&gt;({label:item.label,date:date(p.start+item.day)}))).sort((a,b)=&gt;b.date-a.date);
     const last=done[0];host.querySelector(&#x27;#tc-last&#x27;).textContent=last?last.label+&#x27; · &#x27;+fmt(last.date):&#x27;No workout checked yet&#x27;;
     const scheduled=new Map();for(const p of phases)for(const item of p.items){const day=date(p.start+item.day).toISOString().slice(0,10);const row=scheduled.get(day)||[];row.push(item.id);scheduled.set(day,row);}
-    let cursor=new Date();cursor.setHours(0,0,0,0);let streak=0;
-    for(let i=0;i&lt;600;i++){const key=cursor.toISOString().slice(0,10),items=scheduled.get(key);if(items&amp;&amp;items.every(id=&gt;checked[id]))streak++;else if(i&gt;0||items)break;cursor.setDate(cursor.getDate()-1);}
+    const today=new Intl.DateTimeFormat(&#x27;en-CA&#x27;,{timeZone:&#x27;Asia/Kolkata&#x27;,year:&#x27;numeric&#x27;,month:&#x27;2-digit&#x27;,day:&#x27;2-digit&#x27;}).format(new Date());let cursor=new Date(today+&#x27;T00:00:00Z&#x27;);let streak=0;
+    for(let i=0;i&lt;600;i++){const key=cursor.toISOString().slice(0,10),items=scheduled.get(key);if(items&amp;&amp;items.every(id=&gt;checked[id]))streak++;else if(i&gt;0||items)break;cursor.setUTCDate(cursor.getUTCDate()-1);}
     host.querySelector(&#x27;#tc-streak&#x27;).textContent=streak+&#x27; days&#x27;;
     const points=[{date:&#x27;2026-09-19&#x27;,weight:93,bodyFat:32},...Object.entries(weekly).filter(([,v])=&gt;v.weight!==null||v.bodyFat!==null).map(([k,v])=&gt;{const [id,w]=k.match(/^(.*)-(\d+)$/)?.slice(1)||[];const p=phases.find(x=&gt;x.id===id);return p?{date:date(p.start+Number(w)*7).toISOString().slice(0,10),...v}:null;}).filter(Boolean)].sort((a,b)=&gt;a.date.localeCompare(b.date));
     for(const [field,goal,unit,target] of [[&#x27;weight&#x27;,75,&#x27;kg&#x27;,&#x27;#tc-weight-chart&#x27;],[&#x27;bodyFat&#x27;,12,&#x27;%&#x27;,&#x27;#tc-fat-chart&#x27;]]){
