@@ -1257,9 +1257,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 
 
 &lt;div id=&quot;training-checklist-v1&quot;&gt;
-  &lt;header class=&quot;tc-hero&quot; role=&quot;banner&quot; aria-label=&quot;Abhyudaya&#x27;s fitness journey&quot;&gt;
-  &lt;div class=&quot;tc-hero-content&quot;&gt;&lt;span class=&quot;tc-eyebrow&quot;&gt;TRAINING JOURNEY · 2026–2027&lt;/span&gt;&lt;h1&gt;Abhyudaya’s&lt;br&gt;6-pack Journey&lt;/h1&gt;&lt;p&gt;Build the habit. Earn each phase.&lt;/p&gt;&lt;/div&gt;
-&lt;/header&gt;
+  
   &lt;div class=&quot;viz-row tc-overview&quot;&gt;&lt;h2&gt;Training checklist&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;19 Sep 2026–31 Dec 2027&lt;/span&gt;&lt;/div&gt;
   &lt;div id=&quot;tc-status&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;&lt;div id=&quot;tc-autosave&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;Loading saved progress…&lt;/div&gt;
   &lt;div class=&quot;progress&quot; id=&quot;tc-progress&quot; role=&quot;progressbar&quot; aria-label=&quot;Current phase compliance&quot; aria-valuemin=&quot;0&quot; aria-valuemax=&quot;100&quot;&gt;&lt;div class=&quot;progress-bar&quot; id=&quot;tc-bar&quot; style=&quot;width:0%&quot;&gt;&lt;/div&gt;&lt;/div&gt;
@@ -1547,7 +1545,7 @@ html&gt;body{padding:0}&lt;/style&gt;
   root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{const record=JSON.parse(code.value);const restored=sanitize(record);const restoredRewards=sanitizeRewards(record);checked=restored;rewards=restoredRewards;notes=sanitizeNotes(record);weekly=sanitizeWeekly(record);measurements=sanitizeMeasurements(record);persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
   restoreButton.disabled=true;code.value=JSON.stringify({version:2,checked,rewards,notes,weekly,measurements});render();
   window.parent.postMessage({channel:CHANNEL,type:&#x27;load&#x27;},&#x27;*&#x27;);
-  setTimeout(()=&gt;{if(!loaded){loaded=true;restoreButton.disabled=false;render();showSave(&#x27;Auto-save unavailable · use Save / restore progress&#x27;);}},3000);
+  setTimeout(()=&gt;{if(!loaded){loaded=true;restoreButton.disabled=false;render();showSave(&#x27;Auto-save unavailable · use Save / restore progress&#x27;);}},20000);
 })();
 &lt;/script&gt;
 
