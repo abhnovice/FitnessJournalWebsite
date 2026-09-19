@@ -1464,7 +1464,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
   });
   function render(){
-    phasesEl.replaceChildren();renderDashboard();renderStats();
+    phasesEl.replaceChildren();root.querySelector(&#x27;.tc-overview h2&#x27;).textContent=currentPage===&#x27;home&#x27;?&#x27;Journey dashboard&#x27;:currentPage===&#x27;body-stats&#x27;?&#x27;Body stats&#x27;:&#x27;Training checklist&#x27;;renderDashboard();renderStats();
     const active=phases.find(p=&gt;!complete(p))||phases[phases.length-1];const n=count(active),total=active.items.length,pct=Math.round(n/total*100);
     status.textContent=active.name+&#x27; · &#x27;+n+&#x27; / &#x27;+total+&#x27; checked&#x27;;bar.style.width=pct+&#x27;%&#x27;;progress.setAttribute(&#x27;aria-valuenow&#x27;,String(pct));
     phases.forEach((p,index)=&gt;{
@@ -1520,12 +1520,12 @@ html&gt;body{padding:0}&lt;/style&gt;
     const scheduled=new Map();for(const p of phases)for(const item of p.items){const day=date(p.start+item.day).toISOString().slice(0,10);const row=scheduled.get(day)||[];row.push(item.id);scheduled.set(day,row);}
     const today=new Intl.DateTimeFormat(&#x27;en-CA&#x27;,{timeZone:&#x27;Asia/Kolkata&#x27;,year:&#x27;numeric&#x27;,month:&#x27;2-digit&#x27;,day:&#x27;2-digit&#x27;}).format(new Date());let cursor=new Date(today+&#x27;T00:00:00Z&#x27;);let streak=0;
     for(let i=0;i&lt;600;i++){const key=cursor.toISOString().slice(0,10),items=scheduled.get(key);if(items&amp;&amp;items.every(id=&gt;checked[id]))streak++;else if(i&gt;0||items)break;cursor.setUTCDate(cursor.getUTCDate()-1);}
-    host.querySelector(&#x27;#tc-streak&#x27;).textContent=streak+&#x27; days&#x27;;
+    host.querySelector(&#x27;#tc-streak&#x27;).textContent=streak+&#x27; &#x27;+(streak===1?&#x27;day&#x27;:&#x27;days&#x27;);
     const points=[{date:&#x27;2026-09-19&#x27;,weight:93,bodyFat:32},...Object.entries(weekly).filter(([,v])=&gt;v.weight!==null||v.bodyFat!==null).map(([k,v])=&gt;{const [id,w]=k.match(/^(.*)-(\d+)$/)?.slice(1)||[];const p=phases.find(x=&gt;x.id===id);return p?{date:date(p.start+Number(w)*7).toISOString().slice(0,10),...v}:null;}).filter(Boolean)].sort((a,b)=&gt;a.date.localeCompare(b.date));
     for(const [field,goal,unit,target] of [[&#x27;weight&#x27;,75,&#x27;kg&#x27;,&#x27;#tc-weight-chart&#x27;],[&#x27;bodyFat&#x27;,12,&#x27;%&#x27;,&#x27;#tc-fat-chart&#x27;]]){
       const data=points.filter(p=&gt;p[field]!=null),lastValue=data.at(-1)?.[field];
-      host.querySelector(target+&#x27;-value&#x27;).textContent=lastValue==null?&#x27;—&#x27;:lastValue+unit;
-      host.querySelector(target+&#x27;-gap&#x27;).textContent=lastValue==null?&#x27;No entries yet&#x27;:Math.abs(lastValue-goal).toFixed(1)+unit+(lastValue&gt;goal?&#x27; above goal&#x27;:&#x27; from goal&#x27;);
+      host.querySelector(target+&#x27;-value&#x27;).textContent=lastValue==null?&#x27;—&#x27;:lastValue+&#x27; &#x27;+unit;
+      host.querySelector(target+&#x27;-gap&#x27;).textContent=lastValue==null?&#x27;No entries yet&#x27;:Math.abs(lastValue-goal).toFixed(1)+&#x27; &#x27;+unit+(lastValue&gt;goal?&#x27; above goal&#x27;:&#x27; from goal&#x27;);
       const svg=host.querySelector(target),values=data.map(p=&gt;p[field]),low=Math.min(goal,...values)-2,high=Math.max(goal,...values)+2;
       const y=n=&gt;68-(n-low)/(high-low)*52,x=i=&gt;12+(data.length===1?0:i/(data.length-1)*260);
       svg.innerHTML=&#x27;&lt;line x1=&quot;12&quot; x2=&quot;272&quot; y1=&quot;&#x27;+y(goal)+&#x27;&quot; y2=&quot;&#x27;+y(goal)+&#x27;&quot; stroke=&quot;#9aa5b1&quot; stroke-dasharray=&quot;4 4&quot;/&gt;&#x27;+ (data.length&gt;1?&#x27;&lt;polyline fill=&quot;none&quot; stroke=&quot;#3771a9&quot; stroke-width=&quot;2.5&quot; points=&quot;&#x27;+data.map((p,i)=&gt;x(i)+&#x27;,&#x27;+y(p[field])).join(&#x27; &#x27;)+&#x27;&quot;/&gt;&#x27;:&#x27;&#x27;)+data.map((p,i)=&gt;&#x27;&lt;circle cx=&quot;&#x27;+x(i)+&#x27;&quot; cy=&quot;&#x27;+y(p[field])+&#x27;&quot; r=&quot;3.5&quot; fill=&quot;#3771a9&quot;/&gt;&#x27;).join(&#x27;&#x27;);
