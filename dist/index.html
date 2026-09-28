@@ -17,16 +17,16 @@ iframe{display:block;width:100%;max-width:1180px;min-height:100vh;height:100vh;m
 #training-nav *{box-sizing:border-box}
 .training-nav-inner{display:flex;flex-direction:column;min-height:100%;padding:0}
 .training-nav-brand{display:flex;align-items:center;gap:10px;min-height:65px;padding:11px 14px;border-bottom:1px solid var(--nav-border);font-size:.87rem;font-weight:650;white-space:nowrap}
-.training-nav-brand img{width:38px;height:38px;object-fit:cover;border-radius:7px}
+.training-nav-brand img{width:38px;height:38px;object-fit:cover;border-radius:3px}
 .training-nav-links{display:grid;width:100%;padding:9px 8px 24px;gap:2px}
-.training-nav-links button{display:flex;align-items:center;gap:10px;min-height:40px;width:100%;padding:8px 10px;border:0;border-radius:6px;background:transparent;color:var(--nav-text);font:600 .85rem 'Segoe UI Variable','Segoe UI',Arial,sans-serif;text-align:left;cursor:pointer}
+.training-nav-links button{display:flex;align-items:center;gap:10px;min-height:40px;width:100%;padding:8px 10px;border:0;border-radius:2px;background:transparent;color:var(--nav-text);font:600 .85rem 'Segoe UI Variable','Segoe UI',Arial,sans-serif;text-align:left;cursor:pointer}
 .training-nav-links button:hover,.training-nav-links button:focus-visible{background:light-dark(#f2f2f2,#343434)}
 .training-nav-links button[aria-current=page]{background:var(--nav-active);color:var(--nav-accent)}
 .training-nav-links svg,#nav-toggle svg{width:20px;height:20px;flex:none}
 .training-nav-links button:focus-visible,#nav-toggle:focus-visible{outline:2px solid var(--nav-accent);outline-offset:-2px}
 .training-nav-settings{padding:10px 12px;border-bottom:1px solid var(--nav-border)}
 .training-nav-settings label{display:grid;gap:5px;color:var(--nav-muted);font:600 .75rem 'Segoe UI Variable','Segoe UI',Arial,sans-serif}
-.training-nav-settings select{width:100%;min-height:34px;padding:5px 8px;border:1px solid var(--nav-border);border-radius:6px;background:var(--nav-bg);color:var(--nav-text);font:500 .82rem 'Segoe UI Variable','Segoe UI',Arial,sans-serif}
+.training-nav-settings select{width:100%;min-height:34px;padding:5px 8px;border:1px solid var(--nav-border);border-radius:2px;background:var(--nav-bg);color:var(--nav-text);font:500 .82rem 'Segoe UI Variable','Segoe UI',Arial,sans-serif}
 .training-nav-links details{width:100%}.training-nav-links summary{display:flex;align-items:center;gap:10px;min-height:40px;padding:8px 10px;border-radius:6px;color:var(--nav-text);font:600 .85rem 'Segoe UI Variable','Segoe UI',Arial,sans-serif;cursor:pointer;list-style:none}.training-nav-links summary::-webkit-details-marker{display:none}.training-nav-links summary:hover,.training-nav-links summary:focus-visible{background:light-dark(#f2f2f2,#343434)}.training-nav-links details button{padding-left:28px}
 :root[data-site-theme="forest"]{--nav-bg:#12231c;--nav-border:#294438;--nav-text:#edf7f1;--nav-muted:#a7c3b5;--nav-accent:#7fd1a8;--nav-active:#1d3a2d;color-scheme:dark;background:#0d1813}:root[data-site-theme="ember"]{--nav-bg:#241815;--nav-border:#4c3029;--nav-text:#fff3ee;--nav-muted:#d1aca0;--nav-accent:#ef9b78;--nav-active:#3b211b;color-scheme:dark;background:#18100e}:root[data-site-theme="slate"]{--nav-bg:#17202b;--nav-border:#354150;--nav-text:#f1f5f9;--nav-muted:#aab5c2;--nav-accent:#8db5e8;--nav-active:#24364a;color-scheme:dark;background:#111820}
 #nav-toggle{display:none}
@@ -1345,7 +1345,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-hero h1{color:#fff;margin:5px 0}
 #training-checklist-v1 .tc-hero p{font-size:.85rem;color:#e9f3fa;margin:0}
 #training-checklist-v1 .tc-hero{min-height:210px;background-position:74% top}
-#training-checklist-v1 .tc-history{margin-top:18px;border:1px solid var(--tc-line);border-radius:8px;background:var(--tc-surface);overflow:hidden}
+#training-checklist-v1 .tc-history{margin-top:18px;border:1px solid var(--tc-line);border-radius:2px;background:var(--tc-surface);overflow:hidden}
 #training-checklist-v1 .tc-history summary{padding:13px 15px;font-weight:650;cursor:pointer;background:var(--tc-surface-2)}
 #training-checklist-v1 .tc-history .tc-table-wrap{margin:0;border:0;border-top:1px solid var(--tc-line);border-radius:0}
 :root[data-theme-choice=&quot;slate&quot;] #training-checklist-v1{--tc-canvas:#111820;--tc-surface:#17202b;--tc-surface-2:#202b38;--tc-ink:#f1f5f9;--tc-muted:#aab5c2;--tc-line:#354150;--tc-accent:#8db5e8;--tc-accent-bg:#24364a;--tc-success:#7fd1a8;--tc-success-bg:#1d3a2d;color-scheme:dark}
@@ -1358,13 +1358,13 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1[data-page=home] #tc-page-save{display:none}
 #training-checklist-v1 #tc-home-overview[hidden],#training-checklist-v1 #tc-dashboard[hidden],#training-checklist-v1 #tc-stats[hidden]{display:none}
 #training-checklist-v1 .tc-action-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:14px;align-items:stretch}
-#training-checklist-v1 .tc-panel,#training-checklist-v1 .tc-metric{background:var(--tc-surface);border:1px solid var(--tc-line);border-radius:10px;box-shadow:var(--tc-shadow);min-width:0}
+#training-checklist-v1 .tc-panel,#training-checklist-v1 .tc-metric{background:var(--tc-surface);border:1px solid var(--tc-line);border-radius:3px;box-shadow:var(--tc-shadow);min-width:0}
 #training-checklist-v1 .tc-today-panel,#training-checklist-v1 .tc-phase-summary{padding:20px 22px}
 #training-checklist-v1 .tc-today-title{display:flex;align-items:center;gap:9px;margin-bottom:5px;color:var(--tc-accent)}
 #training-checklist-v1 #tc-today-date{font-size:.9rem;color:var(--tc-muted);margin-bottom:14px}
 #training-checklist-v1 #tc-today-status{font-size:.9rem;color:var(--tc-muted);margin-bottom:10px}
 #training-checklist-v1 #tc-today-list{display:grid;gap:8px}
-#training-checklist-v1 .tc-today-task{border:1px solid var(--tc-line);background:var(--tc-surface-2);border-radius:8px;padding:10px 12px;min-height:50px;display:flex;align-items:center;gap:11px;cursor:pointer}
+#training-checklist-v1 .tc-today-task{border:1px solid var(--tc-line);background:var(--tc-surface-2);border-radius:2px;padding:10px 12px;min-height:50px;display:flex;align-items:center;gap:11px;cursor:pointer}
 #training-checklist-v1 .tc-today-task:has(input:checked){background:var(--tc-success-bg);border-color:var(--tc-success)}
 #training-checklist-v1 .tc-today-task span:last-child{font-weight:550}
 #training-checklist-v1 .tc-phase-summary{display:grid;align-content:start;gap:13px}
@@ -1379,7 +1379,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
 #training-checklist-v1 .tc-section-head span{font-size:.84rem;color:var(--tc-muted)}
 #training-checklist-v1 .tc-journey-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-#training-checklist-v1 .tc-journey-step{min-width:0;padding:11px 12px;border:1px solid var(--tc-line);border-radius:8px;background:var(--tc-surface);display:grid;gap:4px;align-content:start}
+#training-checklist-v1 .tc-journey-step{min-width:0;padding:11px 12px;border:1px solid var(--tc-line);border-radius:2px;background:var(--tc-surface);display:grid;gap:4px;align-content:start}
 #training-checklist-v1 .tc-journey-step[data-state=current]{border-color:var(--tc-accent);background:var(--tc-accent-bg)}
 #training-checklist-v1 .tc-journey-step[data-state=complete]{border-color:var(--tc-success);background:var(--tc-success-bg)}
 #training-checklist-v1 .tc-journey-step[data-state=locked]{opacity:.72}
@@ -1394,7 +1394,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-metric strong{display:block;font-size:1.2rem;line-height:1.35}
 #training-checklist-v1 .tc-metric span:not(.tc-icon){font-size:.82rem;color:var(--tc-muted)}
 #training-checklist-v1 .tc-metric svg:not(.tc-icon svg){display:block;width:100%;height:80px;margin-top:8px;color:var(--tc-accent)}
-#training-checklist-v1 .tc-stats{background:var(--tc-surface);border:1px solid var(--tc-line);border-radius:10px;padding:20px;box-shadow:var(--tc-shadow)}
+#training-checklist-v1 .tc-stats{background:var(--tc-surface);border:1px solid var(--tc-line);border-radius:3px;padding:20px;box-shadow:var(--tc-shadow)}
 #training-checklist-v1 .tc-stats p{color:var(--tc-muted);font-size:.9rem;margin:8px 0 16px}
 #training-checklist-v1 .tc-stats form{display:grid;gap:12px;margin-bottom:24px}
 #training-checklist-v1 .tc-stats table{border-collapse:collapse;width:100%;min-width:840px;font-size:.87rem}
@@ -1403,10 +1403,10 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-table-wrap{overflow-x:auto}
 #training-checklist-v1 .tc-stat-fields,#training-checklist-v1 .tc-week-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:14px 0}
 #training-checklist-v1 .tc-stat-fields label,#training-checklist-v1 .tc-week-metrics label{display:grid;gap:6px;font-size:.9rem}
-#training-checklist-v1 .tc-stat-fields input,#training-checklist-v1 .tc-week-metrics input{min-height:42px;padding:9px 11px;border:1px solid var(--tc-line);border-radius:6px;background:var(--tc-surface);color:var(--tc-ink);font:inherit}
-#training-checklist-v1 .tc-enter,#training-checklist-v1 .tc-save-stats{justify-self:start;background:var(--tc-accent);border:0;border-radius:6px;color:light-dark(#fff,#071521);padding:10px 16px;min-height:42px;font:600 .9rem &#x27;Segoe UI Variable&#x27;,&#x27;Segoe UI&#x27;,Arial,sans-serif;cursor:pointer}
+#training-checklist-v1 .tc-stat-fields input,#training-checklist-v1 .tc-week-metrics input{min-height:42px;padding:9px 11px;border:1px solid var(--tc-line);border-radius:2px;background:var(--tc-surface);color:var(--tc-ink);font:inherit}
+#training-checklist-v1 .tc-enter,#training-checklist-v1 .tc-save-stats{justify-self:start;background:var(--tc-accent);border:0;border-radius:2px;color:light-dark(#fff,#071521);padding:10px 16px;min-height:42px;font:600 .9rem &#x27;Segoe UI Variable&#x27;,&#x27;Segoe UI&#x27;,Arial,sans-serif;cursor:pointer}
 #training-checklist-v1 .tc-enter:disabled{opacity:.55;cursor:not-allowed}
-#training-checklist-v1 .tc-phase{margin-top:15px;padding:18px;background:var(--tc-surface);border:1px solid var(--tc-line);border-radius:10px;box-shadow:var(--tc-shadow)}
+#training-checklist-v1 .tc-phase{margin-top:15px;padding:18px;background:var(--tc-surface);border:1px solid var(--tc-line);border-radius:3px;box-shadow:var(--tc-shadow)}
 #training-checklist-v1 .tc-phase[data-state=current]{border-top:3px solid var(--tc-accent)}
 #training-checklist-v1 .tc-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
 #training-checklist-v1 .tc-phase-title{display:flex;align-items:center;gap:9px;min-width:0}
@@ -1415,20 +1415,29 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-phase[data-state=complete] .tc-state{color:var(--tc-success)}
 #training-checklist-v1 .tc-phase[data-state=locked] .tc-phase-icon{color:var(--tc-muted)}
 #training-checklist-v1 .text-small,#training-checklist-v1 .tc-date{font-size:.83rem;color:var(--tc-muted)}
-#training-checklist-v1 .tc-weeks{margin-top:12px}
-#training-checklist-v1 .tc-week{border-top:1px solid var(--tc-line)}
-#training-checklist-v1 summary{cursor:pointer;padding:12px 2px;font-weight:600;font-size:.9rem}
+#training-checklist-v1 .tc-weeks{position:relative;margin:18px 0 2px 18px;padding-left:25px;border-left:2px solid var(--tc-line)}
+#training-checklist-v1 .tc-week{position:relative;margin:0 0 14px;border:1px solid var(--tc-line);border-radius:2px;background:var(--tc-surface);box-shadow:0 1px 2px #0000000a}
+#training-checklist-v1 .tc-week::before{content:&#x27;&#x27;;position:absolute;left:-32px;top:17px;width:12px;height:12px;border:3px solid var(--tc-surface);border-radius:50%;background:var(--tc-accent);box-shadow:0 0 0 1px var(--tc-line)}
+#training-checklist-v1 .tc-week:last-child{margin-bottom:0}
+#training-checklist-v1 summary{cursor:pointer;padding:12px 14px;font-weight:600;font-size:.9rem}
+#training-checklist-v1 .tc-week&gt;summary{display:flex;align-items:center;gap:9px;list-style:none;background:var(--tc-surface-2);border-bottom:1px solid transparent}
+#training-checklist-v1 .tc-week&gt;summary::-webkit-details-marker{display:none}
+#training-checklist-v1 .tc-week&gt;summary::before{content:&#x27;Week &#x27; attr(data-week);display:inline-flex;align-items:center;min-height:24px;padding:2px 7px;border:1px solid var(--tc-accent);border-radius:2px;color:var(--tc-accent);background:var(--tc-accent-bg);font-size:.74rem;font-weight:700;letter-spacing:.01em;white-space:nowrap}
+#training-checklist-v1 .tc-week[open]&gt;summary{border-bottom-color:var(--tc-line)}
+#training-checklist-v1 .tc-week[open]&gt;summary::after{transform:rotate(90deg)}
+#training-checklist-v1 .tc-week&gt;summary::after{content:&#x27;›&#x27;;margin-left:auto;font-size:1.25rem;line-height:1;color:var(--tc-muted);transition:transform 160ms ease}
+#training-checklist-v1 .tc-week-body{padding:10px 14px 14px}
 #training-checklist-v1 .tc-days{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:5px 0 14px}
-#training-checklist-v1 .tc-day{min-width:0;padding:10px;background:var(--tc-surface-2);border-radius:7px}
+#training-checklist-v1 .tc-day{min-width:0;padding:10px;background:var(--tc-surface-2);border:1px solid var(--tc-line);border-radius:2px}
 #training-checklist-v1 .tc-date{margin-bottom:6px;font-weight:600}
 #training-checklist-v1 .form-check{display:flex;align-items:center;gap:10px;min-height:42px;padding:4px 0;cursor:pointer;font-size:.92rem}
 #training-checklist-v1 input[type=checkbox]{accent-color:var(--tc-accent);width:22px;height:22px;flex:none;margin:0;cursor:pointer}
 #training-checklist-v1 input:disabled{cursor:not-allowed}
 #training-checklist-v1 .tc-locked{color:var(--tc-muted);padding:12px 0;font-size:.86rem}
-#training-checklist-v1 .tc-reward{margin-top:14px;padding:12px;background:var(--tc-surface-2);border-radius:8px}
+#training-checklist-v1 .tc-reward{margin-top:14px;padding:12px;background:var(--tc-surface-2);border:1px solid var(--tc-line);border-radius:2px}
 #training-checklist-v1 .tc-reward-title{font-weight:650;font-size:.9rem;margin:0 0 4px;display:flex;align-items:center;gap:7px}
 #training-checklist-v1 .tc-reward-note{color:var(--tc-muted);font-size:.82rem;margin:0 0 6px}
-#training-checklist-v1 .tc-custom,#training-checklist-v1 .tc-notes-field,#training-checklist-v1 #tc-code{width:100%;margin:7px 0 0;padding:10px 11px;border:1px solid var(--tc-line);border-radius:6px;background:var(--tc-surface);color:var(--tc-ink);font:inherit}
+#training-checklist-v1 .tc-custom,#training-checklist-v1 .tc-notes-field,#training-checklist-v1 #tc-code{width:100%;margin:7px 0 0;padding:10px 11px;border:1px solid var(--tc-line);border-radius:2px;background:var(--tc-surface);color:var(--tc-ink);font:inherit}
 #training-checklist-v1 .tc-custom{min-height:44px}
 #training-checklist-v1 .tc-notes{padding:14px 0 5px;border-top:1px solid var(--tc-line)}
 #training-checklist-v1 .tc-notes-label{display:block;font-size:.82rem;font-weight:650}
@@ -1441,7 +1450,10 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 #tc-backup .btn{border:1px solid var(--tc-line);border-radius:6px;background:var(--tc-surface);color:var(--tc-ink);min-height:40px;padding:8px 13px;font:600 .88rem &#x27;Segoe UI Variable&#x27;,&#x27;Segoe UI&#x27;,Arial,sans-serif;cursor:pointer}
 #training-checklist-v1 #tc-backup .btn:hover{background:var(--tc-surface-2)}
 #training-checklist-v1 .tc-week-count{margin-left:8px;font-weight:400;color:var(--tc-muted)}
+#training-checklist-v1 .tc-section-enter{animation:tc-section-enter 240ms cubic-bezier(.2,.8,.2,1)}
+@keyframes tc-section-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 #training-checklist-v1 :is(input,textarea,summary,button):focus-visible{outline:2px solid var(--tc-accent);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#training-checklist-v1 .tc-section-enter{animation:none}#training-checklist-v1 .tc-week&gt;summary::after{transition:none}}
 @media(max-width:900px){#training-checklist-v1 .tc-journey-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){#training-checklist-v1{padding:12px 12px 30px}#training-checklist-v1 .tc-hero{min-height:160px;background-position:68% top}#training-checklist-v1 .tc-hero-content{padding:13px 15px;max-width:72%}#training-checklist-v1 .tc-action-grid,#training-checklist-v1 .tc-dashboard{grid-template-columns:1fr}#training-checklist-v1 .tc-today-panel,#training-checklist-v1 .tc-phase-summary{padding:16px}#training-checklist-v1 .tc-journey-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#training-checklist-v1 .tc-days,#training-checklist-v1 .tc-stat-fields,#training-checklist-v1 .tc-week-metrics{grid-template-columns:1fr}#training-checklist-v1 .tc-phase{padding:15px}}
 @media(prefers-reduced-motion:reduce){#training-checklist-v1 #tc-bar{transition:none}}
@@ -1489,10 +1501,20 @@ html&gt;body{padding:0}&lt;/style&gt;
   function phaseIcon(id){const name=id===&#x27;launchpad&#x27;?&#x27;person_walking&#x27;:id===&#x27;cardio&#x27;?&#x27;person_running&#x27;:id===&#x27;circuit&#x27;?&#x27;dumbbell&#x27;:id.startsWith(&#x27;gladiator&#x27;)?&#x27;dumbbell&#x27;:&#x27;target&#x27;;const span=fluentIcon(name);span.classList.add(&#x27;tc-phase-icon&#x27;);return span;}
   function sendNavPositions(){const positions=Object.fromEntries([...phasesEl.querySelectorAll(&#x27;.tc-phase&#x27;)].map(section=&gt;[section.id.slice(9),Math.round(section.getBoundingClientRect().top+window.scrollY)]));window.parent.postMessage({channel:&#x27;training-navigation-v1&#x27;,type:&#x27;positions&#x27;,positions},&#x27;*&#x27;);}
   const valid=new Set(phases.flatMap(p=&gt;p.items.map(x=&gt;x.id)));
-  let checked={}; let rewards={claimed:{},custom:{},locked:{}}; let notes={}; let weekly={}; let measurements=[]; let notesTimer; let pendingMeasurementRevision=0; let storage=false; let loaded=false; let revision=0; let selectedWeek={}; let currentPage=&#x27;home&#x27;;
+  let checked={}; let rewards={claimed:{},custom:{},locked:{}}; let notes={}; let weekly={}; let measurements=[]; let notesTimer; let pendingMeasurementRevision=0; let storage=false; let loaded=false; let revision=0; let selectedWeek={}; let currentPage=&#x27;home&#x27;; let lastRenderedPage;
   const CHANNEL=&quot;training-progress-v1&quot;;
   const restoreButton=root.querySelector(&quot;#tc-restore&quot;);
   const autosave=root.querySelector(&quot;#tc-autosave&quot;);
+  let audioContext;
+  function playSound(kind){
+    try{
+      audioContext??=new (window.AudioContext||window.webkitAudioContext)();
+      if(audioContext.state===&#x27;suspended&#x27;)audioContext.resume();
+      const now=audioContext.currentTime,master=audioContext.createGain();master.gain.setValueAtTime(.0001,now);master.gain.exponentialRampToValueAtTime(.045,now+.012);master.gain.exponentialRampToValueAtTime(.0001,now+.22);master.connect(audioContext.destination);
+      const notes={check:[620,880],remove:[460,330],rewardAdd:[440,660,880],rewardClaim:[523,784,1047],locked:[180,145],stats:[392,523,659]}[kind]||[440];
+      notes.forEach((frequency,index)=&gt;{const oscillator=audioContext.createOscillator(),gain=audioContext.createGain(),start=now+index*.055;oscillator.type=kind===&#x27;locked&#x27;?&#x27;square&#x27;:&#x27;sine&#x27;;oscillator.frequency.setValueAtTime(frequency,start);gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(kind===&#x27;locked&#x27;?.22:.32,start+.01);gain.gain.exponentialRampToValueAtTime(.0001,start+.13);oscillator.connect(gain);gain.connect(master);oscillator.start(start);oscillator.stop(start+.15);});
+    }catch{}
+  }
   function showSave(message){saveStatus.textContent=message;autosave.replaceChildren(fluentIcon(&#x27;save&#x27;),document.createTextNode(message));root.querySelector(&#x27;#tc-page-save&#x27;).replaceChildren(fluentIcon(&#x27;save&#x27;),document.createTextNode(message));}
   function sanitize(v){if(!v||(v.version!==1&amp;&amp;v.version!==2)||!v.checked||typeof v.checked!==&#x27;object&#x27;)throw new Error(&#x27;Invalid record&#x27;);return Object.fromEntries(Object.entries(v.checked).filter(([k,v])=&gt;valid.has(k)&amp;&amp;v===true));}
   const validWeeks=new Set(phases.flatMap(p=&gt;Array.from({length:p.weeks},(_,w)=&gt;p.id+&#x27;-&#x27;+w)));
@@ -1519,13 +1541,13 @@ html&gt;body{padding:0}&lt;/style&gt;
       const key=&#x27;block&#x27;+customIndex,label=document.createElement(&#x27;label&#x27;);label.className=&#x27;tc-reward-note&#x27;;label.htmlFor=&#x27;tc-reward-text-&#x27;+key;label.textContent=&#x27;My reward for Block &#x27;+(customIndex+1);box.append(label);
       const field=document.createElement(&#x27;input&#x27;);field.type=&#x27;text&#x27;;field.id=&#x27;tc-reward-text-&#x27;+key;field.className=&#x27;tc-custom&#x27;;field.maxLength=300;field.placeholder=&#x27;Add a reward to work toward&#x27;;field.value=rewards.custom[key]||&#x27;&#x27;;field.disabled=!loaded||!!rewards.locked[key];
       const enter=document.createElement(&#x27;button&#x27;);enter.type=&#x27;button&#x27;;enter.className=&#x27;tc-enter&#x27;;enter.textContent=rewards.locked[key]?&#x27;Entered · locked&#x27;:&#x27;Enter reward&#x27;;enter.disabled=!loaded||!!rewards.locked[key];
-      enter.addEventListener(&#x27;click&#x27;,()=&gt;{const value=field.value.trim();if(!value)return;rewards.custom[key]=value;rewards.locked[key]=true;persist();render();});
+      enter.addEventListener(&#x27;click&#x27;,()=&gt;{const value=field.value.trim();if(!value)return;playSound(&#x27;rewardAdd&#x27;);rewards.custom[key]=value;rewards.locked[key]=true;persist();render();});
       box.append(field,enter);
     }
     for(const item of items){
       const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;form-check&#x27;;
       const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.id=&#x27;tc-reward-&#x27;+item.key;input.checked=!!rewards.claimed[item.key];input.disabled=!loaded||!item.eligible||!!item.needsText&amp;&amp;!rewards.locked[item.key];
-      const text=document.createElement(&#x27;span&#x27;);text.textContent=item.label;input.addEventListener(&#x27;change&#x27;,()=&gt;{if(input.checked)rewards.claimed[item.key]=true;else delete rewards.claimed[item.key];persist();render();document.getElementById(input.id)?.focus({preventScroll:true});});
+      const text=document.createElement(&#x27;span&#x27;);text.textContent=item.label;input.addEventListener(&#x27;change&#x27;,()=&gt;{playSound(input.checked?&#x27;rewardClaim&#x27;:&#x27;remove&#x27;);if(input.checked)rewards.claimed[item.key]=true;else delete rewards.claimed[item.key];persist();render();document.getElementById(input.id)?.focus({preventScroll:true});});
       label.append(input,text);box.append(label);
     }return box;
   }
@@ -1550,7 +1572,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.id=&#x27;tc-today-&#x27;+item.id;input.checked=!!checked[item.id];input.disabled=!loaded||!unlocked(todayIndex);input.dataset.task=item.id;input.setAttribute(&#x27;aria-label&#x27;,dayLabel+&#x27; · &#x27;+item.label);
         const icon=fluentIcon(/walk/i.test(item.label)?&#x27;person_walking&#x27;:/jog|run/i.test(item.label)?&#x27;person_running&#x27;:/recovery/i.test(item.label)?&#x27;heart_pulse&#x27;:&#x27;dumbbell&#x27;);
         const text=document.createElement(&#x27;span&#x27;);text.textContent=item.label;
-        input.addEventListener(&#x27;change&#x27;,()=&gt;{if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=Math.floor(day/7);persist();render();document.getElementById(input.id)?.focus({preventScroll:true});});
+        input.addEventListener(&#x27;change&#x27;,()=&gt;{playSound(input.checked?&#x27;check&#x27;:&#x27;remove&#x27;);if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=Math.floor(day/7);persist();render();document.getElementById(input.id)?.focus({preventScroll:true});});
         label.append(input,icon,text);todayList.append(label);
       }
     }
@@ -1596,7 +1618,7 @@ html&gt;body{padding:0}&lt;/style&gt;
     }
   });
   function render(){
-    phasesEl.replaceChildren();root.dataset.page=currentPage;root.querySelector(&#x27;.tc-hero&#x27;).hidden=currentPage!==&#x27;home&#x27;;root.querySelector(&#x27;.tc-overview h2&#x27;).textContent=currentPage===&#x27;home&#x27;?&#x27;Your day&#x27;:currentPage===&#x27;body-stats&#x27;?&#x27;Body stats&#x27;:&#x27;Training checklist&#x27;;renderStats();
+    phasesEl.replaceChildren();root.dataset.page=currentPage;if(lastRenderedPage!==currentPage){root.classList.remove(&#x27;tc-section-enter&#x27;);void root.offsetWidth;root.classList.add(&#x27;tc-section-enter&#x27;);lastRenderedPage=currentPage;}root.querySelector(&#x27;.tc-hero&#x27;).hidden=currentPage!==&#x27;home&#x27;;root.querySelector(&#x27;.tc-overview h2&#x27;).textContent=currentPage===&#x27;home&#x27;?&#x27;Your day&#x27;:currentPage===&#x27;body-stats&#x27;?&#x27;Body stats&#x27;:&#x27;Training checklist&#x27;;renderStats();
     const active=phases.find(p=&gt;!complete(p))||phases[phases.length-1];const n=count(active),total=active.items.length,pct=Math.round(n/total*100);
     status.textContent=active.name+&#x27; · &#x27;+n+&#x27; of &#x27;+total+&#x27; activities&#x27;;bar.style.width=pct+&#x27;%&#x27;;progress.setAttribute(&#x27;aria-valuenow&#x27;,String(pct));renderHomeOverview(active);renderDashboard();
     phases.forEach((p,index)=&gt;{
@@ -1611,16 +1633,16 @@ html&gt;body{padding:0}&lt;/style&gt;
       const firstIncomplete=Array.from({length:p.weeks},(_,w)=&gt;w).find(w=&gt;p.items.some(x=&gt;Math.floor(x.day/7)===w&amp;&amp;!checked[x.id]));
       for(let w=0;w&lt;p.weeks;w++){
         const week=document.createElement(&#x27;details&#x27;);week.className=&#x27;tc-week&#x27;;week.dataset.phase=p.id;week.dataset.week=w;week.open=selectedWeek[p.id]===undefined?w===(firstIncomplete===undefined?0:firstIncomplete):selectedWeek[p.id]===w;
-        const items=p.items.filter(x=&gt;Math.floor(x.day/7)===w),summary=document.createElement(&#x27;summary&#x27;);summary.textContent=&#x27;Week &#x27;+(w+1)+&#x27; · &#x27;+short(date(p.start+w*7))+&#x27;–&#x27;+short(date(p.start+Math.min(w*7+6,p.days-1)));
+        const items=p.items.filter(x=&gt;Math.floor(x.day/7)===w),summary=document.createElement(&#x27;summary&#x27;);summary.dataset.week=w+1;summary.append(document.createTextNode(short(date(p.start+w*7))+&#x27;–&#x27;+short(date(p.start+Math.min(w*7+6,p.days-1)))));
         const tally=document.createElement(&#x27;span&#x27;);tally.className=&#x27;tc-week-count text-small tabular-nums&#x27;;tally.textContent=items.filter(x=&gt;checked[x.id]).length+&#x27;/&#x27;+items.length;summary.append(tally);week.append(summary);
-        week.addEventListener(&#x27;toggle&#x27;,()=&gt;{if(week.open)selectedWeek[p.id]=w;});
+        week.addEventListener(&#x27;toggle&#x27;,()=&gt;{if(week.open){selectedWeek[p.id]=w;if(!matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches)week.animate([{opacity:.65,transform:&#x27;translateY(-3px)&#x27;},{opacity:1,transform:&#x27;none&#x27;}],{duration:180,easing:&#x27;ease-out&#x27;});}});
         const days=document.createElement(&#x27;div&#x27;);days.className=&#x27;tc-days&#x27;;
         for(let d=0;d&lt;7&amp;&amp;w*7+d&lt;p.days;d++){
           const day=document.createElement(&#x27;div&#x27;);day.className=&#x27;tc-day&#x27;;const dayTitle=document.createElement(&#x27;div&#x27;);dayTitle.className=&#x27;tc-date text-small&#x27;;dayTitle.textContent=weekdays[(date(p.start+w*7+d).getUTCDay()+6)%7]+&#x27; · &#x27;+short(date(p.start+w*7+d));day.append(dayTitle);
           items.filter(x=&gt;x.day===w*7+d).forEach(item=&gt;{
             const label=document.createElement(&#x27;label&#x27;);label.className=&#x27;form-check&#x27;;const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;checkbox&#x27;;input.className=&#x27;form-check-input&#x27;;input.id=&#x27;tc-&#x27;+item.id;input.checked=!!checked[item.id];input.disabled=!loaded;input.dataset.task=item.id;
             const text=document.createElement(&#x27;span&#x27;);text.className=&#x27;form-check-label&#x27;;text.textContent=item.label;input.setAttribute(&#x27;aria-label&#x27;,fmt(date(p.start+item.day))+&#x27; · &#x27;+item.label);
-            input.addEventListener(&#x27;change&#x27;,()=&gt;{const id=input.id;if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=w;persist();render();const replacement=document.getElementById(id);if(replacement)replacement.focus({preventScroll:true});});label.append(input,text);day.append(label);
+            input.addEventListener(&#x27;change&#x27;,()=&gt;{const id=input.id;playSound(input.checked?&#x27;check&#x27;:&#x27;remove&#x27;);if(input.checked)checked[item.id]=true;else delete checked[item.id];selectedWeek[p.id]=w;persist();render();const replacement=document.getElementById(id);if(replacement)replacement.focus({preventScroll:true});});label.append(input,text);day.append(label);
           });days.append(day);
         }week.append(days);if(p.id===&#x27;circuit&#x27;&amp;&amp;w===6)week.append(rewardBox(&#x27;Week 10 reward&#x27;,[{key:&#x27;week10&#x27;,label:&#x27;Buy a smartwatch&#x27;,eligible:throughWeek10()}],&#x27;23–29 Nov 2026 · opens when all scheduled sessions through Week 10 are checked.&#x27;));
         const noteKey=p.id+&#x27;-&#x27;+w;
@@ -1677,9 +1699,9 @@ html&gt;body{padding:0}&lt;/style&gt;
     statKeys.forEach((key,i)=&gt;{const label=document.createElement(&#x27;label&#x27;);label.textContent=statNames[i]+&#x27; (&#x27;+(i===12?&#x27;kg&#x27;:i===13?&#x27;%&#x27;:&#x27;in&#x27;)+&#x27;)&#x27;;const input=document.createElement(&#x27;input&#x27;);input.type=&#x27;number&#x27;;input.name=key;input.step=&#x27;0.01&#x27;;input.min=0;input.max=300;label.append(input);fields.append(label);});
     form.querySelector(&#x27;.tc-save-stats&#x27;).onclick=()=&gt;{if(!form.reportValidity())return;const data=new FormData(form),row={date:data.get(&#x27;date&#x27;)};for(const key of statKeys){const raw=data.get(key);if(raw!==&#x27;&#x27;)row[key]=Number(raw);}if(Object.keys(row).length===1){host.querySelector(&#x27;#tc-stat-status&#x27;).textContent=&#x27;Enter at least one measurement.&#x27;;return;}if(!storage){host.querySelector(&#x27;#tc-stat-status&#x27;).textContent=&#x27;Account save unavailable. Try again when the save status reconnects.&#x27;;return;}
       measurements=measurements.filter(x=&gt;x.date!==row.date);measurements.push(row);measurements.sort((a,b)=&gt;a.date.localeCompare(b.date));
-      pendingMeasurementRevision=persist();host.querySelector(&#x27;#tc-stat-status&#x27;).textContent=&#x27;Saving measurements…&#x27;;};
+      playSound(&#x27;stats&#x27;);pendingMeasurementRevision=persist();host.querySelector(&#x27;#tc-stat-status&#x27;).textContent=&#x27;Saving measurements…&#x27;;};
   }
-  window.addEventListener(&#x27;message&#x27;,event=&gt;{if(event.source!==window.parent||event.data?.channel!==&#x27;training-navigation-v1&#x27;)return;if(event.data.type===&#x27;show&#x27;){currentPage=event.data.page;render();}else if(event.data.type===&#x27;theme&#x27;){document.documentElement.dataset.themeChoice=event.data.theme===&#x27;system&#x27;?&#x27;&#x27;:event.data.theme;}});
+  window.addEventListener(&#x27;message&#x27;,event=&gt;{if(event.source!==window.parent||event.data?.channel!==&#x27;training-navigation-v1&#x27;)return;if(event.data.type===&#x27;show&#x27;){currentPage=event.data.page;const index=phases.findIndex(p=&gt;p.id===currentPage);if(index&gt;=0&amp;&amp;!unlocked(index))playSound(&#x27;locked&#x27;);render();}else if(event.data.type===&#x27;theme&#x27;){document.documentElement.dataset.themeChoice=event.data.theme===&#x27;system&#x27;?&#x27;&#x27;:event.data.theme;}});
   root.querySelector(&#x27;#tc-backup-icon&#x27;).innerHTML=fluentIcons.arrow_download;root.querySelector(&#x27;#tc-restore-icon&#x27;).innerHTML=fluentIcons.arrow_upload;
   root.querySelector(&#x27;#tc-restore&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{if(!loaded)return;try{const record=JSON.parse(code.value);const restored=sanitize(record);const restoredRewards=sanitizeRewards(record);checked=restored;rewards=restoredRewards;notes=sanitizeNotes(record);weekly=sanitizeWeekly(record);measurements=sanitizeMeasurements(record);persist();render();saveStatus.removeAttribute(&#x27;role&#x27;);if(!storage)showSave(&#x27;Progress restored · keep the record for next time&#x27;);}catch(e){saveStatus.setAttribute(&#x27;role&#x27;,&#x27;alert&#x27;);saveStatus.textContent=&#x27;Record not recognized · progress unchanged&#x27;;}});
   restoreButton.disabled=true;code.value=JSON.stringify({version:2,checked,rewards,notes,weekly,measurements});render();
