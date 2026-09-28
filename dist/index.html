@@ -1404,7 +1404,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 #training-checklist-v1 .tc-metric span:not(.tc-icon){font-size:.82rem;color:var(--tc-muted)}
 #training-checklist-v1 .tc-metric svg:not(.tc-icon svg){display:block;width:100%;height:80px;margin-top:8px;color:var(--tc-accent)}
 #training-checklist-v1 .tc-metric-visual{display:grid;grid-template-columns:94px minmax(0,1fr);align-items:center;gap:16px;min-height:142px}#training-checklist-v1 .tc-metric-figure{display:grid;place-items:center;width:94px;height:108px;border-radius:3px;background:var(--tc-surface-2)}#training-checklist-v1 .tc-metric-figure .tc-progress-icon{width:80px;height:92px}#training-checklist-v1 .tc-cheer-figure{background-image:var(--tc-cheer-image);background-repeat:no-repeat;background-position:center;background-size:contain}#training-checklist-v1 .tc-metric-note{display:block;margin-top:7px;line-height:1.35}#training-checklist-v1 .tc-fat-track{position:relative;height:15px;margin-top:22px;border-radius:2px;background:var(--tc-surface-2);overflow:visible}#training-checklist-v1 #tc-fat-fill{height:100%;width:0;border-radius:2px;background:linear-gradient(90deg,var(--tc-success),var(--tc-accent));transition:width 240ms ease}#training-checklist-v1 .tc-fat-goal{position:absolute;left:0;top:-19px;color:var(--tc-success)!important;font-weight:650}#training-checklist-v1 .tc-fat-scale{display:flex;justify-content:space-between;margin-top:6px}
-#training-checklist-v1 .tc-metric-figure{background-color:var(--tc-surface-2);background-repeat:no-repeat;background-position:center;background-size:contain}
+#training-checklist-v1 .tc-metric-figure{background-color:transparent!important;background-repeat:no-repeat;background-position:center;background-size:contain}
 #training-checklist-v1 .tc-hero-lockup{gap:0}
 #training-checklist-v1 .tc-weight-layout{display:grid;grid-template-columns:170px minmax(0,1fr);align-items:center;gap:22px;margin-top:14px}
 #training-checklist-v1 .tc-weight-ring{--progress:0deg;--gauge-color:var(--tc-accent);position:relative;display:grid;place-items:center;width:158px;height:158px;border-radius:50%;background:conic-gradient(from -90deg,var(--gauge-color) 0 var(--progress),var(--tc-surface-2) var(--progress) 360deg)}
@@ -2146,7 +2146,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 "></iframe>
 <script>(() => {
   const frame = document.getElementById("codex-visualization");
-  document.querySelectorAll('.training-nav-brand img,.splash-mark img').forEach(image=>{image.src='/home-fit-icon.png';});
+  document.querySelectorAll('.training-nav-brand img,.splash-mark img').forEach(image=>{image.src='/stronger-self-icon.webp?v=fit2';});
   if (!(frame instanceof HTMLIFrameElement)) {
     return;
   }
