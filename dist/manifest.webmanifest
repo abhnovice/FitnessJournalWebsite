@@ -1,0 +1,16 @@
+{
+  "name": "Abhyudaya’s Best Life",
+  "short_name": "Best Life",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#17202b",
+  "theme_color": "#17202b",
+  "icons": [
+    {
+      "src": "/stronger-self-icon.webp",
+      "sizes": "512x512",
+      "type": "image/webp",
+      "purpose": "any maskable"
+    }
+  ]
+}
