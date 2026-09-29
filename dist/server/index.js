@@ -10,7 +10,9 @@ const MOTION_CSS = `#training-checklist-v1{--tc-motion-fast:120ms;--tc-motion-st
 #training-checklist-v1 .tc-journey-step[data-state=locked]:hover{background:color-mix(in srgb,var(--tc-surface-2) 72%,transparent);opacity:.82}
 #training-checklist-v1 .tc-panel,#training-checklist-v1 .tc-metric{transition:border-color var(--tc-motion-standard) ease,box-shadow var(--tc-motion-standard) var(--tc-ease),transform var(--tc-motion-standard) var(--tc-ease)}
 #training-checklist-v1 .tc-dashboard .tc-panel:hover,#training-checklist-v1 .tc-dashboard .tc-metric:hover{border-color:color-mix(in srgb,var(--tc-accent) 34%,var(--tc-line));box-shadow:0 9px 24px #00000013;transform:translateY(-1px)}
-#training-checklist-v1 .tc-week{transition:background-color var(--tc-motion-standard) ease,border-color var(--tc-motion-standard) ease,box-shadow var(--tc-motion-standard) var(--tc-ease),transform var(--tc-motion-standard) var(--tc-ease)}
+#training-checklist-v1 .tc-week{transition:background-color var(--tc-motion-standard) ease,border-color var(--tc-motion-standard) ease,box-shadow var(--tc-motion-standard) var(--tc-ease),transform 380ms var(--tc-ease),opacity 320ms ease,filter 320ms ease;transition-delay:var(--tc-reveal-delay,0ms)}
+#training-checklist-v1 .tc-week.tc-week-reveal{opacity:0;transform:translateY(18px);filter:saturate(.9)}
+#training-checklist-v1 .tc-week.tc-week-reveal.is-visible{opacity:1;transform:none;filter:none}
 #training-checklist-v1 .tc-week::details-content{block-size:0;opacity:0;overflow:clip;transition:block-size var(--tc-motion-emphasis) var(--tc-ease),content-visibility var(--tc-motion-emphasis) allow-discrete,opacity var(--tc-motion-standard) ease}
 #training-checklist-v1 .tc-week[open]::details-content{block-size:auto;opacity:1}
 #training-checklist-v1 .tc-week[data-state=complete]{box-shadow:inset 3px 0 0 var(--tc-success),0 4px 12px #0000000e}
@@ -25,9 +27,19 @@ const MOTION_CSS = `#training-checklist-v1{--tc-motion-fast:120ms;--tc-motion-st
 `;
 const OLD_REDUCED_MOTION = `@media(prefers-reduced-motion:reduce){#training-checklist-v1 .tc-section-enter,#training-checklist-v1 .tc-section-enter .tc-phase,#training-checklist-v1 .tc-section-enter .tc-panel,#training-checklist-v1 .tc-section-enter .tc-metric{animation:none}#training-checklist-v1 .tc-week&gt;summary::after,#training-checklist-v1 .tc-week,#training-checklist-v1 .tc-day,#training-checklist-v1 .tc-reward{transition:none}#training-checklist-v1 .tc-week:hover,#training-checklist-v1 .tc-day:hover,#training-checklist-v1 .tc-reward:hover{transform:none}}`;
 const NEW_REDUCED_MOTION = `@media(prefers-reduced-motion:reduce){#training-checklist-v1 *,#training-checklist-v1 *::before,#training-checklist-v1 *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}#training-checklist-v1 .tc-week::details-content{transition:none}#training-checklist-v1 .tc-week:hover,#training-checklist-v1 .tc-day:hover,#training-checklist-v1 .tc-reward:hover,#training-checklist-v1 .tc-journey-step:hover,#training-checklist-v1 .tc-dashboard .tc-panel:hover,#training-checklist-v1 .tc-dashboard .tc-metric:hover{transform:none}}`;
+const WEEK_REVEAL_JS = `  let weekRevealObserver;
+  function revealWeeks(){
+    const weeks=[...phasesEl.querySelectorAll(&#x27;.tc-week&#x27;)];weekRevealObserver?.disconnect();
+    if(matchMedia(&#x27;(prefers-reduced-motion: reduce)&#x27;).matches||!(&#x27;IntersectionObserver&#x27; in window)){weeks.forEach(week=&gt;week.classList.add(&#x27;is-visible&#x27;));return;}
+    weeks.forEach((week,index)=&gt;{week.classList.add(&#x27;tc-week-reveal&#x27;);week.style.setProperty(&#x27;--tc-reveal-delay&#x27;,(index%4)*35+&#x27;ms&#x27;);});
+    weekRevealObserver=new IntersectionObserver(entries=&gt;{entries.forEach(entry=&gt;{if(entry.isIntersecting){entry.target.classList.add(&#x27;is-visible&#x27;);weekRevealObserver.unobserve(entry.target);}});},{threshold:.12,rootMargin:&#x27;0px 0px -5% 0px&#x27;});weeks.forEach(week=&gt;weekRevealObserver.observe(week));
+  }
+`;
 const RENDERED_PAGE_HTML = PAGE_HTML
   .replace("@keyframes tc-section-enter{from{opacity:.01}to{opacity:1}}", MOTION_CSS + "@keyframes tc-section-enter{from{opacity:.01}to{opacity:1}}")
-  .replace(OLD_REDUCED_MOTION, NEW_REDUCED_MOTION);
+  .replace(OLD_REDUCED_MOTION, NEW_REDUCED_MOTION)
+  .replace("  function render(){", WEEK_REVEAL_JS + "  function render(){")
+  .replace("    sendNavPositions();\n  }\n  function renderDashboard(){", "    sendNavPositions();revealWeeks();\n  }\n  function renderDashboard(){");
 const emptyRecord = () => ({ version: 2, checked: {}, rewards: { claimed: {}, custom: {}, locked: {} }, notes: {}, weekly: {}, measurements: [] });
 const json = (value, status = 200) => new Response(JSON.stringify(value), {
   status,
