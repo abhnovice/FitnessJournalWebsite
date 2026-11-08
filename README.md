@@ -60,3 +60,9 @@ Additional verification covers saved-food frequency/ranking, latest portions, ac
 `src/training-plan.mjs` supplies the tested calendar and a plan revision to the journal and Worker build. The November restart clears the signed-in account's previous checkmarks, rewards, notes, weekly metrics, logged measurements, milestone flags and diet-adherence marks when its progress record is next read. The replacement record is written to D1 once; new progress is retained on later reads. Old browser tabs receive HTTP 409 instead of overwriting the new plan. Previous local progress is removed and automatic legacy import is disabled. Progress backups from another plan revision are rejected. Food diary history, frequently used foods and uploaded medical files remain separate from workout-plan progress. Consistency maps begin on the new plan's start date.
 
 Calendar and restart tests verify all fourteen initial days, circuit counts and weekday spacing, study days, Block 1's Monday start, subsequent block continuity, persistent clearing of old records and rejection of stale saves.
+
+## Plan browsing and typography
+
+Plan displays every phase, including all Gladiator and BYOW blocks. Phase and week previews remain inspectable with disabled task and note controls until all prerequisite work is complete. The same phase gates are used by Home and Workouts. Entering Plan resets the accordion to the available calendar week, or the first unfinished week if the scheduled week is locked, then highlights and scrolls to it. Manually opening a phase or week closes its peers. A frame-ready handshake preserves direct navigation into Plan.
+
+Page headers use embedded Microsoft Fluent System Icons matched to the active route. Roboto and Roboto Mono are loaded from Google Fonts for the shell, nutrition controls and journal iframe. These presentation updates retain the existing plan revision and do not reset saved progress or change runtime provider configuration.

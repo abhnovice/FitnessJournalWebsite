@@ -1,4 +1,4 @@
-import {PLAN_REVISION,createTrainingPlan,date} from '../src/training-plan.mjs';
+import {PLAN_REVISION,createTrainingPlan,date,phaseAvailable,weekAvailable,currentPlanFocus} from '../src/training-plan.mjs';
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
@@ -144,4 +144,31 @@ test('fresh plan erases old account progress once and rejects saves from stale b
   fresh.checked['launchpad-0-0']=true;assert.equal((await worker.fetch(new Request(url,{method:'PUT',headers,body:JSON.stringify(fresh)}),{DB})).status,200);
   response=await worker.fetch(new Request(url,{headers}),{DB});assert.equal((await response.json()).record.checked['launchpad-0-0'],true);
   const page=readFileSync('src/page.html','utf8');assert.ok(!page.includes('if(!data.hasSavedRecord)'));assert.ok(page.includes("localStorage.removeItem('training-checklist-20260921-v1')"));
+});
+
+test('later phases and weeks remain locked until all preceding tasks are complete',()=>{
+  const phases=createTrainingPlan(),checked={};const finish=(p,limit=Infinity)=>p.items.filter(i=>i.day<limit).forEach(i=>checked[i.id]=true);
+  assert.equal(phaseAvailable(phases,checked,0),true);assert.equal(phaseAvailable(phases,checked,1),false);assert.equal(phaseAvailable(phases,checked,2),false);
+  finish(phases[0]);assert.equal(phaseAvailable(phases,checked,1),true);assert.equal(phaseAvailable(phases,checked,2),false);
+  finish(phases[1]);assert.equal(weekAvailable(phases,checked,2,0),true);assert.equal(weekAvailable(phases,checked,2,1),false);
+  finish(phases[2],7);assert.equal(weekAvailable(phases,checked,2,1),true);assert.equal(weekAvailable(phases,checked,2,2),false);
+  delete checked[phases[0].items[0].id];assert.equal(weekAvailable(phases,checked,2,1),false);
+});
+test('Plan focuses the current calendar week when available, otherwise the first unfinished week',()=>{
+  const phases=createTrainingPlan(),checked={};
+  assert.deepEqual(currentPlanFocus(phases,checked,date(0).getTime()),{phase:'launchpad',week:0});
+  assert.deepEqual(currentPlanFocus(phases,checked,date(25).getTime()),{phase:'launchpad',week:0});
+  phases.slice(0,2).flatMap(p=>p.items).forEach(i=>checked[i.id]=true);
+  assert.deepEqual(currentPlanFocus(phases,checked,date(14).getTime()),{phase:'circuit',week:0});
+  phases[2].items.filter(i=>i.day<7).forEach(i=>checked[i.id]=true);
+  assert.deepEqual(currentPlanFocus(phases,checked,date(21).getTime()),{phase:'circuit',week:1});
+  assert.deepEqual(currentPlanFocus(phases,checked,date(14).getTime()),{phase:'circuit',week:0});
+  phases.flatMap(p=>p.items).forEach(i=>checked[i.id]=true);
+  assert.deepEqual(currentPlanFocus(phases,checked,date(500).getTime()),{phase:'byow-7',week:1});
+});
+test('packaged page includes Google Fonts and embedded Fluent icons without unresolved view tokens',async()=>{
+  const worker=(await import('../dist/server/index.js')).default;const html=await(await worker.fetch(new Request('https://example.test/foundation'),{})).text();
+  assert.ok(html.includes('fonts.googleapis.com/css2?family=Roboto'));assert.ok(html.includes('Roboto Mono'));
+  assert.ok(html.includes('id="app-header-icon"'));assert.ok(html.includes('id="app-header-label"'));
+  for(const token of ['__HEADER_ICONS__','__HOME_HEADER_ICON__','__TRAINING_PLAN__'])assert.ok(!html.includes(token));
 });

@@ -30,3 +30,18 @@ export function createTrainingPlan(){
   for(let b=0;b<8;b++)addPhase('byow-'+b,'BYOW · Block '+(b+1),203+b*28,b===7?3:4,'Power circuit + core superset + finishing interval',(i,w,d)=>[d>4?'Walk 5 km':d%2?'Easy cardio / recovery':'Workout '+((w+d/2)%2?'B':'A')+' · '+['strength','muscle','endurance'][d/2]+' scheme'],b===7?12:28);
   return phases;
 }
+
+// Shared presentation rules; progress and the calendar are not modified.
+export function phaseAvailable(phases,checked,index){
+  return phases.slice(0,index).every(p=>p.items.every(item=>checked[item.id]===true));
+}
+export function weekAvailable(phases,checked,index,week){
+  return phaseAvailable(phases,checked,index)&&phases[index].items.filter(item=>item.day<week*7).every(item=>checked[item.id]===true);
+}
+export function currentPlanFocus(phases,checked,today){
+  const calendar=phases.findIndex(p=>today>=date(p.start).getTime()&&today<date(p.start+p.days).getTime());
+  if(calendar>=0){const week=Math.floor((today-date(phases[calendar].start).getTime())/(7*86400000));if(weekAvailable(phases,checked,calendar,week))return {phase:phases[calendar].id,week};}
+  const index=phases.findIndex(p=>p.items.some(item=>!checked[item.id]));
+  if(index<0)return {phase:phases.at(-1).id,week:Math.floor((phases.at(-1).days-1)/7)};
+  return {phase:phases[index].id,week:Math.floor(phases[index].items.find(item=>!checked[item.id]).day/7)};
+}
