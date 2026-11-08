@@ -1751,7 +1751,7 @@ html>body{padding:0}</style>
     status.textContent=active.name+' · '+n+' of '+total+' activities';bar.style.width=pct+'%';progress.setAttribute('aria-valuenow',String(pct));renderHeroProgress();renderHomeOverview(active);renderDashboard();
     const planFocus=currentPlanFocus(phases,checked,todayIndia());
     phases.forEach((p,index)=>{
-      if(currentPage==='home'||currentPage==='nutrition'||currentPage==='body-stats'||currentPage==='more')return;if(currentPage==='workouts'&&index<3)return;if(currentPage!=='foundation'&&currentPage!=='workouts'&&p.id!==currentPage)return;
+      if(currentPage==='home'||currentPage==='nutrition'||currentPage==='body-stats'||currentPage==='more')return;if(currentPage!=='foundation'&&currentPage!=='workouts'&&p.id!==currentPage)return;
       const section=document.createElement('details');section.className='tc-phase';section.id='tc-phase-'+p.id;section.dataset.state=complete(p)?'complete':p===active?'current':unlocked(index)?'upcoming':'locked';section.open=phaseExpanded[p.id]??(currentPage==='foundation'?p.id===planFocus.phase:currentPage==='workouts'?p===active:true);
       const head=document.createElement('summary');head.className='tc-heading';
       const title=document.createElement('div');title.className='tc-phase-title';const heading=document.createElement('h3');heading.textContent=p.name;title.append(progressionIcon(p.id,phaseStartWeek(p)),heading);
