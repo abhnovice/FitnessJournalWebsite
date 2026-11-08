@@ -1751,6 +1751,10 @@ html>body{padding:0}</style>
     const active=phases.find(p=>!complete(p))||phases[phases.length-1];const n=count(active),total=active.items.length,pct=Math.round(n/total*100);
     status.textContent=active.name+' · '+n+' of '+total+' activities';bar.style.width=pct+'%';progress.setAttribute('aria-valuenow',String(pct));renderHeroProgress();renderHomeOverview(active);renderDashboard();
     const planFocus=currentPlanFocus(phases,checked,todayIndia());
+    if(currentPage==='foundation'){
+      const next=phases.find((p,index)=>!unlocked(index));
+      if(next){const teaser=document.createElement('div');teaser.className='tc-teaser';const preview=document.createElement('div');preview.className='tc-teaser-preview';preview.setAttribute('aria-hidden','true');preview.textContent=next.items.slice(0,4).map(item=>item.label).join(' · ');const overlay=document.createElement('div');overlay.className='tc-teaser-overlay';overlay.append(fluentIcon('lock_closed'),document.createTextNode('Up next · '+next.name));teaser.append(preview,overlay);phasesEl.append(teaser);}
+    }
     phases.forEach((p,index)=>{
       if(currentPage==='home'||currentPage==='nutrition'||currentPage==='body-stats'||currentPage==='more')return;if(currentPage!=='foundation'&&currentPage!=='workouts'&&p.id!==currentPage)return;
       const section=document.createElement('details');section.className='tc-phase';section.id='tc-phase-'+p.id;section.dataset.state=complete(p)?'complete':p===active?'current':unlocked(index)?'upcoming':'locked';section.open=phaseExpanded[p.id]??(currentPage==='foundation'?p.id===planFocus.phase:currentPage==='workouts'?p===active:true);
@@ -2213,5 +2217,10 @@ html>body{padding:0}</style>
 #training-checklist-v1 .tc-phase:not([data-state=locked]) .tc-week[data-state=locked]{opacity:.78;}
 @media(prefers-reduced-motion:reduce){#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{transition:none}}
 </style>
-</body>
+<style>
+#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{opacity:1;background:color-mix(in srgb,var(--tc-surface) 68%,transparent);border:1px solid color-mix(in srgb,var(--tc-ink) 16%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff18,0 8px 24px #00000012}
+#training-checklist-v1 .tc-journey-step[data-state=locked]:hover{opacity:1}#training-checklist-v1 .tc-journey-step[data-state=locked]::after{content:'🔒';position:absolute;right:12px;top:12px}#training-checklist-v1 .tc-journey-step{position:relative}
+#training-checklist-v1 .tc-teaser{position:relative;overflow:hidden;margin:0 0 18px;border:1px solid color-mix(in srgb,var(--tc-ink) 18%,transparent);border-radius:12px;background:color-mix(in srgb,var(--tc-surface) 65%,transparent);box-shadow:inset 0 1px 0 #ffffff20}
+#training-checklist-v1 .tc-teaser-preview{padding:24px;filter:blur(5px);opacity:.5;user-select:none;pointer-events:none}#training-checklist-v1 .tc-teaser-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(2px);background:color-mix(in srgb,var(--tc-surface) 40%,transparent);font-weight:600}#training-checklist-v1 .tc-teaser-overlay .tc-icon{width:24px;height:24px}
+</style></body>
 </html>
