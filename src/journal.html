@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400..700&amp;family=Roboto+Mono:wght@400..600&amp;display=swap" rel="stylesheet">
 
 <style>
-#training-checklist-v1 .tc-week[data-state=locked]{opacity:.72}#training-checklist-v1 .tc-week-lock{display:inline-flex;align-items:center;gap:5px;color:var(--tc-muted);font-size:.7rem}#training-checklist-v1 .tc-week-lock .tc-icon{width:15px;height:15px}#training-checklist-v1 .tc-week[data-state=current],#training-checklist-v1 .tc-week-focused{border-color:var(--tc-accent);box-shadow:0 0 0 1px color-mix(in srgb,var(--tc-accent) 30%,transparent)}#training-checklist-v1 .tc-phase>summary:hover,#training-checklist-v1 .tc-week>summary:hover{background:color-mix(in srgb,var(--tc-accent) 8%,var(--tc-surface))}#training-checklist-v1 .tc-week input:disabled{cursor:not-allowed}#training-checklist-v1 .tc-state{display:inline-flex;gap:6px;align-items:center}
+#training-checklist-v1 .tc-week-lock{display:inline-flex;align-items:center;gap:5px;color:var(--tc-muted);font-size:.7rem}#training-checklist-v1 .tc-week-lock .tc-icon{width:15px;height:15px}#training-checklist-v1 .tc-week[data-state=current],#training-checklist-v1 .tc-week-focused{border-color:var(--tc-accent);box-shadow:0 0 0 1px color-mix(in srgb,var(--tc-accent) 30%,transparent)}#training-checklist-v1 .tc-phase>summary:hover,#training-checklist-v1 .tc-week>summary:hover{background:color-mix(in srgb,var(--tc-accent) 8%,var(--tc-surface))}#training-checklist-v1 .tc-week input:disabled{cursor:not-allowed}#training-checklist-v1 .tc-state{display:inline-flex;gap:6px;align-items:center}
 </style></head>
 <body>
 <script>(() => {
@@ -1236,6 +1236,7 @@ html>body{padding:0}</style>
 </script>
 
 
+
 <div id="training-checklist-v1">
   <header class="tc-hero" role="banner" aria-label="Abhyudaya’s Best Life"><div class="tc-hero-content"><div class="tc-hero-lockup"><div><h1>Abhyudaya’s Best Life</h1><p class="tc-pillars">Strength · Stamina · Recovery · Balance</p><p>9 Nov 2026 – 24 Dec 2027</p><div class="tc-hero-progress"><span id="tc-hero-milestone">Journey begins</span><span class="tc-hero-trail" aria-hidden="true"><i id="tc-hero-trail-fill"></i></span></div></div></div></div></header>
   <div class="tc-overview"><h2>Journey dashboard</h2><span class="text-small">9 Nov 2026–24 Dec 2027</span></div><div id="tc-page-save" class="text-small" aria-live="polite"></div>
@@ -2204,5 +2205,14 @@ html>body{padding:0}</style>
 })();
 </script>
 
+
+<style>
+/* Muted previews share the same treatment in Home, Plan and Workouts. */
+#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{opacity:.78;filter:grayscale(.85);transition:opacity 180ms ease,filter 180ms ease}
+#training-checklist-v1 .tc-phase[data-state=locked]>.tc-heading{color:var(--tc-muted)}
+#training-checklist-v1 .tc-journey-step[data-state=locked]:is(:hover,:focus-visible){opacity:.78;filter:grayscale(.85)}
+#training-checklist-v1 .tc-phase:not([data-state=locked]) .tc-week[data-state=locked]{opacity:.78;filter:grayscale(.85)}
+@media(prefers-reduced-motion:reduce){#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{transition:none}}
+</style>
 </body>
 </html>

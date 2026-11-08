@@ -158,7 +158,7 @@ body.tab-changing iframe{opacity:.18;transform:translateY(5px)}
 &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Roboto:wght@400..700&amp;amp;family=Roboto+Mono:wght@400..600&amp;amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
 
 &lt;style&gt;
-#training-checklist-v1 .tc-week[data-state=locked]{opacity:.72}#training-checklist-v1 .tc-week-lock{display:inline-flex;align-items:center;gap:5px;color:var(--tc-muted);font-size:.7rem}#training-checklist-v1 .tc-week-lock .tc-icon{width:15px;height:15px}#training-checklist-v1 .tc-week[data-state=current],#training-checklist-v1 .tc-week-focused{border-color:var(--tc-accent);box-shadow:0 0 0 1px color-mix(in srgb,var(--tc-accent) 30%,transparent)}#training-checklist-v1 .tc-phase&gt;summary:hover,#training-checklist-v1 .tc-week&gt;summary:hover{background:color-mix(in srgb,var(--tc-accent) 8%,var(--tc-surface))}#training-checklist-v1 .tc-week input:disabled{cursor:not-allowed}#training-checklist-v1 .tc-state{display:inline-flex;gap:6px;align-items:center}
+#training-checklist-v1 .tc-week-lock{display:inline-flex;align-items:center;gap:5px;color:var(--tc-muted);font-size:.7rem}#training-checklist-v1 .tc-week-lock .tc-icon{width:15px;height:15px}#training-checklist-v1 .tc-week[data-state=current],#training-checklist-v1 .tc-week-focused{border-color:var(--tc-accent);box-shadow:0 0 0 1px color-mix(in srgb,var(--tc-accent) 30%,transparent)}#training-checklist-v1 .tc-phase&gt;summary:hover,#training-checklist-v1 .tc-week&gt;summary:hover{background:color-mix(in srgb,var(--tc-accent) 8%,var(--tc-surface))}#training-checklist-v1 .tc-week input:disabled{cursor:not-allowed}#training-checklist-v1 .tc-state{display:inline-flex;gap:6px;align-items:center}
 &lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;script&gt;(() =&gt; {
@@ -1383,6 +1383,7 @@ html&gt;body{padding:0}&lt;/style&gt;
 &lt;/script&gt;
 
 
+
 &lt;div id=&quot;training-checklist-v1&quot;&gt;
   &lt;header class=&quot;tc-hero&quot; role=&quot;banner&quot; aria-label=&quot;Abhyudaya’s Best Life&quot;&gt;&lt;div class=&quot;tc-hero-content&quot;&gt;&lt;div class=&quot;tc-hero-lockup&quot;&gt;&lt;div&gt;&lt;h1&gt;Abhyudaya’s Best Life&lt;/h1&gt;&lt;p class=&quot;tc-pillars&quot;&gt;Strength · Stamina · Recovery · Balance&lt;/p&gt;&lt;p&gt;9 Nov 2026 – 24 Dec 2027&lt;/p&gt;&lt;div class=&quot;tc-hero-progress&quot;&gt;&lt;span id=&quot;tc-hero-milestone&quot;&gt;Journey begins&lt;/span&gt;&lt;span class=&quot;tc-hero-trail&quot; aria-hidden=&quot;true&quot;&gt;&lt;i id=&quot;tc-hero-trail-fill&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/header&gt;
   &lt;div class=&quot;tc-overview&quot;&gt;&lt;h2&gt;Journey dashboard&lt;/h2&gt;&lt;span class=&quot;text-small&quot;&gt;9 Nov 2026–24 Dec 2027&lt;/span&gt;&lt;/div&gt;&lt;div id=&quot;tc-page-save&quot; class=&quot;text-small&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
@@ -2398,6 +2399,15 @@ function currentPlanFocus(phases,checked,today){
 })();
 &lt;/script&gt;
 
+
+&lt;style&gt;
+/* Muted previews share the same treatment in Home, Plan and Workouts. */
+#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{opacity:.78;filter:grayscale(.85);transition:opacity 180ms ease,filter 180ms ease}
+#training-checklist-v1 .tc-phase[data-state=locked]&gt;.tc-heading{color:var(--tc-muted)}
+#training-checklist-v1 .tc-journey-step[data-state=locked]:is(:hover,:focus-visible){opacity:.78;filter:grayscale(.85)}
+#training-checklist-v1 .tc-phase:not([data-state=locked]) .tc-week[data-state=locked]{opacity:.78;filter:grayscale(.85)}
+@media(prefers-reduced-motion:reduce){#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{transition:none}}
+&lt;/style&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
