@@ -1945,11 +1945,8 @@ function currentPlanFocus(phases,checked,today){
     const active=phases.find(p=&gt;!complete(p))||phases[phases.length-1];const n=count(active),total=active.items.length,pct=Math.round(n/total*100);
     status.textContent=active.name+&#x27; · &#x27;+n+&#x27; of &#x27;+total+&#x27; activities&#x27;;bar.style.width=pct+&#x27;%&#x27;;progress.setAttribute(&#x27;aria-valuenow&#x27;,String(pct));renderHeroProgress();renderHomeOverview(active);renderDashboard();
     const planFocus=currentPlanFocus(phases,checked,todayIndia());
-    if(currentPage===&#x27;foundation&#x27;){
-      const next=phases.find((p,index)=&gt;!unlocked(index));
-      if(next){const teaser=document.createElement(&#x27;div&#x27;);teaser.className=&#x27;tc-teaser&#x27;;const preview=document.createElement(&#x27;div&#x27;);preview.className=&#x27;tc-teaser-preview&#x27;;preview.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);preview.textContent=next.items.slice(0,4).map(item=&gt;item.label).join(&#x27; · &#x27;);const overlay=document.createElement(&#x27;div&#x27;);overlay.className=&#x27;tc-teaser-overlay&#x27;;overlay.append(fluentIcon(&#x27;lock_closed&#x27;),document.createTextNode(&#x27;Up next · &#x27;+next.name));teaser.append(preview,overlay);phasesEl.append(teaser);}
-    }
     phases.forEach((p,index)=&gt;{
+      if(currentPage===&#x27;foundation&#x27;&amp;&amp;!unlocked(index))return;
       if(currentPage===&#x27;home&#x27;||currentPage===&#x27;nutrition&#x27;||currentPage===&#x27;body-stats&#x27;||currentPage===&#x27;more&#x27;)return;if(currentPage!==&#x27;foundation&#x27;&amp;&amp;currentPage!==&#x27;workouts&#x27;&amp;&amp;p.id!==currentPage)return;
       const section=document.createElement(&#x27;details&#x27;);section.className=&#x27;tc-phase&#x27;;section.id=&#x27;tc-phase-&#x27;+p.id;section.dataset.state=complete(p)?&#x27;complete&#x27;:p===active?&#x27;current&#x27;:unlocked(index)?&#x27;upcoming&#x27;:&#x27;locked&#x27;;section.open=phaseExpanded[p.id]??(currentPage===&#x27;foundation&#x27;?p.id===planFocus.phase:currentPage===&#x27;workouts&#x27;?p===active:true);
       const head=document.createElement(&#x27;summary&#x27;);head.className=&#x27;tc-heading&#x27;;
@@ -1998,6 +1995,10 @@ function currentPlanFocus(phases,checked,today){
       if(index&gt;=3&amp;&amp;index&lt;=8)section.append(rewardBox(&#x27;Block reward&#x27;,[{key:&#x27;block&#x27;+(index-3),label:&#x27;Reward claimed&#x27;,eligible:complete(p),needsText:true}],&#x27;Add your own reward and claim it after finishing this block.&#x27;,index-3));
       phasesEl.append(section);
     });
+    if(currentPage===&#x27;foundation&#x27;){
+      const next=phases.find((p,index)=&gt;!unlocked(index));
+      if(next){const teaser=document.createElement(&#x27;div&#x27;);teaser.className=&#x27;tc-teaser&#x27;;const preview=document.createElement(&#x27;div&#x27;);preview.className=&#x27;tc-teaser-preview&#x27;;preview.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;);preview.textContent=next.items.slice(0,4).map(item=&gt;item.label).join(&#x27; · &#x27;);const overlay=document.createElement(&#x27;div&#x27;);overlay.className=&#x27;tc-teaser-overlay&#x27;;overlay.append(fluentIcon(&#x27;lock_closed&#x27;),document.createTextNode(&#x27;Up next · &#x27;+next.name));teaser.append(preview,overlay);phasesEl.append(teaser);}
+    }
     sendNavPositions();revealWeeks();
     if(focusPlanOnRender&amp;&amp;currentPage===&#x27;foundation&#x27;){
       focusPlanOnRender=false;
@@ -2413,7 +2414,7 @@ function currentPlanFocus(phases,checked,today){
 &lt;/style&gt;
 &lt;style&gt;
 #training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{opacity:1;background:color-mix(in srgb,var(--tc-surface) 68%,transparent);border:1px solid color-mix(in srgb,var(--tc-ink) 16%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff18,0 8px 24px #00000012}
-#training-checklist-v1 .tc-journey-step[data-state=locked]:hover{opacity:1}#training-checklist-v1 .tc-journey-step[data-state=locked]::after{content:&#x27;🔒&#x27;;position:absolute;right:12px;top:12px}#training-checklist-v1 .tc-journey-step{position:relative}
+#training-checklist-v1 .tc-journey-step[data-state=locked]:hover{opacity:1}#training-checklist-v1 .tc-journey-step{position:relative}
 #training-checklist-v1 .tc-teaser{position:relative;overflow:hidden;margin:0 0 18px;border:1px solid color-mix(in srgb,var(--tc-ink) 18%,transparent);border-radius:12px;background:color-mix(in srgb,var(--tc-surface) 65%,transparent);box-shadow:inset 0 1px 0 #ffffff20}
 #training-checklist-v1 .tc-teaser-preview{padding:24px;filter:blur(5px);opacity:.5;user-select:none;pointer-events:none}#training-checklist-v1 .tc-teaser-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(2px);background:color-mix(in srgb,var(--tc-surface) 40%,transparent);font-weight:600}#training-checklist-v1 .tc-teaser-overlay .tc-icon{width:24px;height:24px}
 &lt;/style&gt;&lt;/body&gt;
