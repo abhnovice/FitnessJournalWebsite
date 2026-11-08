@@ -2207,11 +2207,10 @@ html>body{padding:0}</style>
 
 
 <style>
-/* Muted previews share the same treatment in Home, Plan and Workouts. */
-#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{opacity:.78;filter:grayscale(.85);transition:opacity 180ms ease,filter 180ms ease}
-#training-checklist-v1 .tc-phase[data-state=locked]>.tc-heading{color:var(--tc-muted)}
-#training-checklist-v1 .tc-journey-step[data-state=locked]:is(:hover,:focus-visible){opacity:.78;filter:grayscale(.85)}
-#training-checklist-v1 .tc-phase:not([data-state=locked]) .tc-week[data-state=locked]{opacity:.78;filter:grayscale(.85)}
+/* Translucent locked previews preserve their original colours across all views. */
+#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{opacity:.78;transition:opacity 180ms ease}
+#training-checklist-v1 .tc-journey-step[data-state=locked]:is(:hover,:focus-visible){opacity:.78;}
+#training-checklist-v1 .tc-phase:not([data-state=locked]) .tc-week[data-state=locked]{opacity:.78;}
 @media(prefers-reduced-motion:reduce){#training-checklist-v1 :is(.tc-phase,.tc-journey-step)[data-state=locked]{transition:none}}
 </style>
 </body>
