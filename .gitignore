@@ -1,1 +1,14 @@
 .sites-runtime/
+# Ignore all node_modules folders everywhere
+node_modules/
+**/node_modules/
+
+# Ignore production/build outputs
+dist/
+**/dist/
+
+.env
+.env.*
+!.env.example
+.preview/
+.DS_Store

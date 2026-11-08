@@ -1,0 +1,42 @@
+(() => {
+  const $=id=>document.getElementById(id), keys=['energy_kcal','protein_g','carbohydrate_g','fat_g'],fields=['food-kcal','food-protein','food-carbs','food-fat'];
+  const page=$('nutrition-page'),form=$('food-form'),results=$('food-results'),diary=$('food-diary'),status=$('food-status'),error=$('food-error'),date=$('food-date');
+  let profile=null,searchRevision=0,dayRevision=0,loaded=false,pendingId=null,saving=false,editing=false;
+  date.value=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const fmt=n=>Number(n).toLocaleString('en-IN',{maximumFractionDigits:1});
+  const el=(tag,content,parent)=>{const node=document.createElement(tag);if(content!==undefined)node.textContent=content;if(parent)parent.append(node);return node;};
+  const failure=e=>{error.textContent=e.message;status.textContent='';};
+  const clear=()=>{status.textContent='';error.textContent='';};
+  async function api(path,options={}){let r;try{r=await fetch('/api/nutrition/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{'content-type':'application/json',...options.headers}});}catch{throw new Error('Connection unavailable. Keep this page open and retry; no save has been confirmed.');}let data;try{data=await r.json();}catch{throw new Error('The service could not complete this request. Please retry.');}if(!r.ok)throw new Error(data.error||'Request failed. Please retry.');return data;}
+  function calculate(){const unit=$('food-unit').value;const n=Number($('food-kcal').value),q=Number($('food-quantity').value);$('food-quantity-unit').textContent=unit;$('food-calculation').textContent=$('food-kcal').value!==''&&q>0?fmt(n*q/100)+' kcal in '+fmt(q)+' '+unit:'Enter package values and your portion.';}
+  function openProfile(p){profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=p?.is_estimate?'Approximate · Gemini estimate':p?.source||'Manual package entry';$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>$(id).value=p?.nutrition?.[keys[i]]??'');$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
+  const edited=event=>{pendingId=null;if([...fields,'food-name','food-unit'].includes(event.target.id))editing=true;calculate();};
+  form.addEventListener('input',edited);form.addEventListener('change',edited);
+  $('food-manual').onclick=()=>{searchRevision++;$('food-find').disabled=false;clear();results.hidden=true;openProfile(null);};
+  $('food-cancel').onclick=()=>{if(!saving)form.hidden=true;};
+  async function loadDay(){
+    const revision=++dayRevision,day=date.value;loaded=false;$('food-log').disabled=true;diary.replaceChildren(el('p','Loading your diary…'));['food-total-energy','food-total-protein','food-total-carbs','food-total-fat'].forEach(id=>$(id).textContent='—');
+    if(!date.reportValidity())return;
+    $('food-diary-date').textContent=new Date(day+'T12:00:00Z').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Kolkata'});
+    try{const data=await api('entries?date='+encodeURIComponent(day));if(revision!==dayRevision)return;loaded=true;$('food-log').disabled=saving;['food-total-energy','food-total-protein','food-total-carbs','food-total-fat'].forEach((id,i)=>$(id).textContent=fmt(data.totals[keys[i]]));diary.replaceChildren();if(!data.entries.length){const p=el('p','No food logged for this day. Add your first meal above.',diary);p.className='food-empty';return;}
+      for(const meal of ['Breakfast','Lunch','Dinner','Snack']){const entries=data.entries.filter(e=>e.meal===meal);if(!entries.length)continue;const group=el('div',undefined,diary);group.className='food-meal';el('h3',meal,group);for(const entry of entries){const row=el('div',undefined,group);row.className='food-entry';const name=el('div',undefined,row);el('strong',entry.name,name);el('small',fmt(entry.quantity)+' '+entry.unit+' · '+entry.source+(entry.is_estimate?' · approximate':''),name);const end=el('div',undefined,row);end.className='food-entry-end';el('strong',fmt(entry.nutrition.energy_kcal*entry.quantity/100)+' kcal',end);const remove=el('button','Remove',end);remove.type='button';remove.setAttribute('aria-label','Remove '+entry.name+' from '+meal);remove.onclick=async()=>{remove.disabled=true;clear();try{await api('entries?date='+encodeURIComponent(day)+'&id='+encodeURIComponent(entry.id),{method:'DELETE'});await loadDay();status.textContent='Entry removed from your account.';}catch(e){remove.disabled=false;failure(e);}};}}
+    }catch(e){if(revision!==dayRevision)return;diary.replaceChildren(el('p','Could not load your diary. Retry to reconnect.'));const retry=el('button','Retry diary',diary);retry.type='button';retry.onclick=()=>{clear();loadDay();};failure(e);}
+  }
+  date.onchange=()=>{if(saving)return;clear();pendingId=null;loadDay();};
+  $('food-search').onsubmit=async event=>{
+    event.preventDefault();if(!$('food-search').reportValidity())return;const revision=++searchRevision;clear();form.hidden=true;results.replaceChildren();results.hidden=true;status.textContent='Finding your food…';$('food-find').disabled=true;
+    try{const data=await api('search',{method:'POST',body:JSON.stringify({query:$('food-query').value.trim()})});if(revision!==searchRevision)return;results.hidden=false;status.textContent='';
+      if(data.warnings?.length)error.textContent=data.warnings.join('\n');
+      if(data.profile){openProfile(data.profile);return;}
+      if(data.candidates?.length){for(const candidate of data.candidates){const row=el('div',undefined,results);row.className='food-result';const copy=el('div',undefined,row);el('strong',candidate.name,copy);el('p',candidate.reason,copy);const confirm=el('button','Confirm food & estimate',row);confirm.type='button';confirm.onclick=async()=>{const selected=++searchRevision;results.querySelectorAll('button').forEach(b=>b.disabled=true);clear();status.textContent='Estimating the confirmed food…';try{const result=await api('confirm',{method:'POST',body:JSON.stringify({name:candidate.name})});if(selected!==searchRevision)return;status.textContent='Review the estimate, preparation and portion before logging.';openProfile(result.profile);}catch(e){if(selected===searchRevision)failure(e);}finally{if(selected===searchRevision)results.querySelectorAll('button').forEach(b=>b.disabled=false);}};}}
+      else{el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);if(data.name){const button=el('button','Enter nutrition for '+data.name,results);button.type='button';button.onclick=()=>openProfile({name:data.name,source:'Manual package entry'});}}
+    }catch(e){if(revision===searchRevision)failure(e);}finally{if(revision===searchRevision)$('food-find').disabled=false;}
+  };
+  form.onsubmit=async event=>{
+    event.preventDefault();if(saving||!loaded||!form.reportValidity())return;clear();pendingId ||= crypto.randomUUID();const entry={id:pendingId,date:date.value,meal:$('food-meal').value,name:$('food-name').value.trim(),unit:$('food-unit').value,quantity:Number($('food-quantity').value),nutrition:Object.fromEntries(keys.map((k,i)=>[k,Number($(fields[i]).value)])),source:profile?(editing?'Manual adjustment · '+profile.source:profile.source):'Manual package entry',is_estimate:profile?.is_estimate===true};
+    saving=true;date.disabled=true;$('food-manual').disabled=true;$('food-find').disabled=true;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=true);status.textContent='Saving this portion…';
+    try{await api('entries',{method:'POST',body:JSON.stringify(entry)});pendingId=null;form.hidden=true;await loadDay();status.textContent=loaded?'Portion saved to your account.':'Portion saved. Retry the diary to refresh your daily totals.';}catch(e){failure(e);}finally{saving=false;date.disabled=false;$('food-manual').disabled=false;$('food-find').disabled=false;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=false);$('food-log').disabled=!loaded;}
+  };
+  window.addEventListener('nutrition-open',()=>{if(page.hidden)return;clear();loadDay();});
+  if(location.pathname.replace(/\/$/,'')==='/nutrition')loadDay();
+})();
