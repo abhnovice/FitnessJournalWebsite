@@ -172,3 +172,8 @@ test('packaged page includes Google Fonts and embedded Fluent icons without unre
   assert.ok(html.includes('id="app-header-icon"'));assert.ok(html.includes('id="app-header-label"'));
   for(const token of ['__HEADER_ICONS__','__HOME_HEADER_ICON__','__TRAINING_PLAN__'])assert.ok(!html.includes(token));
 });
+
+test('every displayed week contains scheduled days, including the final partial block',()=>{
+  const phases=createTrainingPlan();for(const phase of phases){assert.equal(phase.weeks,Math.ceil(phase.days/7));for(let week=0;week<phase.weeks;week++)assert.ok(phase.items.some(item=>Math.floor(item.day/7)===week));}
+  assert.equal(phases.at(-1).weeks,2);assert.equal(phases.at(-1).days,12);
+});

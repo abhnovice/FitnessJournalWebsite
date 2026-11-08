@@ -4,7 +4,7 @@ export const date=offset=>new Date(Date.UTC(2026,10,9+offset));
 export function createTrainingPlan(){
   const phases=[];
   function addPhase(id,name,start,weeks,note,taskFn,days=weeks*7){
-    const phase={id,name,start,weeks,note,days,items:[]};
+    const phase={id,name,start,weeks:Math.ceil(days/7),note,days,items:[]};
     for(let i=0;i<days;i++)taskFn(i,Math.floor(i/7),(date(start+i).getUTCDay()+6)%7).forEach((label,n)=>phase.items.push({id:id+'-'+i+'-'+n,day:i,label}));
     phases.push(phase);
   }

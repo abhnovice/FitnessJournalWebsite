@@ -1701,7 +1701,7 @@ const date=offset=&gt;new Date(Date.UTC(2026,10,9+offset));
 function createTrainingPlan(){
   const phases=[];
   function addPhase(id,name,start,weeks,note,taskFn,days=weeks*7){
-    const phase={id,name,start,weeks,note,days,items:[]};
+    const phase={id,name,start,weeks:Math.ceil(days/7),note,days,items:[]};
     for(let i=0;i&lt;days;i++)taskFn(i,Math.floor(i/7),(date(start+i).getUTCDay()+6)%7).forEach((label,n)=&gt;phase.items.push({id:id+&#x27;-&#x27;+i+&#x27;-&#x27;+n,day:i,label}));
     phases.push(phase);
   }
