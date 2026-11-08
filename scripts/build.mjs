@@ -1,12 +1,13 @@
+import {PLAN_REVISION} from '../src/training-plan.mjs';
 import {readFileSync,writeFileSync,mkdirSync,existsSync,copyFileSync,rmSync} from 'node:fs';
 const read=path=>readFileSync(path,'utf8');
 const escape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
-const page=read('src/page.html').replace('__JOURNAL_HTML__',()=>escape(read('src/journal.html'))).replace('__NUTRITION_HTML__',()=>read('src/nutrition.html')).replace('__NUTRITION_UI__',()=>read('src/nutrition-ui.js'));
+const page=read('src/page.html').replace('__PLAN_REVISION__',()=>JSON.stringify(PLAN_REVISION)).replace('__JOURNAL_HTML__',()=>escape(read('src/journal.html').replace('__TRAINING_PLAN__',()=>read('src/training-plan.mjs').replace(/^export /gm,'')))).replace('__NUTRITION_HTML__',()=>read('src/nutrition.html')).replace('__NUTRITION_UI__',()=>read('src/nutrition-ui.js'));
 mkdirSync('dist/server',{recursive:true});
 writeFileSync('dist/server/package.json',JSON.stringify({type:'module'})+'\n');
 rmSync('dist/server/package-lock.json',{force:true});
 writeFileSync('dist/index.html',page);
-writeFileSync('dist/server/index.js','const BARCODE_READER_JS = '+JSON.stringify(read('src/vendor/zxing-browser.min.js'))+';\nconst PAGE_HTML = '+JSON.stringify(page)+';\n'+read('src/nutrition.mjs').replace(/^export /gm,'')+'\n'+read('src/worker.mjs'));
+writeFileSync('dist/server/index.js','const PLAN_REVISION = '+JSON.stringify(PLAN_REVISION)+';\nconst BARCODE_READER_JS = '+JSON.stringify(read('src/vendor/zxing-browser.min.js'))+';\nconst PAGE_HTML = '+JSON.stringify(page)+';\n'+read('src/nutrition.mjs').replace(/^export /gm,'')+'\n'+read('src/worker.mjs'));
 // These production assets are also embedded in the Worker. Copy source artwork
 // for portable local previews and archive inspection when available.
 for(const file of ['stronger-self-icon.webp','home-fit-icon.png','body-stats-character-v1.png','cheering-character-v1.png','dashboard-dumbbell-v1.png','dashboard-pullup-v1.png','dashboard-squat-v1.png','dashboard-treadmill-v1.png']){

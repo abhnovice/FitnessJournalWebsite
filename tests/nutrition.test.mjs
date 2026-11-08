@@ -1,3 +1,4 @@
+import {PLAN_REVISION,createTrainingPlan,date} from '../src/training-plan.mjs';
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
@@ -44,7 +45,7 @@ test('barcode nutrition remains available if identification provider is unavaila
   try{const data=await(await request('search','POST',{query:'8901234567890'},'alice',{BARCODE_API:'test-only'})).json();assert.equal(data.profile.unit,'ml');assert.equal(data.profile.is_estimate,false);assert.equal(data.profile.nutrition.energy_kcal,60);assert.ok(data.warnings[0].includes('quota'));}finally{globalThis.fetch=original;}
 });
 test('November plan dates match launchpad, actual weekends and rendered bundle',async()=>{
-  const page=readFileSync('src/journal.html','utf8');assert.ok(page.includes('Date.UTC(2026,10,11+offset)'));assert.ok(page.includes('9–10 November'));assert.ok(page.includes('9 Nov 2026 – 20 Feb 2028'));assert.ok(page.includes('(date(start+i).getUTCDay()+6)%7'));
+  const page=readFileSync('src/journal.html','utf8');assert.ok(page.includes('__TRAINING_PLAN__'));assert.ok(page.includes('9 Nov 2026 – 24 Dec 2027'));
   const worker=(await import('../dist/server/index.js')).default;
   const response=await worker.fetch(new Request('https://example.test/nutrition'),{});assert.equal(response.status,200);const html=await response.text();assert.ok(html.includes('Your daily nutrition'));assert.ok(!html.includes('__JOURNAL_HTML__'));assert.equal((await worker.fetch(new Request('https://example.test/api/nutrition/entries?date=2026-11-09'),{})).status,401);
 });
@@ -52,7 +53,7 @@ test('November plan dates match launchpad, actual weekends and rendered bundle',
 test('existing medical uploads and diet adherence remain available',async()=>{
   const worker=(await import('../dist/server/index.js')).default;
   const headers={'oai-authenticated-user-id':'regression-user','content-type':'application/json'};
-  const record={version:2,checked:{},rewards:{claimed:{},custom:{},locked:{}},notes:{},weekly:{},measurements:[],shownMilestones:{},nutrition:{adherence:{'2026-11-09':true}}};
+  const record={version:2,planRevision:PLAN_REVISION,checked:{},rewards:{claimed:{},custom:{},locked:{}},notes:{},weekly:{},measurements:[],shownMilestones:{},nutrition:{adherence:{'2026-11-09':true}}};
   assert.equal((await worker.fetch(new Request('https://example.test/api/progress',{method:'PUT',headers,body:JSON.stringify({record})}),{DB})).status,400);
   assert.equal((await worker.fetch(new Request('https://example.test/api/progress',{method:'PUT',headers,body:JSON.stringify(record)}),{DB})).status,200);
   const progress=await(await worker.fetch(new Request('https://example.test/api/progress',{headers}),{DB})).json();
@@ -106,4 +107,41 @@ test('photo suggestions require food confirmation and do not infer portion or ma
 test('barcode reader is bundled with the Worker rather than a runtime CDN dependency',async()=>{
   const worker=(await import('../dist/server/index.js')).default;
   const response=await worker.fetch(new Request('https://example.test/barcode-reader.js'),{});assert.equal(response.status,200);assert.ok(response.headers.get('content-type').includes('javascript'));assert.ok((await response.text()).includes('decodeFromCanvas'));
+});
+
+test('Launchpad and Cardio Staircase match all fourteen requested dates and distances',()=>{
+  const phases=createTrainingPlan();
+  assert.deepEqual(phases[0].items.map(x=>x.label),['Slow jog 1 km','Slow jog 2 km','Slow jog 2 km','Slow jog 3 km','Slow jog 3 km','Walk 5 km','Walk 5 km']);
+  assert.deepEqual(phases[1].items.map(x=>x.label),['Slow jog 3 km','Slow jog 3 km','Slow jog 4 km','Slow jog 4 km','Slow jog 4 km','Walk 5 km','Walk 5 km']);
+  assert.equal(date(phases[0].start).toISOString().slice(0,10),'2026-11-09');assert.equal(date(phases[1].start).toISOString().slice(0,10),'2026-11-16');
+  assert.equal(phases[0].weeks,1);assert.equal(phases[1].weeks,1);
+});
+test('circuit volume rises after 1, 2, 3, 4 and 5 training days, without counting weekends',()=>{
+  const phase=createTrainingPlan()[2],circuits=phase.items.filter(x=>x.label.startsWith('Circuit:'));
+  assert.equal(date(phase.start).toISOString().slice(0,10),'2026-11-23');
+  assert.deepEqual(circuits.map(x=>Number(x.label.match(/Circuit: (\d)/)[1])),[1,2,2,3,3,3,4,4,4,4,5,5,5,5,5]);
+  for(const item of circuits){assert.ok([1,2,3,4,5].includes(date(phase.start+item.day).getUTCDay()));assert.ok(item.label.includes('5 pull-ups / 10 push-ups / 15 squats'));}
+  assert.equal(phase.items.filter(x=>x.label==='Jog 5 km').length,15);assert.equal(phase.items.filter(x=>x.label==='Walk 5 km').length,6);
+  assert.deepEqual(phase.items.filter(x=>x.label==='Study Gladiator Body Workout').map(x=>date(phase.start+x.day).toISOString().slice(0,10)),['2026-12-12','2026-12-13']);
+});
+test('Block 1 starts on the next Monday and every subsequent block keeps its duration',()=>{
+  const phases=createTrainingPlan();assert.equal(date(phases[3].start).toISOString().slice(0,10),'2026-12-14');
+  for(let i=1;i<phases.length;i++){assert.equal(phases[i-1].start+phases[i-1].days,phases[i].start);assert.equal(date(phases[i].start).getUTCDay(),1);}
+  for(const p of phases.slice(3,-1))assert.equal(p.days,28);
+  assert.equal(phases.at(-1).days,12);assert.equal(date(phases.at(-1).start+phases.at(-1).days-1).toISOString().slice(0,10),'2027-12-24');
+});
+test('fresh plan erases old account progress once and rejects saves from stale browser tabs',async()=>{
+  const worker=(await import('../dist/server/index.js')).default;
+  const old={version:2,checked:{'circuit-0-0':true},rewards:{claimed:{cardio:true},custom:{block0:'Old reward'},locked:{block0:true}},notes:{'launchpad-0':'Old note'},weekly:{'cardio-0':{weight:90,bodyFat:30}},measurements:[{date:'2026-11-08',weight:90}],shownMilestones:{'cardio-phase':true},nutrition:{adherence:{'2026-11-08':true}}};
+  await DB.prepare('INSERT INTO user_progress (user_id, record, updated_at) VALUES (?, ?, ?)').bind('restart-user',JSON.stringify(old),'2026-11-08').run();
+  const headers={'oai-authenticated-user-id':'restart-user','content-type':'application/json'},url='https://example.test/api/progress';
+  let response=await worker.fetch(new Request(url,{headers}),{DB});assert.equal(response.status,200);const fresh=(await response.json()).record;
+  assert.equal(fresh.planRevision,PLAN_REVISION);
+  for(const field of ['checked','notes','weekly','shownMilestones'])assert.deepEqual(fresh[field],{});
+  assert.deepEqual(fresh.measurements,[]);assert.deepEqual(fresh.rewards,{claimed:{},custom:{},locked:{}});assert.deepEqual(fresh.nutrition,{adherence:{}});
+  assert.equal(JSON.parse((await DB.prepare('SELECT record FROM user_progress WHERE user_id = ?').bind('restart-user').first()).record).planRevision,PLAN_REVISION);
+  assert.equal((await worker.fetch(new Request(url,{method:'PUT',headers,body:JSON.stringify(old)}),{DB})).status,409);
+  fresh.checked['launchpad-0-0']=true;assert.equal((await worker.fetch(new Request(url,{method:'PUT',headers,body:JSON.stringify(fresh)}),{DB})).status,200);
+  response=await worker.fetch(new Request(url,{headers}),{DB});assert.equal((await response.json()).record.checked['launchpad-0-0'],true);
+  const page=readFileSync('src/page.html','utf8');assert.ok(!page.includes('if(!data.hasSavedRecord)'));assert.ok(page.includes("localStorage.removeItem('training-checklist-20260921-v1')"));
 });

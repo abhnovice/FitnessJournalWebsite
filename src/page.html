@@ -132,7 +132,9 @@ __NUTRITION_HTML__
   const medicalForm=document.getElementById('medical-form'),medicalStatus=document.getElementById('medical-status'),medicalList=document.getElementById('medical-list');
   async function loadMedicalFiles(){medicalList.replaceChildren();try{const response=await fetch('/api/medical-documents',{credentials:'same-origin',cache:'no-store'});if(!response.ok)throw new Error();const data=await response.json();if(!data.documents.length){medicalStatus.textContent='No files uploaded yet.';return;}medicalStatus.textContent=data.documents.length+' private file'+(data.documents.length===1?'':'s')+' stored.';for(const documentRecord of data.documents){const row=document.createElement('div'),name=document.createElement('span'),meta=document.createElement('small');row.className='medical-file';name.textContent=documentRecord.fileName;meta.textContent=documentRecord.category+' · '+Math.max(1,Math.round(Number(documentRecord.sizeBytes)/1024))+' KB';row.append(name,meta);medicalList.append(row);}}catch{medicalStatus.textContent='Files could not be loaded right now.';}}
   medicalForm.addEventListener('submit',async event=>{event.preventDefault();const file=medicalForm.elements.file.files[0];if(!file)return;if(file.size>15*1024*1024){medicalStatus.textContent='Choose a file smaller than 15 MB.';return;}medicalStatus.textContent='Uploading…';const data=new FormData(medicalForm);try{const response=await fetch('/api/medical-documents',{method:'POST',credentials:'same-origin',body:data});const result=await response.json();if(!response.ok)throw new Error(result.error||'Upload failed.');medicalForm.reset();medicalStatus.textContent='File uploaded privately.';await loadMedicalFiles();}catch(error){medicalStatus.textContent=error.message||'Upload failed.';}});
-  const progressKey = 'training-checklist-20260921-v1';
+  const PLAN_REVISION=__PLAN_REVISION__;
+  const progressKey = 'training-checklist-20261109-restart-v1';
+  try{localStorage.removeItem('training-checklist-20260921-v1');}catch{}
   const routes = {home:'/',foundation:'/foundation',nutrition:'/nutrition','body-stats':'/body-stats',workouts:'/workouts',more:'/more','gladiator-0':'/general-fitness','gladiator-1':'/fat-loss','gladiator-2':'/strength-size','gladiator-3':'/rounds-of-fury','gladiator-4':'/juggernaut','gladiator-5':'/unit',...Object.fromEntries(Array.from({length:8},(_,i)=>['byow-'+i,'/byow-'+(i+1)]))};
   const tabForPage=page=>page==='home'?'home':page==='foundation'?'plan':page==='nutrition'?'nutrition':page==='body-stats'||page==='more'?'more':'workouts';
   const pageTitles={home:'Home',foundation:'Plan',nutrition:'Nutrition','body-stats':'Stats',workouts:'Workouts',more:'More','gladiator-0':'General Fitness','gladiator-1':'Fat Loss','gladiator-2':'Strength & Size','gladiator-3':'Rounds of Fury','gladiator-4':'Juggernaut','gladiator-5':'U.N.I.T.',...Object.fromEntries(Array.from({length:8},(_,i)=>['byow-'+i,'BYOW '+(i+1)]))};
@@ -161,13 +163,13 @@ __NUTRITION_HTML__
   nav.addEventListener('click',event=>{const button=event.target.closest('button[data-page]');if(button)showPage(button.dataset.page);});
   window.addEventListener('popstate',()=>{const page=Object.keys(routes).find(key=>routes[key]===location.pathname)||'home';showPage(page,false);});
   frame.addEventListener('load',()=>{showPage(currentPage,false);applyTheme(themeSelect.value);});
-  const blank = {version:2,checked:{},rewards:{claimed:{},custom:{},locked:{}},notes:{},weekly:{},measurements:[],shownMilestones:{},nutrition:{adherence:{}}};
+  const blank = {version:2,planRevision:PLAN_REVISION,checked:{},rewards:{claimed:{},custom:{},locked:{}},notes:{},weekly:{},measurements:[],shownMilestones:{},nutrition:{adherence:{}}};
   function upgrade(record){
-    if(!record||typeof record!=='object'||(record.version!==1&&record.version!==2))return blank;
-    return {...blank,...record,version:2,rewards:{...blank.rewards,...record.rewards},weekly:record.weekly||{},measurements:record.measurements||[],shownMilestones:record.shownMilestones||{},nutrition:{adherence:record.nutrition?.adherence||{}}};
+    if(!record||record.planRevision!==PLAN_REVISION||typeof record!=='object'||(record.version!==1&&record.version!==2))return blank;
+    return {...blank,...record,version:2,planRevision:PLAN_REVISION,rewards:{...blank.rewards,...record.rewards},weekly:record.weekly||{},measurements:record.measurements||[],shownMilestones:record.shownMilestones||{},nutrition:{adherence:record.nutrition?.adherence||{}}};
   }
   function validProgress(record){
-    if(!record||record.version!==2||!record.checked||typeof record.checked!=='object'||Array.isArray(record.checked))return false;
+    if(!record||record.planRevision!==PLAN_REVISION||record.version!==2||!record.checked||typeof record.checked!=='object'||Array.isArray(record.checked))return false;
     if(Object.keys(record.checked).length>1000)return false;
     if(!Object.entries(record.checked).every(([key,value])=>/^(launchpad|cardio|circuit|gladiator-[0-5]|byow-[0-7])-\d{1,2}-[01]$/.test(key)&&value===true))return false;
     if(!record.shownMilestones||typeof record.shownMilestones!=='object'||Array.isArray(record.shownMilestones)||Object.keys(record.shownMilestones).length>200)return false;
@@ -202,9 +204,6 @@ __NUTRITION_HTML__
           if(!response.ok)throw new Error('Account storage unavailable');
           const data=await response.json();
           let record=upgrade(data.record);
-          if(!data.hasSavedRecord){
-            try{const saved=localStorage.getItem(progressKey);if(saved){const old=upgrade(JSON.parse(saved));if(validProgress(old)){record=old;await fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify(old)});}}}catch{}
-          }
           frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'loaded',ok:true,record},'*');
         }catch{frame.contentWindow?.postMessage({channel:'training-progress-v1',type:'loaded',ok:false,record:blank},'*');}
       })();
