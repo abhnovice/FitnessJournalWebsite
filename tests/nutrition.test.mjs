@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {handleNutrition,validateEntry,entryTotals} from '../src/nutrition.mjs';
+import {handleNutrition,validateEntry,entryTotals,frequentFoods} from '../src/nutrition.mjs';
 import {database} from '../scripts/sqlite-d1.mjs';
 const dir=mkdtempSync(join(tmpdir(),'best-life-test-'));after(()=>rmSync(dir,{recursive:true,force:true}));
 const DB=database(join(dir,'test.sqlite'));DB.migrate();
@@ -70,4 +70,40 @@ test('existing icons and credential redirect protection survive packaging',async
   }
   const original=globalThis.fetch;let calls=0;globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.redirect,'manual');return new Response(null,{status:302,headers:{location:'https://untrusted.invalid/'}});};
   try{const r=await request('search','POST',{query:'chapati'},'alice',{GEMINI_API_KEY:'test-only'});assert.equal(r.status,502);assert.ok((await r.json()).error.includes('unexpected redirect'));assert.equal(calls,1);}finally{globalThis.fetch=original;}
+});
+
+test('frequent foods rank repeat entries and preserve the latest profile and portion',()=>{
+  const updated={...food,id:'updated-001',date:'2026-11-11',quantity:200,nutrition:{...food.nutrition,energy_kcal:280}};
+  const foods=frequentFoods([updated,{...food,id:'other-001',name:'Milk',unit:'ml'},food,{...food,id:'old-0001',name:' paneer '}]);
+  assert.equal(foods[0].uses,3);assert.equal(foods[0].quantity,200);assert.equal(foods[0].nutrition.energy_kcal,280);assert.equal(foods[0].is_estimate,false);
+  assert.equal(frequentFoods([{...food,unit:'ml'},food]).length,2);
+});
+test('saved-food history survives a fresh database connection and is account-scoped',async()=>{
+  await request('entries','POST',{...food,id:'favourite-001'},'food-cache-user');
+  await request('entries','POST',{...food,id:'favourite-002',date:'2026-11-10',quantity:250},'food-cache-user');
+  await request('entries','POST',{...food,id:'favourite-002',date:'2026-11-10',quantity:250},'food-cache-user');
+  const fresh=database(join(dir,'test.sqlite'));
+  const response=await request('foods','GET',null,'food-cache-user',{DB:fresh});assert.equal(response.status,200);
+  const data=await response.json();assert.equal(data.foods.length,1);assert.equal(data.foods[0].uses,2);assert.equal(data.foods[0].quantity,250);
+  assert.deepEqual((await(await request('foods','GET',null,'another-account')).json()).foods,[]);
+  assert.equal((await request('foods','GET',null,null)).status,401);
+});
+test('food photo validation prevents unsupported and mismatched uploads',async()=>{
+  for(const body of [{image:'invalid!',mimeType:'image/jpeg'},{image:'AAAA',mimeType:'image/svg+xml'},{image:'AAAA',mimeType:'image/jpeg'},{image:'',mimeType:'image/png'}])assert.equal((await request('photo','POST',body,'alice',{})).status,400);
+  assert.equal((await request('photo','POST',{image:'A'.repeat(4200000),mimeType:'image/jpeg'},'alice',{})).status,413);
+});
+test('photo suggestions require food confirmation and do not infer portion or macros',async()=>{
+  const original=globalThis.fetch;let received;
+  globalThis.fetch=async(url,options)=>{received=JSON.parse(options.body);return Response.json({candidates:[{content:{parts:[{text:JSON.stringify({is_food:true,matches:[{name:'Roti',reason:'Flatbread in the picture'}]})}]}}]});};
+  try{
+    const image=btoa('\xff\xd8\xff'+'test picture');
+    const response=await request('photo','POST',{image,mimeType:'image/jpeg'},'alice',{GEMINI_API_KEY:'photo-test-key',GEMINI_MODEL:'gemini-test-flash'});
+    const data=await response.json();assert.equal(response.status,200);assert.equal(data.candidates[0].name,'Roti');assert.equal(data.profile,undefined);assert.equal(data.candidates[0].nutrition,undefined);
+    assert.equal(received.contents[0].parts[1].inlineData.data,image);assert.equal(received.contents[0].parts[1].inlineData.mimeType,'image/jpeg');
+    assert.ok(!JSON.stringify(data).includes(image));
+  }finally{globalThis.fetch=original;}
+});
+test('barcode reader is bundled with the Worker rather than a runtime CDN dependency',async()=>{
+  const worker=(await import('../dist/server/index.js')).default;
+  const response=await worker.fetch(new Request('https://example.test/barcode-reader.js'),{});assert.equal(response.status,200);assert.ok(response.headers.get('content-type').includes('javascript'));assert.ok((await response.text()).includes('decodeFromCanvas'));
 });

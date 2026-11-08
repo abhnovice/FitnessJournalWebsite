@@ -41,6 +41,7 @@ function validRecord(record) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if(url.pathname==="/barcode-reader.js") return new Response(BARCODE_READER_JS,{headers:{"content-type":"text/javascript; charset=utf-8","cache-control":"public, max-age=86400","x-content-type-options":"nosniff"}});
     if(url.pathname.startsWith("/api/nutrition/")) return handleNutrition(request,env);
     if (url.pathname === "/manifest.webmanifest") return new Response(PWA_MANIFEST, {headers: {"content-type":"application/manifest+json; charset=utf-8","cache-control":"public, max-age=3600","x-content-type-options":"nosniff"}});
     if (url.pathname === "/sw.js") return new Response(SERVICE_WORKER, {headers: {"content-type":"text/javascript; charset=utf-8","cache-control":"no-cache","service-worker-allowed":"/","x-content-type-options":"nosniff"}});

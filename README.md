@@ -23,7 +23,7 @@ Open http://127.0.0.1:4173. The local preview uses an isolated SQLite database i
 - Daily logs persist by authenticated account and selected India-calendar date, in their own D1 table. Removal is scoped to the account and day. Repeating an uncertain save with the same entry ID cannot duplicate it.
 - The two-day Launchpad begins **9 November 2026**. Cardio begins **11 November 2026**. Phase durations and saved activity IDs are retained; the old October recovery pause predates the new start; actual weekdays govern weekend walks. The full shifted plan ends **20 February 2028**. September body measurements remain historical September measurements.
 
-The Python prototype’s local ONNX/SVM image classifier, image uploads, workbook lookup and ingredient-recipe editor are not part of this search/barcode integration. Food-name estimates are always labeled as estimates; they are not presented as workbook nutrition or verified package data. The Sites Worker runtime does not run the Python model.
+The Python prototype’s local ONNX/SVM image classifier, workbook lookup and ingredient-recipe editor are not part of this search/barcode integration. Food-name estimates are always labeled as estimates; they are not presented as workbook nutrition or verified package data. The Sites Worker runtime does not run the Python model.
 
 ## Sources and build
 
@@ -46,3 +46,11 @@ Publish the built source through the existing Site’s source repository and ver
 ## Verification
 
 `npm test` uses SQLite to check persistence, idempotency, date boundaries and account isolation. Provider tests use synthetic mocked responses for failure handling and estimate labeling. Those tests do not verify live API credentials, live provider availability, hosted D1 migration or browser rendering.
+
+## Camera and frequently used foods
+
+The search field camera button opens a scanner panel. Scan barcode uses the rear camera when available; camera access begins only after that action. Closing the panel, stopping the scanner, switching away from Nutrition or hiding the page releases camera tracks. Choose picture accepts a barcode or food image; Take food photo requests the mobile camera through the browser file picker. Both keep barcode decoding on the device with the bundled ZXing Browser 0.1.5 decoder. A barcode is passed through the existing package lookup. Unrecognized pictures offer an explicit Identify food action, which sends a resized JPEG to Gemini; suggestions still require food confirmation. Images are never stored in the diary or database. Recognition depends on camera quality and provider availability.
+
+Frequently used foods are rebuilt from the signed-in account's latest 1,000 diary entries, ranked by usage, with up to 20 cached profiles returned and eight matching foods shown. No third-party lookup is needed to reuse them. The latest logged nutrition, unit, meal and portion for each normalized name/unit pair are restored for review. Food names filter this list as you type. Data remains in the account-scoped diary rather than shared browser storage; it persists across devices and reloads. Removing all diary entries for a food removes its source history on the next refresh. No offline meal-save queue is introduced.
+
+Additional verification covers saved-food frequency/ranking, latest portions, account isolation, reloaded history, malformed/oversized photos, food confirmation after image suggestions, and the locally served decoder. A generated EAN-13 fixture exercises the real browser image-decoding path. Physical mobile camera capture needs on-device validation and camera permission.
