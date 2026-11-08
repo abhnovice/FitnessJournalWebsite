@@ -62,3 +62,12 @@ test('existing medical uploads and diet adherence remain available',async()=>{
   const page=await(await worker.fetch(new Request('https://example.test/nutrition'),{})).text();
   assert.ok(page.includes('Repeatable high-protein base'));assert.ok(page.includes('medical-form'));assert.ok(page.includes('Your daily nutrition'));
 });
+
+test('existing icons and credential redirect protection survive packaging',async()=>{
+  const worker=(await import('../dist/server/index.js')).default;
+  for(const path of ['/stronger-self-icon.webp','/favicon.svg','/face-icon.png','/pwa-icon-192.png']) {
+    const r=await worker.fetch(new Request('https://example.test'+path),{});assert.equal(r.status,200);assert.ok((await r.arrayBuffer()).byteLength>0);
+  }
+  const original=globalThis.fetch;let calls=0;globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.redirect,'manual');return new Response(null,{status:302,headers:{location:'https://untrusted.invalid/'}});};
+  try{const r=await request('search','POST',{query:'chapati'},'alice',{GEMINI_API_KEY:'test-only'});assert.equal(r.status,502);assert.ok((await r.json()).error.includes('unexpected redirect'));assert.equal(calls,1);}finally{globalThis.fetch=original;}
+});

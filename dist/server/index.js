@@ -12,8 +12,9 @@ function nutrientsOK(n){return n && NUTRIENTS.every(k=>real(n[k],k==='energy_kca
 function text(v,max){return typeof v==='string' && v.trim().length>0 && v.length<=max;}
 async function provider(url,options={},name='Food service'){
   let response;
-  try { response=await fetch(url,{...options,redirect:'error',signal:AbortSignal.timeout(45000)}); }
+  try { response=await fetch(url,{...options,redirect:'manual',signal:AbortSignal.timeout(45000)}); }
   catch {throw new FoodError(name+' is temporarily unavailable. Try again or enter the package values manually.');}
+  if(response.status>=300&&response.status<400)throw new FoodError(name+' returned an unexpected redirect.');
   if(!response.ok){
     if(response.status===404)return null;
     throw new FoodError(response.status===429?name+' quota or rate limit reached. Try later or use manual entry.':[401,403].includes(response.status)?name+' rejected the API key or account access.':name+' request failed. Please try again.');
