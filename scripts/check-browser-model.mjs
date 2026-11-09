@@ -1,0 +1,26 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import assert from 'node:assert/strict';
+import {loadSVM,predictSVM,resizeRGB,imageTensor,normalizedFeatures,acceptImage} from '../src/ml-core.mjs';
+const root=resolve(process.argv[2]),read=name=>readFileSync(root+'/'+name),meta=JSON.parse(read('svm.json'));
+const data=new Uint8Array(meta.bytes);for(const part of meta.parts)data.set(read(part.name),part.offset);
+const svm=loadSVM(meta,data.buffer),references=JSON.parse(readFileSync('tests/fixtures/browser-model-reference.json'));
+let confidenceError=0,distanceError=0;
+for(const r of references){const actual=predictSVM(svm,r.vector);assert.equal(actual.top,r.top);confidenceError=Math.max(confidenceError,Math.abs(actual.confidence-r.confidence));distanceError=Math.max(distanceError,Math.abs(actual.distance-r.distance));}
+assert.ok(confidenceError<1e-7,'calibrated confidence parity');assert.ok(distanceError<1e-5,'novelty distance parity');
+assert.equal(acceptImage({top:0,confidence:.6,distance:0},{top:0},1),false);
+assert.equal(acceptImage({top:0,confidence:.61,distance:0},{top:0},1),true);
+assert.equal(acceptImage({top:0,confidence:.99,distance:0},{top:1},1),false);
+const fixture=JSON.parse(readFileSync('tests/fixtures/browser-resize-reference.json'));
+const pixels=Uint8Array.from(fixture.pixels),resized=resizeRGB(pixels,fixture.width,fixture.height);
+assert.deepEqual(Array.from(resized),fixture.expected,'Pillow bilinear pixel parity');
+const ort=await import(pathToFileURL(root+'/ort.wasm.min.mjs'));
+ort.env.wasm.numThreads=1;ort.env.wasm.wasmPaths=pathToFileURL(root+'/').href;
+const session=await ort.InferenceSession.create(read('encoder.onnx'),{executionProviders:['wasm']});
+const output=await session.run({[session.inputNames[0]]:new ort.Tensor('float32',imageTensor(pixels,fixture.width,fixture.height),[1,3,224,224])});
+const features=normalizedFeatures(output[session.outputNames[0]].data),expected=JSON.parse(readFileSync('tests/fixtures/browser-encoder-reference.json'));
+const encoderError=Math.max(...Array.from(features,(v,i)=>Math.abs(v-expected[i])));assert.ok(encoderError<1e-5,'WASM encoder matches Python CPU');
+const report={vectors:references.length,top1Matches:references.length,maxConfidenceError:confidenceError,maxNoveltyError:distanceError,resizePixelsExact:true,maxEncoderError:encoderError};
+writeFileSync('tests/fixtures/browser-model-validation.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+await session.release();

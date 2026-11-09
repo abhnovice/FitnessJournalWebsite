@@ -12,3 +12,7 @@ dist/
 !.env.example
 .preview/
 .DS_Store
+__pycache__/
+
+model.npz
+mobilenetv2-12.onnx

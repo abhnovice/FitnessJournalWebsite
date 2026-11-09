@@ -1,0 +1,8 @@
+{
+  "vectors": 15,
+  "top1Matches": 15,
+  "maxConfidenceError": 1.5543122344752192e-15,
+  "maxNoveltyError": 0.0000013184083442752126,
+  "resizePixelsExact": true,
+  "maxEncoderError": 8.940696716308594e-8
+}

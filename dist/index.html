@@ -111,7 +111,7 @@ body.tab-changing iframe{opacity:.18;transform:translateY(5px)}
 <main id="nutrition-page" hidden>
   <div class="food-top"><div><span class="food-eyebrow">Nourish your best life</span><h1>Your daily nutrition</h1><p class="food-muted">Find your food. Choose your portion. Keep the day in view.</p></div><div class="food-date"><label for="food-date">Diary date · India time</label><input type="date" id="food-date" required></div></div>
   <div class="food-totals" aria-label="Daily nutrition totals"><div class="food-total">Calories<strong id="food-total-energy">—</strong><small>kcal logged</small></div><div class="food-total">Protein<strong id="food-total-protein">—</strong><small>grams</small></div><div class="food-total">Carbohydrates<strong id="food-total-carbs">—</strong><small>grams</small></div><div class="food-total">Fat<strong id="food-total-fat">—</strong><small>grams</small></div></div>
-  <section class="food-card"><h2>What’s on your plate?</h2><form id="food-search"><div class="food-search-row"><div class="food-search-field"><label for="food-query">Food name or product barcode</label><span class="food-input-camera"><input id="food-query" type="text" maxlength="300" placeholder="Palak paneer, chapati, or a barcode" required><button id="food-camera" type="button" aria-label="Scan barcode or add a food picture" aria-haspopup="dialog" title="Scan barcode or add picture"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h4l2-3h4l2 3h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/><circle cx="12" cy="12" r="4"/></svg></button></span></div><button class="food-primary" type="submit" id="food-find">Find food</button></div></form><div class="food-tools"><button type="button" id="food-manual">Enter package values manually</button></div><p class="food-muted" style="font-size:12px;margin-top:14px">Food-name matches use Gemini. Confirm the food before requesting an estimate. Barcodes use Barcode Lookup and Open Food Facts; check package data against your label.</p><div id="food-results" aria-label="Food matches" hidden></div></section>
+  <section class="food-card"><h2>What’s on your plate?</h2><form id="food-search"><div class="food-search-row"><div class="food-search-field"><label for="food-query">Food name or product barcode</label><span class="food-input-camera"><input id="food-query" type="text" maxlength="300" placeholder="Palak paneer, chapati, or a barcode" required><button id="food-camera" type="button" aria-label="Scan barcode or add a food picture" aria-haspopup="dialog" title="Scan barcode or add picture"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h4l2-3h4l2 3h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/><circle cx="12" cy="12" r="4"/></svg></button></span></div><button class="food-primary" type="submit" id="food-find">Find food</button></div></form><div class="food-tools"><button type="button" id="food-manual">Enter package values manually</button></div><p class="food-muted" style="font-size:12px;margin-top:14px">Food-name matches use ML/database lookup first, with Gemini as fallback. Confirm the food before requesting an estimate. Barcodes use Barcode Lookup and Open Food Facts; check package data against your label.</p><div id="food-results" aria-label="Food matches" hidden></div></section>
   <section class="food-card" id="food-frequent-section" aria-label="Frequently used foods"><h2>Frequently used</h2><p class="food-muted" style="font-size:13px">Your saved foods, ready to use again. Review the portion before logging.</p><div id="food-frequent"><p class="food-muted">Loading your saved foods…</p></div></section>
   <p id="food-status" role="status" aria-live="polite"></p><p id="food-error" role="alert"></p>
   <form id="food-form" class="food-card" hidden><span id="food-source" class="food-badge"></span><h2>Confirm your food and portion</h2><p id="food-preparation" class="food-muted"></p><div class="food-grid"><label class="food-wide" for="food-name">Food name<input id="food-name" maxlength="200" required></label><label for="food-meal">Meal<select id="food-meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label for="food-unit">Nutrition basis<select id="food-unit"><option value="g">Per 100 g</option><option value="ml">Per 100 ml</option></select></label><label for="food-kcal">Calories per 100 (kcal)<input id="food-kcal" type="number" step="any" min="0" max="1000" required></label><label for="food-protein">Protein per 100 (g)<input id="food-protein" type="number" step="any" min="0" max="100" required></label><label for="food-carbs">Carbohydrates per 100 (g)<input id="food-carbs" type="number" step="any" min="0" max="100" required></label><label for="food-fat">Fat per 100 (g)<input id="food-fat" type="number" step="any" min="0" max="100" required></label><label for="food-quantity">Amount eaten (<span id="food-quantity-unit">g</span>)<input id="food-quantity" type="number" step="any" min="0.1" max="10000" value="100" required></label><div id="food-calculation" aria-live="polite"></div></div><p class="food-muted" style="font-size:12px">Use weighed grams for food or measured millilitres for drinks. Values above are per 100 of the selected unit. Estimates describe a typical preparation, so edit the values when you have a package label.</p><div class="food-tools"><button class="food-primary" type="submit" id="food-log">Log this portion</button><button type="button" id="food-cancel">Cancel</button></div></form>
@@ -124,7 +124,7 @@ body.tab-changing iframe{opacity:.18;transform:translateY(5px)}
   <p id="food-camera-status" role="status" aria-live="polite">Scan a package barcode, or choose a picture of a barcode or food.</p>
   <div id="food-scanner-view" hidden><video id="food-camera-video" playsinline muted></video><div class="food-scan-guide" aria-hidden="true"></div><span>Keep the product barcode inside the frame</span></div>
   <img id="food-photo-preview" alt="Selected food or barcode picture" hidden>
-  <p id="food-photo-notice" class="food-muted" hidden>No barcode found. Identify food sends this picture to Google Gemini for suggestions. Confirm the food and portion before logging. Pictures are not saved.</p>
+  <p id="food-photo-notice" class="food-muted" hidden>No barcode found. Photo recognition runs on your device first. The first use downloads about 97 MB and caches the model. If local recognition cannot give a reliable match above 60%, this picture is sent to Google Gemini. Confirm the food and portion before logging. Pictures are not saved.</p>
   <div class="food-camera-options"><button type="button" id="food-photo-identify" class="food-primary" hidden>Identify food</button><button type="button" id="food-scan-stop" hidden>Stop camera</button></div>
   <input type="file" id="food-picture-input" accept="image/*" hidden>
   <input type="file" id="food-camera-input" accept="image/*" capture="environment" hidden>
@@ -2645,7 +2645,7 @@ function currentPlanFocus(phases,checked,today){
   const clear=()=>{status.textContent='';error.textContent='';};
   async function api(path,options={}){let r;try{r=await fetch('/api/nutrition/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{'content-type':'application/json',...options.headers}});}catch{throw new Error('Connection unavailable. Keep this page open and retry; no save has been confirmed.');}let data;try{data=await r.json();}catch{throw new Error('The service could not complete this request. Please retry.');}if(!r.ok)throw new Error(data.error||'Request failed. Please retry.');return data;}
   function calculate(){const unit=$('food-unit').value;const n=Number($('food-kcal').value),q=Number($('food-quantity').value);$('food-quantity-unit').textContent=unit;$('food-calculation').textContent=$('food-kcal').value!==''&&q>0?fmt(n*q/100)+' kcal in '+fmt(q)+' '+unit:'Enter package values and your portion.';}
-  function openProfile(p){profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=p?.is_estimate?'Approximate · Gemini estimate':p?.source||'Manual package entry';$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>$(id).value=p?.nutrition?.[keys[i]]??'');$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
+  function openProfile(p){profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=(p?.source||'Manual package entry')+(p?.is_estimate?' · approximate':'');$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>{const value=p?.nutrition?.[keys[i]];$(id).value=value===null||value===undefined?'':Math.round(value*10)/10;});$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
   const edited=event=>{pendingId=null;if([...fields,'food-name','food-unit'].includes(event.target.id))editing=true;calculate();};
   form.addEventListener('input',edited);form.addEventListener('change',edited);
   $('food-manual').onclick=()=>{searchRevision++;$('food-find').disabled=false;clear();results.hidden=true;openProfile(null);};
@@ -2663,12 +2663,43 @@ function currentPlanFocus(phases,checked,today){
     results.hidden=false;status.textContent='';
       if(data.warnings?.length)error.textContent=data.warnings.join('\n');
       if(data.profile){openProfile(data.profile);return;}
-      if(data.candidates?.length){for(const candidate of data.candidates){const row=el('div',undefined,results);row.className='food-result';const copy=el('div',undefined,row);el('strong',candidate.name,copy);el('p',candidate.reason,copy);const confirm=el('button','Confirm food & estimate',row);confirm.type='button';confirm.onclick=async()=>{const selected=++searchRevision;results.querySelectorAll('button').forEach(b=>b.disabled=true);clear();status.textContent='Estimating the confirmed food…';try{const result=await api('confirm',{method:'POST',body:JSON.stringify({name:candidate.name})});if(selected!==searchRevision)return;status.textContent='Review the estimate, preparation and portion before logging.';openProfile(result.profile);}catch(e){if(selected===searchRevision)failure(e);}finally{if(selected===searchRevision)results.querySelectorAll('button').forEach(b=>b.disabled=false);}};}}
+      if(data.candidates?.length){for(const candidate of data.candidates){const row=el('div',undefined,results);row.className='food-result';const copy=el('div',undefined,row);el('strong',candidate.name,copy);const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Gemini fallback';tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);const confirm=el('button','Confirm food & estimate',row);confirm.type='button';confirm.onclick=async()=>{const selected=++searchRevision;results.querySelectorAll('button').forEach(b=>b.disabled=true);clear();status.textContent='Estimating the confirmed food…';try{const result=await api('confirm',{method:'POST',body:JSON.stringify({name:candidate.name})});if(selected!==searchRevision)return;status.textContent='Review the nutrition, preparation and portion before logging.';openProfile(result.profile);}catch(e){if(selected===searchRevision)failure(e);}finally{if(selected===searchRevision)results.querySelectorAll('button').forEach(b=>b.disabled=false);}};}}
       else{el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);if(data.name){const button=el('button','Enter nutrition for '+data.name,results);button.type='button';button.onclick=()=>openProfile({name:data.name,source:'Manual package entry'});}}
+  }
+  let photoWorker=null,mlRequest=null,mlSequence=0;
+  function stopPhotoModel(){
+    photoWorker?.terminate();photoWorker=null;
+    if(mlRequest){clearTimeout(mlRequest.timer);mlRequest.resolve({candidates:[],fallback_reason:'Local recognition was interrupted.'});mlRequest=null;}
+  }
+  function browserPhoto(body,onProgress){
+    if(mlRequest)stopPhotoModel();
+    return new Promise(resolve=>{
+      const id=++mlSequence;
+      try{
+        photoWorker ||= new Worker('/food-ml-worker.js',{type:'module'});
+        const timer=setTimeout(()=>stopPhotoModel(),240000);
+        mlRequest={id,resolve,timer,onProgress};
+        photoWorker.onmessage=({data})=>{
+          if(data.type==='progress'){mlRequest?.onProgress(data.message);return;}
+          if(data.type!=='result'||data.id!==mlRequest?.id)return;
+          const pending=mlRequest;mlRequest=null;clearTimeout(pending.timer);pending.resolve(data.data);
+        };
+        photoWorker.onerror=()=>stopPhotoModel();
+        photoWorker.postMessage({id,...body});
+      }catch{stopPhotoModel();resolve({candidates:[],fallback_reason:'Local recognition is unavailable in this browser.'});}
+    });
   }
   async function findFood(path,body){
     const revision=++searchRevision;clear();form.hidden=true;results.replaceChildren();results.hidden=true;status.textContent='Finding your food…';$('food-find').disabled=true;
-    try{const data=await api(path,{method:'POST',body:JSON.stringify(body)});if(revision!==searchRevision)return;showMatches(data);}
+    try{
+      let data;
+      if(path==='photo'){
+        data=await browserPhoto(body,message=>{if(revision===searchRevision)status.textContent=message;});
+        if(revision!==searchRevision)return;
+        if(!data.candidates?.length){status.textContent='Local model could not recognize this reliably. Trying Gemini…';data=await api(path,{method:'POST',body:JSON.stringify(body)});data.warnings=[...(data.warnings||[]),'Local recognition did not pass its reliability checks; these suggestions use Gemini.'];}
+      }else data=await api(path,{method:'POST',body:JSON.stringify(body)});
+      if(revision!==searchRevision)return;showMatches(data);
+    }
     catch(e){if(revision===searchRevision)failure(e);}finally{if(revision===searchRevision)$('food-find').disabled=false;}
   }
   $('food-search').onsubmit=event=>{event.preventDefault();if($('food-search').reportValidity())findFood('search',{query:$('food-query').value.trim()});};
@@ -2745,8 +2776,8 @@ function currentPlanFocus(phases,checked,today){
   $('food-picture-input').onchange=choosePicture;$('food-camera-input').onchange=choosePicture;
   $('food-photo-identify').onclick=()=>{if(!photoData)return;const image=photoData;cameraDialog.close();findFood('photo',{image,mimeType:'image/jpeg'});};
   document.addEventListener('visibilitychange',()=>{if(document.hidden){stopCamera();if(cameraDialog.open)cameraStatus.textContent='Camera paused. Tap Scan barcode to resume.';}});
-  new MutationObserver(()=>{if(page.hidden&&cameraDialog.open)cameraDialog.close();}).observe(page,{attributes:true,attributeFilter:['hidden']});
-  window.addEventListener('pagehide',stopCamera);
+  new MutationObserver(()=>{if(page.hidden){if(cameraDialog.open)cameraDialog.close();searchRevision++;stopPhotoModel();}}).observe(page,{attributes:true,attributeFilter:['hidden']});
+  window.addEventListener('pagehide',()=>{stopCamera();stopPhotoModel();});
 
 })();
 </script>

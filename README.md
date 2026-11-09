@@ -17,13 +17,13 @@ Open http://127.0.0.1:4173. The local preview uses an isolated SQLite database i
 ## Changes
 
 - Nutrition tab follows the existing system, slate, forest and ember themes.
-- Food-name search adapts the Gemini suggestion → explicit food confirmation → generic nutrition estimate flow from `abhnovice/Nutrition-Module/external_services.py`.
+- Food names use the original character TF-IDF workbook lookup first. Food photos run the converted MobileNet/SVM locally in a browser worker. Accepted results require strictly above 60%; Gemini provides labeled fallback suggestions. Confirmation uses an exact workbook record before requesting a Gemini estimate.
 - Numeric barcodes call Barcode Lookup for identification and Open Food Facts for package nutrition. Provider failures are explicit; a missing nutrient is never silently recorded as zero. Incomplete package data offers manual entry.
 - Confirm per-100 g or per-100 ml values, enter the amount actually consumed, and select Breakfast/Lunch/Dinner/Snack. Daily calorie/protein/carbohydrate/fat totals use `nutrient_per_100 × amount / 100`.
 - Daily logs persist by authenticated account and selected India-calendar date, in their own D1 table. Removal is scoped to the account and day. Repeating an uncertain save with the same entry ID cannot duplicate it.
 - The restarted plan begins **9 November 2026**. Launchpad is Week 1 (9–15 November), Cardio Staircase is Week 2 (16–22 November), and Jog + Circuit covers Weeks 3–5 (23 November–13 December). Circuit volumes are 1 circuit for 1 weekday, 2 for 2 weekdays, 3 for 3 weekdays, 4 for 4 weekdays and 5 for 5 weekdays, with a 5 km jog every weekday and 5 km weekend walks. Study Gladiator Body Workout is added on 12–13 December. Block 1 starts **14 December 2026**. Remaining block durations are retained, ending **24 December 2027**.
 
-The Python prototype’s local ONNX/SVM image classifier, workbook lookup and ingredient-recipe editor are not part of this search/barcode integration. Food-name estimates are always labeled as estimates; they are not presented as workbook nutrition or verified package data. The Sites Worker runtime does not run the Python model.
+Photo inference needs no external Python service: the frozen encoder runs with ONNX Runtime Web 1.23.2, and the exported SVM/calibration/novelty checks run in JavaScript. Names retain the upstream TF-IDF similarity measure, which is not a calibrated probability. The ingredient-recipe editor remains outside this integration.
 
 ## Sources and build
 
@@ -66,3 +66,13 @@ Calendar and restart tests verify all fourteen initial days, circuit counts and 
 Plan displays every phase, including all Gladiator and BYOW blocks. Phase and week previews remain inspectable with disabled task and note controls until all prerequisite work is complete. The same phase gates are used by Home and Workouts. Entering Plan resets the accordion to the available calendar week, or the first unfinished week if the scheduled week is locked, then highlights and scrolls to it. Manually opening a phase or week closes its peers. A frame-ready handshake preserves direct navigation into Plan.
 
 Page headers use embedded Microsoft Fluent System Icons matched to the active route. Roboto and Roboto Mono are loaded from Google Fonts for the shell, nutrition controls and journal iframe. These presentation updates retain the existing plan revision and do not reset saved progress or change runtime provider configuration.
+
+## Browser model conversion
+
+- Source: abhnovice/Nutrition-Module commit 7742b5454b9e62bb1c536469e6806c3fc23b0296. The converter checks SHA-256 for both supplied model files.
+- Run scripts/convert-browser-model.py with --assets (directory containing model.npz and mobilenetv2-12.onnx), --workbook, --output (asset directory outside the source tree), --source (this repository), and --runtime (onnxruntime-web-1.23.2.tgz from npm pack). Build dependencies are in scripts/model-conversion-requirements.txt.
+- The converter reconstructs the original SVM once, exports exact numeric parameters and training-reference vectors, and exposes MobileNet's pooled features. No model fitting runs in the browser.
+- Run node scripts/check-browser-model.mjs /absolute/asset/directory to check the JavaScript classifier, Pillow-compatible bilinear resizing, and WebAssembly encoder against Python. Results are in tests/fixtures/browser-model-validation.json.
+- Immutable inference files live in the existing BUCKET binding. After deployment, PUT each file to /ml-assets/nutrition-ml-v1/<filename> using Sites owner-private service access. Only files listed in src/ml-manifest.json with the exact byte length and SHA-256 are accepted. No environment variables are added.
+- The first photo use downloads approximately 97 MB. Model parameters use versioned CacheStorage with SHA-256 verification; ONNX Runtime uses same-origin browser HTTP caching. Storage eviction may require downloading again. No food photo is stored in the model cache. The worker is released when leaving Nutrition.
+- The image confidence is calibrated top-1 correctness, rather than a per-label probability. Crop agreement and the original nearest-neighbor novelty threshold remain required in addition to confidence >0.60. Text scores remain explicitly labeled name similarity.

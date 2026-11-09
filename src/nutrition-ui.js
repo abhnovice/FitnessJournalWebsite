@@ -9,7 +9,7 @@
   const clear=()=>{status.textContent='';error.textContent='';};
   async function api(path,options={}){let r;try{r=await fetch('/api/nutrition/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{'content-type':'application/json',...options.headers}});}catch{throw new Error('Connection unavailable. Keep this page open and retry; no save has been confirmed.');}let data;try{data=await r.json();}catch{throw new Error('The service could not complete this request. Please retry.');}if(!r.ok)throw new Error(data.error||'Request failed. Please retry.');return data;}
   function calculate(){const unit=$('food-unit').value;const n=Number($('food-kcal').value),q=Number($('food-quantity').value);$('food-quantity-unit').textContent=unit;$('food-calculation').textContent=$('food-kcal').value!==''&&q>0?fmt(n*q/100)+' kcal in '+fmt(q)+' '+unit:'Enter package values and your portion.';}
-  function openProfile(p){profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=p?.is_estimate?'Approximate · Gemini estimate':p?.source||'Manual package entry';$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>$(id).value=p?.nutrition?.[keys[i]]??'');$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
+  function openProfile(p){profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=(p?.source||'Manual package entry')+(p?.is_estimate?' · approximate':'');$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>{const value=p?.nutrition?.[keys[i]];$(id).value=value===null||value===undefined?'':Math.round(value*10)/10;});$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
   const edited=event=>{pendingId=null;if([...fields,'food-name','food-unit'].includes(event.target.id))editing=true;calculate();};
   form.addEventListener('input',edited);form.addEventListener('change',edited);
   $('food-manual').onclick=()=>{searchRevision++;$('food-find').disabled=false;clear();results.hidden=true;openProfile(null);};
@@ -27,12 +27,43 @@
     results.hidden=false;status.textContent='';
       if(data.warnings?.length)error.textContent=data.warnings.join('\n');
       if(data.profile){openProfile(data.profile);return;}
-      if(data.candidates?.length){for(const candidate of data.candidates){const row=el('div',undefined,results);row.className='food-result';const copy=el('div',undefined,row);el('strong',candidate.name,copy);el('p',candidate.reason,copy);const confirm=el('button','Confirm food & estimate',row);confirm.type='button';confirm.onclick=async()=>{const selected=++searchRevision;results.querySelectorAll('button').forEach(b=>b.disabled=true);clear();status.textContent='Estimating the confirmed food…';try{const result=await api('confirm',{method:'POST',body:JSON.stringify({name:candidate.name})});if(selected!==searchRevision)return;status.textContent='Review the estimate, preparation and portion before logging.';openProfile(result.profile);}catch(e){if(selected===searchRevision)failure(e);}finally{if(selected===searchRevision)results.querySelectorAll('button').forEach(b=>b.disabled=false);}};}}
+      if(data.candidates?.length){for(const candidate of data.candidates){const row=el('div',undefined,results);row.className='food-result';const copy=el('div',undefined,row);el('strong',candidate.name,copy);const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Gemini fallback';tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);const confirm=el('button','Confirm food & estimate',row);confirm.type='button';confirm.onclick=async()=>{const selected=++searchRevision;results.querySelectorAll('button').forEach(b=>b.disabled=true);clear();status.textContent='Estimating the confirmed food…';try{const result=await api('confirm',{method:'POST',body:JSON.stringify({name:candidate.name})});if(selected!==searchRevision)return;status.textContent='Review the nutrition, preparation and portion before logging.';openProfile(result.profile);}catch(e){if(selected===searchRevision)failure(e);}finally{if(selected===searchRevision)results.querySelectorAll('button').forEach(b=>b.disabled=false);}};}}
       else{el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);if(data.name){const button=el('button','Enter nutrition for '+data.name,results);button.type='button';button.onclick=()=>openProfile({name:data.name,source:'Manual package entry'});}}
+  }
+  let photoWorker=null,mlRequest=null,mlSequence=0;
+  function stopPhotoModel(){
+    photoWorker?.terminate();photoWorker=null;
+    if(mlRequest){clearTimeout(mlRequest.timer);mlRequest.resolve({candidates:[],fallback_reason:'Local recognition was interrupted.'});mlRequest=null;}
+  }
+  function browserPhoto(body,onProgress){
+    if(mlRequest)stopPhotoModel();
+    return new Promise(resolve=>{
+      const id=++mlSequence;
+      try{
+        photoWorker ||= new Worker('/food-ml-worker.js',{type:'module'});
+        const timer=setTimeout(()=>stopPhotoModel(),240000);
+        mlRequest={id,resolve,timer,onProgress};
+        photoWorker.onmessage=({data})=>{
+          if(data.type==='progress'){mlRequest?.onProgress(data.message);return;}
+          if(data.type!=='result'||data.id!==mlRequest?.id)return;
+          const pending=mlRequest;mlRequest=null;clearTimeout(pending.timer);pending.resolve(data.data);
+        };
+        photoWorker.onerror=()=>stopPhotoModel();
+        photoWorker.postMessage({id,...body});
+      }catch{stopPhotoModel();resolve({candidates:[],fallback_reason:'Local recognition is unavailable in this browser.'});}
+    });
   }
   async function findFood(path,body){
     const revision=++searchRevision;clear();form.hidden=true;results.replaceChildren();results.hidden=true;status.textContent='Finding your food…';$('food-find').disabled=true;
-    try{const data=await api(path,{method:'POST',body:JSON.stringify(body)});if(revision!==searchRevision)return;showMatches(data);}
+    try{
+      let data;
+      if(path==='photo'){
+        data=await browserPhoto(body,message=>{if(revision===searchRevision)status.textContent=message;});
+        if(revision!==searchRevision)return;
+        if(!data.candidates?.length){status.textContent='Local model could not recognize this reliably. Trying Gemini…';data=await api(path,{method:'POST',body:JSON.stringify(body)});data.warnings=[...(data.warnings||[]),'Local recognition did not pass its reliability checks; these suggestions use Gemini.'];}
+      }else data=await api(path,{method:'POST',body:JSON.stringify(body)});
+      if(revision!==searchRevision)return;showMatches(data);
+    }
     catch(e){if(revision===searchRevision)failure(e);}finally{if(revision===searchRevision)$('food-find').disabled=false;}
   }
   $('food-search').onsubmit=event=>{event.preventDefault();if($('food-search').reportValidity())findFood('search',{query:$('food-query').value.trim()});};
@@ -109,7 +140,7 @@
   $('food-picture-input').onchange=choosePicture;$('food-camera-input').onchange=choosePicture;
   $('food-photo-identify').onclick=()=>{if(!photoData)return;const image=photoData;cameraDialog.close();findFood('photo',{image,mimeType:'image/jpeg'});};
   document.addEventListener('visibilitychange',()=>{if(document.hidden){stopCamera();if(cameraDialog.open)cameraStatus.textContent='Camera paused. Tap Scan barcode to resume.';}});
-  new MutationObserver(()=>{if(page.hidden&&cameraDialog.open)cameraDialog.close();}).observe(page,{attributes:true,attributeFilter:['hidden']});
-  window.addEventListener('pagehide',stopCamera);
+  new MutationObserver(()=>{if(page.hidden){if(cameraDialog.open)cameraDialog.close();searchRevision++;stopPhotoModel();}}).observe(page,{attributes:true,attributeFilter:['hidden']});
+  window.addEventListener('pagehide',()=>{stopCamera();stopPhotoModel();});
 
 })();

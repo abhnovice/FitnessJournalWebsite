@@ -70,7 +70,7 @@ test('existing icons and credential redirect protection survive packaging',async
     const r=await worker.fetch(new Request('https://example.test'+path),{});assert.equal(r.status,200);assert.ok((await r.arrayBuffer()).byteLength>0);
   }
   const original=globalThis.fetch;let calls=0;globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.redirect,'manual');return new Response(null,{status:302,headers:{location:'https://untrusted.invalid/'}});};
-  try{const r=await request('search','POST',{query:'chapati'},'alice',{GEMINI_API_KEY:'test-only'});assert.equal(r.status,502);assert.ok((await r.json()).error.includes('unexpected redirect'));assert.equal(calls,1);}finally{globalThis.fetch=original;}
+  try{const r=await request('search','POST',{query:'unlisted-food-xyzzy'},'alice',{GEMINI_API_KEY:'test-only'});assert.equal(r.status,502);assert.ok((await r.json()).error.includes('unexpected redirect'));assert.equal(calls,1);}finally{globalThis.fetch=original;}
 });
 
 test('frequent foods rank repeat entries and preserve the latest profile and portion',()=>{
