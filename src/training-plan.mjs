@@ -1,6 +1,6 @@
 // One calendar drives the journal and its verification.
 export const PLAN_REVISION='2026-11-09-restart-v1';
-export const date=offset=>new Date(Date.UTC(2026,10,9+offset));
+export const date=offset=>new Date(Date.UTC(2026,10,30+offset));
 export function createTrainingPlan(){
   const phases=[];
   function addPhase(id,name,start,weeks,note,taskFn,days=weeks*7){
@@ -8,8 +8,8 @@ export function createTrainingPlan(){
     for(let i=0;i<days;i++)taskFn(i,Math.floor(i/7),(date(start+i).getUTCDay()+6)%7).forEach((label,n)=>phase.items.push({id:id+'-'+i+'-'+n,day:i,label}));
     phases.push(phase);
   }
-  addPhase('launchpad','Launchpad',0,1,'Week 1 · 9–15 November · slow jogs and weekend walks',(i,w,d)=>[d<5?'Slow jog '+[1,2,2,3,3][d]+' km':'Walk 5 km']);
-  addPhase('cardio','Cardio staircase',7,1,'Week 2 · 16–22 November · slow jogs and weekend walks',(i,w,d)=>[d<5?'Slow jog '+[3,3,4,4,4][d]+' km':'Walk 5 km']);
+  addPhase('launchpad','Launchpad',0,1,'Week 1 · 30 November–6 December · slow jogs and weekend walks',(i,w,d)=>[d<5?'Slow jog '+[1,2,2,3,3][d]+' km':'Walk 5 km']);
+  addPhase('cardio','Cardio staircase',7,1,'Week 2 · 7–13 December · slow jogs and weekend walks',(i,w,d)=>[d<5?'Slow jog '+[3,3,4,4,4][d]+' km':'Walk 5 km']);
   const circuitCounts=[1,2,2,3,3,3,4,4,4,4,5,5,5,5,5];
   addPhase('circuit','Jog + circuit',14,3,'Weeks 3–5 · 5 km weekday jogs · 1 circuit = 5 pull-ups, 10 push-ups and 15 squats',(i,w,d)=>{
     if(d>4)return w===2?['Walk 5 km','Study Gladiator Body Workout']:['Walk 5 km'];

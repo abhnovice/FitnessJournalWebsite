@@ -65,7 +65,36 @@ body.tab-changing iframe{opacity:.18;transform:translateY(5px)}
 <style>body{font-family:'Roboto',Arial,sans-serif}#app-header-title{display:flex;align-items:center;gap:10px}#app-header-icon{display:inline-flex;color:var(--nav-accent);flex:none}#app-header-icon svg{display:block;width:22px;height:22px}</style>
 <style>
 #quick-add{width:52px;height:52px;background:var(--nav-bg);border:1px solid var(--nav-accent);box-shadow:0 3px 12px #0003}
-#coach-panel{position:fixed;right:max(12px,env(safe-area-inset-right));bottom:calc(136px + env(safe-area-inset-bottom));width:min(370px,calc(100vw - 24px));height:min(490px,calc(100dvh - 170px));z-index:60;background:var(--nav-bg);color:var(--nav-text,#eee);border:1px solid var(--nav-accent);border-radius:18px;box-shadow:0 12px 40px #0005;display:flex;flex-direction:column;overflow:hidden;font:16px/1.5 Roboto,Arial,sans-serif}#coach-panel[hidden]{display:none}#coach-panel header{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid #8884}#coach-panel small{display:block;font-size:13px;opacity:.75}#coach-panel button{cursor:pointer;background:var(--nav-accent);color:var(--nav-bg);border:0;border-radius:10px;padding:8px 12px;font:inherit}#coach-messages{flex:1;overflow:auto;padding:12px;overscroll-behavior:contain}#coach-messages p{margin:0 0 12px;padding:10px;border-radius:12px;background:#8882;white-space:pre-wrap;overflow-wrap:anywhere}#coach-messages .coach-question{margin-left:28px;border:1px solid #8884}#coach-form{display:flex;gap:8px;padding:10px}#coach-input{min-width:0;flex:1;resize:none;background:transparent;color:inherit;border:1px solid #8887;border-radius:10px;padding:9px;font:inherit}#coach-status{margin:0;padding:0 12px 8px;font-size:14px}
+#coach-panel {
+  position:fixed; right:max(12px,env(safe-area-inset-right)); bottom:calc(136px + env(safe-area-inset-bottom));
+  width:min(384px,calc(100vw - 24px)); height:min(490px,calc(100dvh - 152px)); box-sizing:border-box;
+  z-index:60; display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--nav-border);
+  border-radius:18px; background:var(--nav-bg); color:var(--nav-text); box-shadow:0 10px 36px #0003;
+  font:1rem/1.48 Roboto, Arial, sans-serif;
+}
+#coach-panel[hidden], #coach-starters[hidden] {display:none}
+#coach-panel header {display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--nav-border);background:linear-gradient(105deg,var(--nav-active),var(--nav-bg))}
+#coach-panel header img {width:40px;height:40px;object-fit:contain;background:var(--nav-bg);border:1px solid var(--nav-border);border-radius:12px}
+#coach-panel header strong {font-size:1.05rem}
+#coach-panel header small {display:block;color:var(--nav-muted);font-size:.82rem}
+#coach-panel button {font:inherit;cursor:pointer}
+#coach-panel button:focus-visible, #coach-input:focus-visible {outline:2px solid var(--nav-accent);outline-offset:2px}
+#coach-close {margin-left:auto;width:42px;height:42px;border:0;border-radius:50%;background:transparent;color:var(--nav-text);font-size:1.4rem!important}
+#coach-close:hover {background:var(--nav-hover)}
+#coach-messages {flex:1;min-height:36px;overflow:auto;padding:16px;overscroll-behavior:contain}
+#coach-messages p {width:fit-content;max-width:92%;box-sizing:border-box;margin:0 0 12px;padding:10px 13px;border-radius:14px 14px 14px 4px;background:var(--nav-hover);white-space:pre-wrap;overflow-wrap:anywhere}
+#coach-messages .coach-question {margin-left:auto;border-radius:14px 14px 4px 14px;background:var(--nav-active);color:var(--nav-text);border:1px solid var(--nav-border)}
+#coach-starters {display:flex;gap:8px;flex-wrap:wrap;padding:0 14px 10px}
+#coach-starters button {border:1px solid var(--nav-border);border-radius:20px;padding:7px 12px;background:var(--nav-bg);color:var(--nav-accent);font-size:.9rem}
+#coach-starters button:hover {background:var(--nav-active)}
+#coach-form {display:flex;align-items:center;gap:8px;margin:0 12px 12px;padding:6px;border:1px solid var(--nav-border);background:var(--nav-bg);border-radius:14px}
+#coach-input {flex:1;min-width:0;resize:none;background:transparent;color:inherit;border:0;border-radius:8px;padding:8px;font:inherit}
+#coach-form button {align-self:stretch;border:0;border-radius:10px;background:var(--nav-accent);color:var(--nav-bg);padding:0 14px;font-weight:600}
+#coach-form button:disabled {opacity:.55}
+#coach-status {margin:0;color:var(--nav-muted);font-size:.9rem}
+#coach-status:not(:empty) {padding:0 16px 12px}
+@media(max-width:600px){#coach-panel {bottom:calc(72px + env(safe-area-inset-bottom));height:min(480px,calc(100dvh - 88px))}}
+@media(max-height:480px){#coach-panel{bottom:8px;height:calc(100dvh - 16px)}}
 </style></head>
 <body>
 <nav id="training-nav" aria-label="Journey pages" aria-expanded="false"><div class="training-nav-inner"><button class="training-nav-brand" data-page="home" type="button" aria-label="Go to home"><span class="brand-wreath"><img src="/stronger-self-icon.webp" alt=""></span><span>Abhyudaya’s Best Life</span></button><div class="training-nav-settings"><div class="theme-label">Theme</div><div class="theme-picker" role="group" aria-label="Colour theme"><button class="theme-choice" type="button" data-theme-choice="system"><span class="theme-swatch system"></span><span>System</span></button><button class="theme-choice" type="button" data-theme-choice="slate"><span class="theme-swatch slate"></span><span>Slate</span></button><button class="theme-choice" type="button" data-theme-choice="forest"><span class="theme-swatch forest"></span><span>Forest</span></button><button class="theme-choice" type="button" data-theme-choice="ember"><span class="theme-swatch ember"></span><span>Ember</span></button></div><label class="visually-hidden" for="site-theme">Theme</label><select class="visually-hidden" id="site-theme"><option value="system">System</option><option value="slate">Slate</option><option value="forest">Forest</option><option value="ember">Ember</option></select></div><button id="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><svg width="20" height="20" aria-hidden="true" focusable="false" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -114,7 +143,7 @@ __NUTRITION_HTML__
   <button class="bottom-tab" type="button" data-tab="more" aria-label="More"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4" cy="10" r="1.3" fill="currentColor"/><circle cx="10" cy="10" r="1.3" fill="currentColor"/><circle cx="16" cy="10" r="1.3" fill="currentColor"/></svg><span>More</span></button>
 </nav>
 <button id="quick-add" type="button" aria-label="Ask your life coach" aria-expanded="false" aria-controls="coach-panel"><img src="/stronger-self-icon.webp" alt="" style="width:44px;height:44px;object-fit:contain"></button>
-<section id="coach-panel" role="dialog" aria-label="Life coach" hidden><header><div><strong>Your life coach</strong><small>A little perspective. One next step.</small></div><button id="coach-close" aria-label="Close life coach">×</button></header><div id="coach-messages" role="log" aria-live="polite"><p class="coach-reply">Hi Abhyudaya. What would you like to work through today—fitness, your career, learning, or finding balance?</p></div><form id="coach-form"><label class="visually-hidden" for="coach-input">Ask your life coach</label><textarea id="coach-input" rows="2" maxlength="3000" placeholder="What’s on your mind?" required></textarea><button type="submit">Send</button></form><p id="coach-status" role="status"></p></section>
+<section id="coach-panel" role="dialog" aria-label="Life coach" hidden><header><img src="/stronger-self-icon.webp" alt=""><div><strong>Your life coach</strong><small>Abhyudaya’s Best Life</small></div><button id="coach-close" aria-label="Close life coach">×</button></header><div id="coach-messages" role="log" aria-live="polite"><p class="coach-reply">Hi Abhyudaya. What would you like to work through today—fitness, your career, learning, or finding balance?</p></div><div id="coach-starters" aria-label="Suggested questions"><button type="button" data-question="Help me plan a balanced week.">Plan my week</button><button type="button" data-question="How can I get back into my workout routine?">Get back on track</button></div><form id="coach-form"><label class="visually-hidden" for="coach-input">Ask your life coach</label><textarea id="coach-input" rows="1" maxlength="3000" placeholder="What’s on your mind?" required></textarea><button type="submit">Send</button></form><p id="coach-status" role="status"></p></section>
 <div id="quick-sheet" class="quick-sheet" hidden><div class="quick-sheet-card" role="dialog" aria-modal="true" aria-labelledby="quick-sheet-title"><div class="quick-sheet-handle" aria-hidden="true"></div><div class="quick-sheet-head"><h2 id="quick-sheet-title">Quick add</h2><button class="quick-sheet-close" type="button" aria-label="Close">×</button></div><section><h3>Log weight and body fat</h3><div class="quick-fields"><label>Weight (kg)<input id="quick-weight" type="number" min="30" max="300" step="0.1" inputmode="decimal"></label><label>Body fat (%)<input id="quick-fat" type="number" min="3" max="70" step="0.1" inputmode="decimal"></label></div><button id="quick-save-stats" class="quick-save" type="button">Save</button></section><section><h3>Add a note</h3><label><span class="visually-hidden">Current week note</span><textarea id="quick-note" maxlength="12000" placeholder="Add to this week’s notes"></textarea></label><button id="quick-save-note" class="quick-save" type="button">Save note</button></section></div></div>
 <div id="save-toast" role="status" aria-live="polite">Saved</div>
 <div id="app-splash" aria-hidden="true"><div class="splash-mark"><span class="brand-wreath"><img src="/stronger-self-icon.webp" alt=""></span><strong>Abhyudaya’s Best Life</strong><span>Strength · Stamina · Recovery · Balance</span></div></div>
@@ -334,12 +363,17 @@ __NUTRITION_HTML__
 })();
 </script>
 <script>__NUTRITION_UI__</script>
-</body>
-</html>
 <script>
 (()=>{const panel=document.getElementById('coach-panel'),trigger=document.getElementById('quick-add'),input=document.getElementById('coach-input'),form=document.getElementById('coach-form'),log=document.getElementById('coach-messages'),status=document.getElementById('coach-status'),history=[];let busy=false;
+const starters=document.getElementById('coach-starters');
+starters.addEventListener('click', event=>{
+  const question=event.target.closest('button')?.dataset.question;
+  if(question){input.value=question;input.focus();}
+});
 function close(){panel.hidden=true;trigger.setAttribute('aria-expanded','false');trigger.focus();}
 trigger.addEventListener('click',()=>{panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden)input.focus();});document.getElementById('coach-close').onclick=close;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)close();});
 function append(text,cls){const p=document.createElement('p');p.className=cls;p.textContent=text;log.append(p);log.scrollTop=log.scrollHeight;}
-form.addEventListener('submit',async e=>{e.preventDefault();const message=input.value.trim();if(!message||busy)return;busy=true;form.querySelector('button').disabled=true;append(message,'coach-question');input.value='';status.textContent='Thinking…';try{const r=await fetch('/api/coach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[...history,{role:'user',text:message}].slice(-12)})});const data=await r.json();if(!r.ok)throw Error(data.error||'Please try again.');append(data.answer,'coach-reply');history.push({role:'user',text:message},{role:'model',text:data.answer});history.splice(0,Math.max(0,history.length-10));status.textContent='';}catch(err){status.textContent=err.message;input.value=message;}finally{busy=false;form.querySelector('button').disabled=false;}});
+form.addEventListener('submit',async e=>{e.preventDefault();const message=input.value.trim();if(!message||busy)return;busy=true;starters.hidden=true;form.querySelector('button').disabled=true;append(message,'coach-question');input.value='';status.textContent='Thinking…';try{const r=await fetch('/api/coach',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:[...history,{role:'user',text:message}].slice(-12)})});const data=await r.json();if(!r.ok)throw Error(data.error||'Please try again.');append(data.answer,'coach-reply');history.push({role:'user',text:message},{role:'model',text:data.answer});history.splice(0,Math.max(0,history.length-10));status.textContent='';}catch(err){status.textContent=err.message;input.value=message;}finally{busy=false;form.querySelector('button').disabled=false;}});
 })();</script>
+</body>
+</html>

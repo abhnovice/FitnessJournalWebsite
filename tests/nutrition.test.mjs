@@ -45,7 +45,7 @@ test('barcode nutrition remains available if identification provider is unavaila
   try{const data=await(await request('search','POST',{query:'8901234567890'},'alice',{BARCODE_API:'test-only'})).json();assert.equal(data.profile.unit,'ml');assert.equal(data.profile.is_estimate,false);assert.equal(data.profile.nutrition.energy_kcal,60);assert.ok(data.warnings[0].includes('quota'));}finally{globalThis.fetch=original;}
 });
 test('November plan dates match launchpad, actual weekends and rendered bundle',async()=>{
-  const page=readFileSync('src/journal.html','utf8');assert.ok(page.includes('__TRAINING_PLAN__'));assert.ok(page.includes('9 Nov 2026 – 24 Dec 2027'));
+  const page=readFileSync('src/journal.html','utf8');assert.ok(page.includes('__TRAINING_PLAN__'));assert.ok(page.includes('30 Nov 2026 – 14 Jan 2028'));
   const worker=(await import('../dist/server/index.js')).default;
   const response=await worker.fetch(new Request('https://example.test/nutrition'),{});assert.equal(response.status,200);const html=await response.text();assert.ok(html.includes('Your daily nutrition'));assert.ok(!html.includes('__JOURNAL_HTML__'));assert.equal((await worker.fetch(new Request('https://example.test/api/nutrition/entries?date=2026-11-09'),{})).status,401);
 });
@@ -113,22 +113,22 @@ test('Launchpad and Cardio Staircase match all fourteen requested dates and dist
   const phases=createTrainingPlan();
   assert.deepEqual(phases[0].items.map(x=>x.label),['Slow jog 1 km','Slow jog 2 km','Slow jog 2 km','Slow jog 3 km','Slow jog 3 km','Walk 5 km','Walk 5 km']);
   assert.deepEqual(phases[1].items.map(x=>x.label),['Slow jog 3 km','Slow jog 3 km','Slow jog 4 km','Slow jog 4 km','Slow jog 4 km','Walk 5 km','Walk 5 km']);
-  assert.equal(date(phases[0].start).toISOString().slice(0,10),'2026-11-09');assert.equal(date(phases[1].start).toISOString().slice(0,10),'2026-11-16');
+  assert.equal(date(phases[0].start).toISOString().slice(0,10),'2026-11-30');assert.equal(date(phases[1].start).toISOString().slice(0,10),'2026-12-07');
   assert.equal(phases[0].weeks,1);assert.equal(phases[1].weeks,1);
 });
 test('circuit volume rises after 1, 2, 3, 4 and 5 training days, without counting weekends',()=>{
   const phase=createTrainingPlan()[2],circuits=phase.items.filter(x=>x.label.startsWith('Circuit:'));
-  assert.equal(date(phase.start).toISOString().slice(0,10),'2026-11-23');
+  assert.equal(date(phase.start).toISOString().slice(0,10),'2026-12-14');
   assert.deepEqual(circuits.map(x=>Number(x.label.match(/Circuit: (\d)/)[1])),[1,2,2,3,3,3,4,4,4,4,5,5,5,5,5]);
   for(const item of circuits){assert.ok([1,2,3,4,5].includes(date(phase.start+item.day).getUTCDay()));assert.ok(item.label.includes('5 pull-ups / 10 push-ups / 15 squats'));}
   assert.equal(phase.items.filter(x=>x.label==='Jog 5 km').length,15);assert.equal(phase.items.filter(x=>x.label==='Walk 5 km').length,6);
-  assert.deepEqual(phase.items.filter(x=>x.label==='Study Gladiator Body Workout').map(x=>date(phase.start+x.day).toISOString().slice(0,10)),['2026-12-12','2026-12-13']);
+  assert.deepEqual(phase.items.filter(x=>x.label==='Study Gladiator Body Workout').map(x=>date(phase.start+x.day).toISOString().slice(0,10)),['2027-01-02','2027-01-03']);
 });
 test('Block 1 starts on the next Monday and every subsequent block keeps its duration',()=>{
-  const phases=createTrainingPlan();assert.equal(date(phases[3].start).toISOString().slice(0,10),'2026-12-14');
+  const phases=createTrainingPlan();assert.equal(date(phases[3].start).toISOString().slice(0,10),'2027-01-04');
   for(let i=1;i<phases.length;i++){assert.equal(phases[i-1].start+phases[i-1].days,phases[i].start);assert.equal(date(phases[i].start).getUTCDay(),1);}
   for(const p of phases.slice(3,-1))assert.equal(p.days,28);
-  assert.equal(phases.at(-1).days,12);assert.equal(date(phases.at(-1).start+phases.at(-1).days-1).toISOString().slice(0,10),'2027-12-24');
+  assert.equal(phases.at(-1).days,12);assert.equal(date(phases.at(-1).start+phases.at(-1).days-1).toISOString().slice(0,10),'2028-01-14');
 });
 test('fresh plan erases old account progress once and rejects saves from stale browser tabs',async()=>{
   const worker=(await import('../dist/server/index.js')).default;
