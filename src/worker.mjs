@@ -41,6 +41,7 @@ function validRecord(record) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if(url.pathname === "/api/coach") return handleCoach(request, env);
     if(url.pathname.startsWith('/ml-assets/'))return handleMLAsset(request,env,ML_MANIFEST);
     if(url.pathname==='/ml-core.js'||url.pathname==='/food-ml-worker.js')return new Response(url.pathname==='/ml-core.js'?ML_CORE_JS:ML_WORKER_JS,{headers:{'content-type':'text/javascript; charset=utf-8','cache-control':'no-cache','x-content-type-options':'nosniff'}});
     if(url.pathname==="/barcode-reader.js") return new Response(BARCODE_READER_JS,{headers:{"content-type":"text/javascript; charset=utf-8","cache-control":"public, max-age=86400","x-content-type-options":"nosniff"}});

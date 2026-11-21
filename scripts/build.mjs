@@ -13,7 +13,7 @@ mkdirSync('dist/server',{recursive:true});
 writeFileSync('dist/server/package.json',JSON.stringify({type:'module'})+'\n');
 rmSync('dist/server/package-lock.json',{force:true});
 writeFileSync('dist/index.html',page);
-writeFileSync('dist/server/index.js','const PLAN_REVISION = '+JSON.stringify(PLAN_REVISION)+';\nconst BARCODE_READER_JS = '+JSON.stringify(read('src/vendor/zxing-browser.min.js'))+';\nconst PAGE_HTML = '+JSON.stringify(page)+';\n'+mlConstants+strip(read('src/nutrition.mjs'))+'\n'+read('src/worker.mjs'));
+writeFileSync('dist/server/index.js','const PLAN_REVISION = '+JSON.stringify(PLAN_REVISION)+';\nconst BARCODE_READER_JS = '+JSON.stringify(read('src/vendor/zxing-browser.min.js'))+';\nconst PAGE_HTML = '+JSON.stringify(page)+';\n'+mlConstants+strip(read('src/nutrition.mjs'))+'\n'+strip(read('src/coach.mjs'))+'\n'+read('src/worker.mjs'));
 // These production assets are also embedded in the Worker. Copy source artwork
 // for portable local previews and archive inspection when available.
 for(const file of ['stronger-self-icon.webp','home-fit-icon.png','body-stats-character-v1.png','cheering-character-v1.png','dashboard-dumbbell-v1.png','dashboard-pullup-v1.png','dashboard-squat-v1.png','dashboard-treadmill-v1.png']){
