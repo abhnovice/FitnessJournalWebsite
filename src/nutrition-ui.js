@@ -85,7 +85,7 @@
       const quantity=$('food-quantity').value;
       openProfile(next);
       if(originalUnit===next.unit)$('food-quantity').value=quantity;
-      calculate();status.textContent='Review the Gemini estimate and portion before logging.';
+      calculate();status.textContent='Review the '+next.source+' and portion before logging.';
     }catch(e){if(revision===searchRevision)failure(e);}
     finally{if(!saving)geminiEstimate.disabled=false;}
   };
@@ -106,7 +106,7 @@
       const row=el('div',undefined,results);row.className='food-result';
       const info=el('div',undefined,row);
       el('p','Meal '+number+' · '+meal.location,info).className='meal-location';
-      el('strong',p.name,info);
+      el('strong',p.name,info);el('span',p.source,info).className='food-badge';
       const totals=keys.map(k=>fmt(p.nutrition[k]*p.quantity/100));
       el('p','Estimated '+totals[0]+' kcal · Protein '+totals[1]+' g · Carbs '+totals[2]+' g · Fat '+totals[3]+' g',info);
       const details=el('details',undefined,info);el('summary','Dishes and likely ingredients',details);displayDishes(details,p.dishes);
@@ -131,7 +131,7 @@
       const row=el('div',undefined,results);row.className='food-result';
       const copy=el('div',undefined,row);el('strong',candidate.name,copy);
       const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';
-      tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Identified by Gemini';
+      tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Identified by '+candidate.source;
       tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);
       const confirm=el('button','Confirm food & estimate',row);confirm.type='button';
       confirm.onclick=async()=>{
@@ -156,7 +156,7 @@
           const alternative=await postFood(path,{...body,provider:'gemini'});
           if(revision!==searchRevision)return;
           if(alternative.candidates?.length){form.hidden=true;showMatches(alternative,path,null,true);}
-          else status.textContent='Gemini found no matches. You can still use the ML result.';
+          else status.textContent=(alternative.source||'Gemini')+' found no matches. You can still use the ML result.';
         }catch(e){if(revision===searchRevision)failure(e);}
         finally{busy(false);}
       };
@@ -195,7 +195,7 @@
       }else if(path==='photo'){
         data=await browserPhoto(body,message=>{if(revision===searchRevision)status.textContent=message;});
         if(revision!==searchRevision)return;
-        if(!data.candidates?.length){status.textContent='Local model could not recognize this reliably. Trying Gemini…';data=await api(path,{method:'POST',body:JSON.stringify(body)});data.warnings=[...(data.warnings||[]),'Local recognition did not pass its reliability checks; these suggestions use Gemini.'];}
+        if(!data.candidates?.length){status.textContent='Local model could not recognize this reliably. Trying Gemini…';data=await api(path,{method:'POST',body:JSON.stringify(body)});data.warnings=[...(data.warnings||[]),'Local recognition did not identify this food reliably.'];}
       }else data=await api(path,{method:'POST',body:JSON.stringify(body)});
       if(revision!==searchRevision)return;showMatches(data,path,body);
     }
