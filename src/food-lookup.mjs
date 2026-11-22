@@ -27,6 +27,13 @@ function similarity(a,b){
   }
   return a.length+b.length?2*blocks(0,a.length,0,b.length)/(a.length+b.length):1;
 }
+// The name model also scores shared preparation words such as "ki sabzi".
+const vegetableNames=[
+  /\b(?:papaya|papita|papite|papitha)\b|पपीत[ाे]/i,
+  /\b(?:(?:unripe|green|raw|cooking) bananas?|plantains?|kach+[^ ]* kel[aey]+|vazhakkai|vazhaikkai)\b|कच्च[ेा] केल[ेा]/i,
+  /\b(?:potato(?:es)?|aloo|aalu|alu)\b|आलू/i,
+  /\b(?:jackfruit|kathal)\b|कटहल/i
+];
 export function lookupFoods(query){
   const q=normalizeFood(query);if(!q)return [];
   const drink = drinksByName.get(q);
@@ -44,7 +51,8 @@ export function lookupFoods(query){
   for(const [i,count] of counts){const value=count*catalog.idf[i];vector.set(i,value);norm+=value*value;}
   norm=Math.sqrt(norm);if(!norm)return [];
   for(const [i,value] of vector)vector.set(i,value/norm);
-  return catalog.foods.map(food=>{
+  const namedVegetables=vegetableNames.filter(pattern=>pattern.test(query));
+  return catalog.foods.filter(food=>namedVegetables.every(pattern=>pattern.test(food.name))).map(food=>{
     let score=0;for(let i=0;i<food.indices.length;i++)score+=food.values[i]*(vector.get(food.indices[i])||0);
     return {food,score};
   }).sort((a,b)=>b.score-a.score).slice(0,5).filter(({food,score})=>score>.6&&q.split(' ').some(a=>food.normalized.split(' ').some(b=>similarity(a,b)>=.6))).map(({food,score})=>({name:food.name,nutrition:food.nutrition,confidence:score,source:'ML',score_kind:'name similarity',reason:'Workbook name match. Confirm the preparation before logging.'}));

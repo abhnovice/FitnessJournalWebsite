@@ -2,20 +2,62 @@
   const $=id=>document.getElementById(id), keys=['energy_kcal','protein_g','carbohydrate_g','fat_g'],fields=['food-kcal','food-protein','food-carbs','food-fat'];
   const page=$('nutrition-page'),form=$('food-form'),results=$('food-results'),diary=$('food-diary'),status=$('food-status'),error=$('food-error'),date=$('food-date');
   let profile=null,searchRevision=0,dayRevision=0,loaded=false,pendingId=null,saving=false,editing=false;
-  let activePhotoGroup=null;
+  let activePhotoGroup=null, correcting=false;
   date.value=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const fmt=n=>Number(n).toLocaleString('en-IN',{maximumFractionDigits:1});
   const el=(tag,content,parent)=>{const node=document.createElement(tag);if(content!==undefined)node.textContent=content;if(parent)parent.append(node);return node;};
   const failure=e=>{error.textContent=e.message;status.textContent='';};
   const clear=()=>{status.textContent='';error.textContent='';};
   async function api(path,options={}){let r;try{r=await fetch('/api/nutrition/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{'content-type':'application/json',...options.headers}});}catch{throw new Error('Connection unavailable. Keep this page open and retry; no save has been confirmed.');}let data;try{data=await r.json();}catch{throw new Error('The service could not complete this request. Please retry.');}if(!r.ok)throw new Error(data.error||'Request failed. Please retry.');return data;}
-  function displayDishes(parent,dishes){
+  function ingredientReview(parent,description,apply,wholeMeal){
+    const choices=el('details',undefined,parent);
+    choices.className='ingredient-review';
+    const lookalike=vegetableLookalike(description);
+    choices.open=lookalike;
+    el('summary',lookalike?'Check the main ingredient':'Correct the dish',choices);
+    if(lookalike){
+      el('p','Peeled vegetables can look alike once cooked. Choose the one you used if the estimate needs changing.',choices);
+      const buttons=el('div',undefined,choices);buttons.className='vegetable-choices';
+      for(const [label,ingredient] of [['Potato (aloo)','potato'],['Raw banana (kaccha kela)','unripe cooking banana'],['Raw papaya (kaccha papita)','green papaya']]){
+        const button=el('button',wholeMeal?label:label+' sabzi',buttons);button.type='button';
+        button.onclick=()=>apply(wholeMeal?ingredient:ingredient+' sabzi');
+      }
+    }
+    const label=el('label',wholeMeal?'Ingredient or recipe':'Corrected dish name',choices);
+    const input=el('input',undefined,label);input.type='text';input.maxLength=120;
+    input.placeholder=wholeMeal?'e.g. raw banana with coconut':'e.g. vazhakkai poriyal';
+    const run=el('button','Update estimate',choices);run.type='button';
+    run.onclick=()=>{const value=input.value.trim();if(value)apply(value);else input.focus();};
+    input.onkeydown=event=>{if(event.key==='Enter'){event.preventDefault();run.click();}};
+  }
+  async function reviseDish(index,correction){
+    if(saving||correcting)return;
+    const before=profile, revision=++searchRevision;
+    correcting=true;clear();status.textContent='Updating the dish and meal totals…';
+    $('food-log').disabled=true;
+    try{
+      const revised=await postFood('correct-dish',{dish:before.dishes[index],correction});
+      if(revision!==searchRevision || profile!==before || form.hidden)return;
+      const next=replacePhotoDish(before,index,revised);
+      next.source=revised.source+' · corrected meal';
+      const portion=$('food-quantity').value;
+      const customName=$('food-name').value!==before.name?$('food-name').value:null;
+      activePhotoGroup?.update(next);
+      openProfile(next,activePhotoGroup);
+      if(customName!==null)$('food-name').value=customName;
+      $('food-quantity').value=portion;calculate();
+      status.textContent='Updated '+next.dishes[index].name+' and the totals for your portion.';
+    }catch(e){if(revision===searchRevision&&profile===before)failure(e);}
+    finally{correcting=false;$('food-log').disabled=saving||!loaded;}
+  }
+  function displayDishes(parent,dishes,editable=false){
     const list=el('ul',undefined,parent);list.className='food-dish-list';
-    for(const dish of dishes){
+    for(const [index,dish] of dishes.entries()){
       const item=el('li',undefined,list);
       el('strong',dish.name,item);
       if(dish.ingredients.length)el('span','Likely ingredients · '+dish.ingredients.join(', '),item);
       el('span','Possible preparation · '+dish.preparation,item);
+      if(editable)ingredientReview(item,[dish.name,...dish.ingredients,dish.preparation].join(' '),value=>reviseDish(index,value),true);
     }
   }
   function calculateMeal(){
@@ -39,7 +81,7 @@
     $('food-name').value=p?.name||'';
     $('food-source').textContent=(p?.source||'Manual package entry')+(p?.is_estimate?' · approximate':'');
     const review=$('food-dish-review');review.replaceChildren();review.hidden=!wholeMeal;
-    if(wholeMeal)displayDishes(review,p.dishes);
+    if(wholeMeal)displayDishes(review,p.dishes,Boolean(p.parts));
     $('food-preparation').textContent=wholeMeal?
       'Portions, ingredients and cooking oil are estimated. Adjust the grams if you ate a different amount in the same proportions.':
       [p?.preparation,p?.assumptions].filter(Boolean).join('\n');
@@ -106,13 +148,18 @@
       const row=el('div',undefined,results);row.className='food-result';
       const info=el('div',undefined,row);
       el('p','Meal '+number+' · '+meal.location,info).className='meal-location';
-      el('strong',p.name,info);el('span',p.source,info).className='food-badge';
-      const totals=keys.map(k=>fmt(p.nutrition[k]*p.quantity/100));
-      el('p','Estimated '+totals[0]+' kcal · Protein '+totals[1]+' g · Carbs '+totals[2]+' g · Fat '+totals[3]+' g',info);
-      const details=el('details',undefined,info);el('summary','Dishes and likely ingredients',details);displayDishes(details,p.dishes);
+      const copy=el('div',undefined,info);
+      function update(next){
+        meal.profile=next;copy.replaceChildren();
+        el('strong',next.name,copy);el('span',next.source,copy).className='food-badge';
+        const totals=keys.map(k=>fmt(next.nutrition[k]*next.quantity/100));
+        el('p','Estimated '+totals[0]+' kcal · Protein '+totals[1]+' g · Carbs '+totals[2]+' g · Fat '+totals[3]+' g',copy);
+        const details=el('details',undefined,copy);el('summary','Dishes and likely ingredients',details);displayDishes(details,next.dishes);
+      }
+      update(p);
       const button=el('button','Review meal '+number,row);button.type='button';
-      const group={number,location:meal.location,button,id:crypto.randomUUID()};
-      button.onclick=()=>{if(saving)return;clear();openProfile(p,group);};
+      const group={number,location:meal.location,button,id:crypto.randomUUID(),update};
+      button.onclick=()=>{if(saving)return;clear();openProfile(meal.profile,group);};
     }
     results.scrollIntoView({block:'start'});
   }
@@ -121,6 +168,18 @@
     if(data.warnings?.length)error.textContent=data.warnings.join('\n');
     if(data.meals){showPhotoMeals(data.meals,body.image);return;}
     if(data.profile){openProfile(data.profile);return;}
+    if(path==='photo'){
+      const description=(data.candidates||[]).map(c=>c.name+' '+c.reason).join(' ');
+      ingredientReview(results,description,async name=>{
+        if(saving)return;
+        const revision=++searchRevision;clear();form.hidden=true;status.textContent='Estimating the dish you identified…';
+        try{
+          const {profile:next}=await postFood('confirm',{name});
+          if(revision!==searchRevision)return;
+          openProfile(next);status.textContent='Review the corrected dish and portion before logging.';
+        }catch(e){if(revision===searchRevision)failure(e);}
+      },false);
+    }
     if(!data.candidates?.length){
       el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);
       if(data.name){const button=el('button','Enter nutrition for '+data.name,results);button.type='button';button.onclick=()=>openProfile({name:data.name,source:'Manual package entry'});}
@@ -220,7 +279,7 @@
   async function loadFoods(force=false){if(foodsLoading||foodsLoaded&&!force)return;foodsLoading=true;try{const data=await api('foods');savedFoods=data.foods;foodsLoaded=true;renderFoods();}catch{if(!foodsLoaded){const list=$('food-frequent');list.replaceChildren(el('p','Saved foods could not be loaded.'));const retry=el('button','Retry saved foods',list);retry.type='button';retry.onclick=()=>loadFoods();}}finally{foodsLoading=false;}}
   $('food-query').addEventListener('input',()=>{if(foodsLoaded)renderFoods();});
   form.onsubmit=async event=>{
-    event.preventDefault();if(saving||!loaded||!form.reportValidity())return;clear();pendingId ||= activePhotoGroup?.id || crypto.randomUUID();const entry={id:pendingId,date:date.value,meal:$('food-meal').value,name:$('food-name').value.trim(),unit:$('food-unit').value,quantity:Number($('food-quantity').value),nutrition:Object.fromEntries(keys.map((k,i)=>[k,Number($(fields[i]).value)])),source:profile?(editing?'Manual adjustment · '+profile.source:profile.source):'Manual package entry',is_estimate:profile?.is_estimate===true,...(profile?.dishes?{dishes:profile.dishes}:{})};
+    event.preventDefault();if(saving||correcting||!loaded||!form.reportValidity())return;clear();pendingId ||= activePhotoGroup?.id || crypto.randomUUID();const entry={id:pendingId,date:date.value,meal:$('food-meal').value,name:$('food-name').value.trim(),unit:$('food-unit').value,quantity:Number($('food-quantity').value),nutrition:Object.fromEntries(keys.map((k,i)=>[k,Number($(fields[i]).value)])),source:profile?(editing?'Manual adjustment · '+profile.source:profile.source):'Manual package entry',is_estimate:profile?.is_estimate===true,...(profile?.dishes?{dishes:profile.dishes}:{})};
     searchRevision++;saving=true;$('food-camera').disabled=true;date.disabled=true;$('food-manual').disabled=true;$('food-find').disabled=true;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=true);status.textContent='Saving this portion…';
     try{
       await api('entries',{method:'POST',body:JSON.stringify(entry)});

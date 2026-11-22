@@ -12,7 +12,7 @@ const headerIcons=Object.fromEntries(Object.entries({home:'home',foundation:'cli
 const drinkOptions = Object.entries(drinkGroups).map(([group, drinks]) =>
   '<optgroup label="'+escape(group)+'">'+drinks.map(({name})=>'<option>'+escape(name)+'</option>').join('')+'</optgroup>'
 ).join('');
-const page=read('src/page.html').replace('__HOME_HEADER_ICON__',()=>headerIcons.home).replace('__HEADER_ICONS__',()=>JSON.stringify(headerIcons)).replace('__PLAN_REVISION__',()=>JSON.stringify(PLAN_REVISION)).replace('__JOURNAL_HTML__',()=>escape(read('src/journal.html').replace('__TRAINING_PLAN__',()=>read('src/training-plan.mjs').replace(/^export /gm,'')))).replace('__NUTRITION_HTML__',()=>read('src/nutrition.html').replace('__DRINK_OPTIONS__',()=>drinkOptions)).replace('__NUTRITION_UI__',()=>read('src/nutrition-ui.js'));
+const page=read('src/page.html').replace('__HOME_HEADER_ICON__',()=>headerIcons.home).replace('__HEADER_ICONS__',()=>JSON.stringify(headerIcons)).replace('__PLAN_REVISION__',()=>JSON.stringify(PLAN_REVISION)).replace('__JOURNAL_HTML__',()=>escape(read('src/journal.html').replace('__TRAINING_PLAN__',()=>read('src/training-plan.mjs').replace(/^export /gm,'')))).replace('__NUTRITION_HTML__',()=>read('src/nutrition.html').replace('__DRINK_OPTIONS__',()=>drinkOptions)).replace('__NUTRITION_UI__',()=>strip(read('src/photo-review.mjs'))+'\n'+read('src/nutrition-ui.js'));
 mkdirSync('dist/server',{recursive:true});
 writeFileSync('dist/server/package.json',JSON.stringify({type:'module'})+'\n');
 rmSync('dist/server/package-lock.json',{force:true});
