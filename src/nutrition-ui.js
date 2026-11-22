@@ -33,7 +33,7 @@
     const wholeMeal=Boolean(p?.dishes);
     profile=p;pendingId=null;editing=false;form.hidden=false;
     form.classList.toggle('meal-review',wholeMeal);
-    geminiEstimate.hidden=!p?.source?.startsWith('ML');geminiEstimate.disabled=false;
+    geminiEstimate.hidden=!(p?.source?.startsWith('ML') || p?.source==='Drink guide');geminiEstimate.disabled=false;
     $('food-review-title').textContent=group?'Review meal '+group.number+' · '+group.location:wholeMeal?'Review your meal':'Confirm your food and portion';
     $('food-log').textContent=wholeMeal?'Log meal':'Log this portion';
     $('food-name').value=p?.name||'';
@@ -50,7 +50,7 @@
       const value=p?.nutrition?.[keys[i]];
       $(id).value=value==null?'':wholeMeal?value:Math.round(value*10)/10;
     });
-    $('food-quantity').value=wholeMeal?p.quantity:100;
+    $('food-quantity').value=p?.quantity??100;
     calculate();$('food-name').focus({preventScroll:true});
     form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
   }
@@ -133,7 +133,7 @@
       const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';
       tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Identified by '+candidate.source;
       tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);
-      const confirm=el('button','Confirm food & estimate',row);confirm.type='button';
+      const confirm=el('button','Review portion',row);confirm.type='button';
       confirm.onclick=async()=>{
         if(saving)return;
         const revision=++searchRevision;busy(true);clear();status.textContent='Estimating the confirmed food…';
@@ -146,7 +146,7 @@
         finally{busy(false);}
       };
     }
-    if(data.candidates.some(candidate=>candidate.source==='ML')){
+    if(data.candidates.some(candidate=>candidate.source==='ML'||candidate.source==='Drink guide')){
       const ask=el('button',path==='photo'?'Ask Gemini about this photo':'Ask Gemini for other matches',results);
       ask.type='button';
       ask.onclick=async()=>{
@@ -202,6 +202,14 @@
     catch(e){if(revision===searchRevision)failure(e);}finally{if(revision===searchRevision)$('food-find').disabled=false;}
   }
   $('food-search').onsubmit=event=>{event.preventDefault();if($('food-search').reportValidity())findFood('search',{query:$('food-query').value.trim()});};
+  $('drink-choice').onchange=()=>{
+    const choice=$('drink-choice');
+    if (!choice.value || saving) return;
+    $('food-query').value=choice.value;
+    choice.value='';
+    renderFoods();
+    $('food-search').requestSubmit();
+  };
   let savedFoods=[],foodsLoaded=false,foodsLoading=false;
   function renderFoods(){
     const list=$('food-frequent');list.replaceChildren();const query=$('food-query').value.trim().toLocaleLowerCase();const foods=savedFoods.filter(f=>!query||f.name.toLocaleLowerCase().includes(query)).slice(0,8);
@@ -357,7 +365,7 @@
         }
       }
       photoData=canvas.toDataURL('image/jpeg',0.85).split(',')[1];$('food-photo-preview').src=photoURL;$('food-photo-preview').hidden=false;
-      cameraStatus.textContent='Choose whether to analyze the meals in this photo or identify one food.';$('food-photo-identify').hidden=false;$('food-photo-meal').hidden=false;$('food-photo-notice').hidden=false;
+      cameraStatus.textContent='Choose whether to analyze the meals in this photo or identify one food or drink.';$('food-photo-identify').hidden=false;$('food-photo-meal').hidden=false;$('food-photo-notice').hidden=false;
     }catch{if(revision===cameraRevision){clearPhoto();cameraStatus.textContent='This picture could not be opened. Try a JPEG, PNG or WebP image.';}}
   }
   $('food-picture-input').onchange=choosePicture;$('food-camera-input').onchange=choosePicture;

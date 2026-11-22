@@ -57,3 +57,19 @@ test('requested Gemini match and estimate bypass an exact local match',async()=>
   assert.equal(estimate.profile.nutrition.energy_kcal,255);
   assert.equal(replies.length,0);
 });
+
+test('drink guide resolves spelling and mixer aliases locally with ml portions', async () => {
+  globalThis.fetch = () => { throw Error('Unexpected external lookup'); };
+  for (const [query, name, quantity, energy] of [
+    ['whiskey', 'Whisky', 30, 65], ['rum & coke', 'Rum and cola', 200, 162],
+    ['beer', 'Regular beer', 330, 142], ['club soda', 'Sparkling water', 250, 0]
+  ]) {
+    const search = await (await request('search', {query})).json();
+    assert.equal(search.candidates[0].name, name);
+    const {profile} = await (await request('confirm', {name})).json();
+    assert.equal(profile.unit, 'ml');
+    assert.equal(profile.quantity, quantity);
+    assert.equal(profile.is_estimate, true);
+    assert.equal(Math.round(profile.nutrition.energy_kcal * quantity / 100), energy);
+  }
+});

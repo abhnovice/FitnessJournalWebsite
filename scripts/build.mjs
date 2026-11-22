@@ -1,14 +1,18 @@
+import {drinkGroups} from '../src/drinks.mjs';
 import {PLAN_REVISION} from '../src/training-plan.mjs';
 import {readFileSync,writeFileSync,mkdirSync,existsSync,copyFileSync,rmSync} from 'node:fs';
 const read=path=>readFileSync(path,'utf8');
 const strip=s=>s.replace(/^import .*;\n/gm,'').replace(/^export /gm,'');
 const mlManifest=read('src/ml-manifest.json');
 const mlWorker=read('src/ml-worker.js').replace('__ML_MANIFEST__',()=>mlManifest);
-const mlConstants='const ML_MANIFEST = '+mlManifest+';\nconst ML_CORE_JS = '+JSON.stringify(read('src/ml-core.mjs'))+';\nconst ML_WORKER_JS = '+JSON.stringify(mlWorker)+';\nconst catalog = '+read('src/food-catalog.json')+';\n'+strip(read('src/food-lookup.mjs'))+'\n'+strip(read('src/ml-assets.mjs'))+'\n';
+const mlConstants='const ML_MANIFEST = '+mlManifest+';\nconst ML_CORE_JS = '+JSON.stringify(read('src/ml-core.mjs'))+';\nconst ML_WORKER_JS = '+JSON.stringify(mlWorker)+';\nconst catalog = '+read('src/food-catalog.json')+';\n'+strip(read('src/drinks.mjs'))+'\n'+strip(read('src/food-lookup.mjs'))+'\n'+strip(read('src/ml-assets.mjs'))+'\n';
 const escape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
 const fluentIcon=name=>read('assets/fluent-icons/'+name+'.svg').replace(/fill="#[^"]+"/g,'fill="currentColor"').replace('<svg ','<svg aria-hidden="true" focusable="false" ');
 const headerIcons=Object.fromEntries(Object.entries({home:'home',foundation:'clipboard_checkmark',nutrition:'food_apple','body-stats':'data_usage',workouts:'dumbbell',more:'navigation',...Object.fromEntries(Array.from({length:6},(_,i)=>['gladiator-'+i,'dumbbell'])),...Object.fromEntries(Array.from({length:8},(_,i)=>['byow-'+i,'target']))}).map(([page,icon])=>[page,fluentIcon(icon)]));
-const page=read('src/page.html').replace('__HOME_HEADER_ICON__',()=>headerIcons.home).replace('__HEADER_ICONS__',()=>JSON.stringify(headerIcons)).replace('__PLAN_REVISION__',()=>JSON.stringify(PLAN_REVISION)).replace('__JOURNAL_HTML__',()=>escape(read('src/journal.html').replace('__TRAINING_PLAN__',()=>read('src/training-plan.mjs').replace(/^export /gm,'')))).replace('__NUTRITION_HTML__',()=>read('src/nutrition.html')).replace('__NUTRITION_UI__',()=>read('src/nutrition-ui.js'));
+const drinkOptions = Object.entries(drinkGroups).map(([group, drinks]) =>
+  '<optgroup label="'+escape(group)+'">'+drinks.map(({name})=>'<option>'+escape(name)+'</option>').join('')+'</optgroup>'
+).join('');
+const page=read('src/page.html').replace('__HOME_HEADER_ICON__',()=>headerIcons.home).replace('__HEADER_ICONS__',()=>JSON.stringify(headerIcons)).replace('__PLAN_REVISION__',()=>JSON.stringify(PLAN_REVISION)).replace('__JOURNAL_HTML__',()=>escape(read('src/journal.html').replace('__TRAINING_PLAN__',()=>read('src/training-plan.mjs').replace(/^export /gm,'')))).replace('__NUTRITION_HTML__',()=>read('src/nutrition.html').replace('__DRINK_OPTIONS__',()=>drinkOptions)).replace('__NUTRITION_UI__',()=>read('src/nutrition-ui.js'));
 mkdirSync('dist/server',{recursive:true});
 writeFileSync('dist/server/package.json',JSON.stringify({type:'module'})+'\n');
 rmSync('dist/server/package-lock.json',{force:true});

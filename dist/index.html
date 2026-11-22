@@ -141,25 +141,26 @@ body.tab-changing iframe{opacity:.18;transform:translateY(5px)}
 @media(max-width:600px){#nutrition-page{width:calc(100% - 24px);margin-top:16px}.food-top{align-items:start;flex-direction:column;gap:12px}.food-date{width:100%}.food-totals{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.food-card{padding:16px}.food-search-row{flex-wrap:wrap}.food-search-row label{flex-basis:100%}.food-grid{gap:12px}.food-result{align-items:start;flex-direction:column}.food-entry{align-items:start;flex-wrap:wrap}.food-entry-end{margin-left:auto}.food-total{padding:14px}}
 .meal-photo-map{position:relative;display:table;max-width:100%;margin:12px auto}.meal-photo-map img{display:block;max-width:100%;max-height:42vh;width:auto;height:auto;border-radius:8px}.meal-photo-box{position:absolute;box-sizing:border-box;border:2px solid white;border-radius:6px;box-shadow:0 0 0 1px #222;pointer-events:none}.meal-photo-box b{display:inline-block;vertical-align:top;border-radius:0 0 4px 0;background:#17202b;color:#fff;padding:1px 7px;font-size:14px}.food-result .meal-location{font-weight:600;color:var(--nav-accent)}
 #food-form label[hidden]{display:none}.food-dish-list{padding-inline-start:1.3rem}.food-dish-list li{margin:.55rem 0}.food-dish-list span{display:block;color:var(--nav-muted)}#food-form.meal-review #food-calculation{grid-column:1/-1}#food-calculation strong,#food-calculation span{display:block}
+.drink-browser{margin:14px 0}.drink-browser summary{cursor:pointer;color:var(--nav-accent);padding:6px 0}.drink-browser[open] label{display:block;margin-top:8px}
 </style>
 <main id="nutrition-page" hidden>
   <div class="food-top"><div><span class="food-eyebrow">Nourish your best life</span><h1>Your daily nutrition</h1><p class="food-muted">Find your food. Choose your portion. Keep the day in view.</p></div><div class="food-date"><label for="food-date">Diary date · India time</label><input type="date" id="food-date" required></div></div>
   <div class="food-totals" aria-label="Daily nutrition totals"><div class="food-total">Calories<strong id="food-total-energy">—</strong><small>kcal logged</small></div><div class="food-total">Protein<strong id="food-total-protein">—</strong><small>grams</small></div><div class="food-total">Carbohydrates<strong id="food-total-carbs">—</strong><small>grams</small></div><div class="food-total">Fat<strong id="food-total-fat">—</strong><small>grams</small></div></div>
-  <section class="food-card"><h2>What’s on your plate?</h2><form id="food-search"><div class="food-search-row"><div class="food-search-field"><label for="food-query">Food name or product barcode</label><span class="food-input-camera"><input id="food-query" type="text" maxlength="300" placeholder="Palak paneer, chapati, or a barcode" required><button id="food-camera" type="button" aria-label="Scan barcode or add a food picture" aria-haspopup="dialog" title="Scan barcode or add picture"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h4l2-3h4l2 3h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/><circle cx="12" cy="12" r="4"/></svg></button></span></div><button class="food-primary" type="submit" id="food-find">Find food</button></div></form><div class="food-tools"><button type="button" id="food-manual">Enter package values manually</button></div><p class="food-muted" style="font-size:12px;margin-top:14px">Food-name searches use ML first. You can ask Gemini for another match. Groq handles failed Gemini requests. Confirm the food before requesting an estimate. Barcodes use Barcode Lookup and Open Food Facts; check package data against your label.</p><div id="food-results" aria-label="Food matches" hidden></div></section>
+  <section class="food-card"><h2>What did you eat or drink?</h2><form id="food-search"><div class="food-search-row"><div class="food-search-field"><label for="food-query">Food, drink or product barcode</label><span class="food-input-camera"><input id="food-query" type="text" maxlength="300" placeholder="Palak paneer, beer, or a barcode" required><button id="food-camera" type="button" aria-label="Scan barcode or add a food picture" aria-haspopup="dialog" title="Scan barcode or add picture"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h4l2-3h4l2 3h4a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"/><circle cx="12" cy="12" r="4"/></svg></button></span></div><button class="food-primary" type="submit" id="food-find">Search</button></div></form><details class="drink-browser"><summary>Browse drinks</summary><label for="drink-choice">Choose a drink</label><select id="drink-choice"><option value="">Select a drink…</option><optgroup label="Beer and wine"><option>Regular beer</option><option>Light beer</option><option>Red wine</option><option>White wine</option></optgroup><optgroup label="Spirits"><option>Whisky</option><option>Vodka</option><option>Gin</option><option>Rum</option><option>Tequila</option><option>Brandy</option></optgroup><optgroup label="Cocktails and mixed drinks"><option>Gin and tonic</option><option>Vodka soda</option><option>Rum and cola</option><option>Whisky and soda</option><option>Mojito</option><option>Margarita</option></optgroup><optgroup label="Alcohol-free drinks"><option>Sparkling water</option><option>Regular cola</option><option>Black coffee</option><option>Black tea</option></optgroup></select></details><div class="food-tools"><button type="button" id="food-manual">Enter package values manually</button></div><p class="food-muted" style="font-size:12px;margin-top:14px">Search checks the drink guide and food-name model first. You can ask Gemini for another match. Groq handles failed Gemini requests. Confirm the food before requesting an estimate. Barcodes use Barcode Lookup and Open Food Facts; check package data against your label.</p><div id="food-results" aria-label="Food matches" hidden></div></section>
   <section class="food-card" id="food-frequent-section" aria-label="Frequently used foods"><h2>Frequently used</h2><p class="food-muted" style="font-size:13px">Your saved foods, ready to use again. Review the portion before logging.</p><div id="food-frequent"><p class="food-muted">Loading your saved foods…</p></div></section>
   <p id="food-status" role="status" aria-live="polite"></p><p id="food-error" role="alert"></p>
-  <form id="food-form" class="food-card" hidden><span id="food-source" class="food-badge"></span><h2 id="food-review-title">Confirm your food and portion</h2><div id="food-dish-review" hidden></div><button type="button" id="food-gemini-estimate" hidden>Re-estimate with Gemini</button><p id="food-preparation" class="food-muted"></p><div class="food-grid"><label class="food-wide" for="food-name">Food name<input id="food-name" maxlength="200" required></label><label for="food-meal">Meal<select id="food-meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label for="food-unit">Nutrition basis<select id="food-unit"><option value="g">Per 100 g</option><option value="ml">Per 100 ml</option></select></label><label for="food-kcal">Calories per 100 (kcal)<input id="food-kcal" type="number" step="any" min="0" max="1000" required></label><label for="food-protein">Protein per 100 (g)<input id="food-protein" type="number" step="any" min="0" max="100" required></label><label for="food-carbs">Carbohydrates per 100 (g)<input id="food-carbs" type="number" step="any" min="0" max="100" required></label><label for="food-fat">Fat per 100 (g)<input id="food-fat" type="number" step="any" min="0" max="100" required></label><label for="food-quantity">Amount eaten (<span id="food-quantity-unit">g</span>)<input id="food-quantity" type="number" step="any" min="0.1" max="10000" value="100" required></label><div id="food-calculation" aria-live="polite"></div></div><p id="food-basis-hint" class="food-muted" style="font-size:12px">Use weighed grams for food or measured millilitres for drinks. Values above are per 100 of the selected unit. Estimates describe a typical preparation, so edit the values when you have a package label.</p><div class="food-tools"><button class="food-primary" type="submit" id="food-log">Log this portion</button><button type="button" id="food-cancel">Cancel</button></div></form>
+  <form id="food-form" class="food-card" hidden><span id="food-source" class="food-badge"></span><h2 id="food-review-title">Confirm your food and portion</h2><div id="food-dish-review" hidden></div><button type="button" id="food-gemini-estimate" hidden>Re-estimate with Gemini</button><p id="food-preparation" class="food-muted"></p><div class="food-grid"><label class="food-wide" for="food-name">Food name<input id="food-name" maxlength="200" required></label><label for="food-meal">Meal<select id="food-meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label><label for="food-unit">Nutrition basis<select id="food-unit"><option value="g">Per 100 g</option><option value="ml">Per 100 ml</option></select></label><label for="food-kcal">Calories per 100 (kcal)<input id="food-kcal" type="number" step="any" min="0" max="1000" required></label><label for="food-protein">Protein per 100 (g)<input id="food-protein" type="number" step="any" min="0" max="100" required></label><label for="food-carbs">Carbohydrates per 100 (g)<input id="food-carbs" type="number" step="any" min="0" max="100" required></label><label for="food-fat">Fat per 100 (g)<input id="food-fat" type="number" step="any" min="0" max="100" required></label><label for="food-quantity">Amount consumed (<span id="food-quantity-unit">g</span>)<input id="food-quantity" type="number" step="any" min="0.1" max="10000" value="100" required></label><div id="food-calculation" aria-live="polite"></div></div><p id="food-basis-hint" class="food-muted" style="font-size:12px">Use weighed grams for food or measured millilitres for drinks. Values above are per 100 of the selected unit. Estimates describe a typical preparation, so edit the values when you have a package label.</p><div class="food-tools"><button class="food-primary" type="submit" id="food-log">Log this portion</button><button type="button" id="food-cancel">Cancel</button></div></form>
   <section class="food-card"><h2>Your meal diary</h2><p id="food-diary-date" class="food-muted"></p><div id="food-diary" aria-live="polite"><p class="food-empty">Loading your diary…</p></div></section>
 </main>
 
 <dialog id="food-camera-dialog" aria-labelledby="food-camera-title">
-  <div class="food-camera-head"><div><span class="food-eyebrow">Scan or snap</span><h2 id="food-camera-title">Add food with your camera</h2></div><button type="button" id="food-camera-close" aria-label="Close camera">×</button></div>
-  <div class="food-camera-options"><button type="button" id="food-scan-start">Scan barcode</button><button type="button" id="food-photo-take">Take food photo</button><button type="button" id="food-picture-pick">Choose picture</button></div>
+  <div class="food-camera-head"><div><span class="food-eyebrow">Scan or snap</span><h2 id="food-camera-title">Add food or drinks with your camera</h2></div><button type="button" id="food-camera-close" aria-label="Close camera">×</button></div>
+  <div class="food-camera-options"><button type="button" id="food-scan-start">Scan barcode</button><button type="button" id="food-photo-take">Take photo</button><button type="button" id="food-picture-pick">Choose picture</button></div>
   <p id="food-camera-status" role="status" aria-live="polite">Scan a package barcode, or choose a picture of a barcode or food.</p>
   <div id="food-scanner-view" hidden><video id="food-camera-video" playsinline muted></video><div class="food-scan-guide" aria-hidden="true"></div><span>Keep the product barcode inside the frame</span></div>
   <img id="food-photo-preview" alt="Selected food or barcode picture" hidden>
-  <p id="food-photo-notice" class="food-muted" hidden>Meal analysis sends this picture to Gemini, which groups dishes by plate and estimates each meal separately. Choose a meal to review and log. Single-food recognition starts on your device (97 MB on first use) and uses Gemini if confidence is 60% or lower. If the Gemini request fails, Groq receives the picture for analysis. Pictures are not saved.</p>
-  <div class="food-camera-options"><button type="button" id="food-photo-meal" class="food-primary" hidden>Analyze meals in photo</button><button type="button" id="food-photo-identify" hidden>Identify one food</button><button type="button" id="food-scan-stop" hidden>Stop camera</button></div>
+  <p id="food-photo-notice" class="food-muted" hidden>Meal analysis sends this picture to Gemini, which identifies dishes and drinks and estimates each meal separately. Choose a meal to review and log. Single-food recognition starts on your device (97 MB on first use) and uses Gemini if confidence is 60% or lower. If the Gemini request fails, Groq receives the picture for analysis. Pictures are not saved.</p>
+  <div class="food-camera-options"><button type="button" id="food-photo-meal" class="food-primary" hidden>Analyze meals in photo</button><button type="button" id="food-photo-identify" hidden>Identify one item</button><button type="button" id="food-scan-stop" hidden>Stop camera</button></div>
   <input type="file" id="food-picture-input" accept="image/*" hidden>
   <input type="file" id="food-camera-input" accept="image/*" capture="environment" hidden>
 </dialog>
@@ -2704,7 +2705,7 @@ function currentPlanFocus(phases,checked,today){
     const wholeMeal=Boolean(p?.dishes);
     profile=p;pendingId=null;editing=false;form.hidden=false;
     form.classList.toggle('meal-review',wholeMeal);
-    geminiEstimate.hidden=!p?.source?.startsWith('ML');geminiEstimate.disabled=false;
+    geminiEstimate.hidden=!(p?.source?.startsWith('ML') || p?.source==='Drink guide');geminiEstimate.disabled=false;
     $('food-review-title').textContent=group?'Review meal '+group.number+' · '+group.location:wholeMeal?'Review your meal':'Confirm your food and portion';
     $('food-log').textContent=wholeMeal?'Log meal':'Log this portion';
     $('food-name').value=p?.name||'';
@@ -2721,7 +2722,7 @@ function currentPlanFocus(phases,checked,today){
       const value=p?.nutrition?.[keys[i]];
       $(id).value=value==null?'':wholeMeal?value:Math.round(value*10)/10;
     });
-    $('food-quantity').value=wholeMeal?p.quantity:100;
+    $('food-quantity').value=p?.quantity??100;
     calculate();$('food-name').focus({preventScroll:true});
     form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
   }
@@ -2804,7 +2805,7 @@ function currentPlanFocus(phases,checked,today){
       const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';
       tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Identified by '+candidate.source;
       tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);
-      const confirm=el('button','Confirm food & estimate',row);confirm.type='button';
+      const confirm=el('button','Review portion',row);confirm.type='button';
       confirm.onclick=async()=>{
         if(saving)return;
         const revision=++searchRevision;busy(true);clear();status.textContent='Estimating the confirmed food…';
@@ -2817,7 +2818,7 @@ function currentPlanFocus(phases,checked,today){
         finally{busy(false);}
       };
     }
-    if(data.candidates.some(candidate=>candidate.source==='ML')){
+    if(data.candidates.some(candidate=>candidate.source==='ML'||candidate.source==='Drink guide')){
       const ask=el('button',path==='photo'?'Ask Gemini about this photo':'Ask Gemini for other matches',results);
       ask.type='button';
       ask.onclick=async()=>{
@@ -2873,6 +2874,14 @@ function currentPlanFocus(phases,checked,today){
     catch(e){if(revision===searchRevision)failure(e);}finally{if(revision===searchRevision)$('food-find').disabled=false;}
   }
   $('food-search').onsubmit=event=>{event.preventDefault();if($('food-search').reportValidity())findFood('search',{query:$('food-query').value.trim()});};
+  $('drink-choice').onchange=()=>{
+    const choice=$('drink-choice');
+    if (!choice.value || saving) return;
+    $('food-query').value=choice.value;
+    choice.value='';
+    renderFoods();
+    $('food-search').requestSubmit();
+  };
   let savedFoods=[],foodsLoaded=false,foodsLoading=false;
   function renderFoods(){
     const list=$('food-frequent');list.replaceChildren();const query=$('food-query').value.trim().toLocaleLowerCase();const foods=savedFoods.filter(f=>!query||f.name.toLocaleLowerCase().includes(query)).slice(0,8);
@@ -3028,7 +3037,7 @@ function currentPlanFocus(phases,checked,today){
         }
       }
       photoData=canvas.toDataURL('image/jpeg',0.85).split(',')[1];$('food-photo-preview').src=photoURL;$('food-photo-preview').hidden=false;
-      cameraStatus.textContent='Choose whether to analyze the meals in this photo or identify one food.';$('food-photo-identify').hidden=false;$('food-photo-meal').hidden=false;$('food-photo-notice').hidden=false;
+      cameraStatus.textContent='Choose whether to analyze the meals in this photo or identify one food or drink.';$('food-photo-identify').hidden=false;$('food-photo-meal').hidden=false;$('food-photo-notice').hidden=false;
     }catch{if(revision===cameraRevision){clearPhoto();cameraStatus.textContent='This picture could not be opened. Try a JPEG, PNG or WebP image.';}}
   }
   $('food-picture-input').onchange=choosePicture;$('food-camera-input').onchange=choosePicture;
