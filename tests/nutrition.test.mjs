@@ -180,15 +180,16 @@ test('every displayed week contains scheduled days, including the final partial 
 
 test('whole meal photo aggregates portions and retains dish descriptions in one diary entry',async t=>{
   const image={mimeType:'image/jpeg',image:'/9j/',mode:'meal'};
-  const plate={name:'Rice and dal',dishes:[
+  const plate={location:'Left plate',box:[100,50,800,450],name:'Rice and dal',dishes:[
     {name:'Rice',ingredients:['rice'],preparation:'Possibly steamed.',grams:200,
       per100:{energy_kcal:130,protein_g:3,carbohydrate_g:28,fat_g:0.3}},
     {name:'Dal',ingredients:['lentils','cumin'],preparation:'Possibly simmered with a cumin tempering.',grams:100,
       per100:{energy_kcal:120,protein_g:7,carbohydrate_g:16,fat_g:3}}
   ]};
+  const photoMeals=[plate];
   t.mock.method(globalThis,'fetch',async(url,options)=>{
     assert.deepEqual(JSON.parse(options.body).contents[0].parts[1].inlineData,{mimeType:image.mimeType,data:image.image});
-    return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(plate)}]}}]});
+    return Response.json({candidates:[{content:{parts:[{text:JSON.stringify({meals:photoMeals})}]}}]});
   });
   const analyze=()=>request('photo','POST',image,'meal-user',{GEMINI_MODEL:'test',GEMINI_API_KEY:'test'});
   const {profile}=await(await analyze()).json();
@@ -199,8 +200,15 @@ test('whole meal photo aggregates portions and retains dish descriptions in one 
   assert.equal(day.entries.length,1);
   assert.deepEqual(day.entries[0].dishes,plate.dishes.map(({name,ingredients,preparation})=>({name,ingredients,preparation})));
   assert.deepEqual(day.totals,{energy_kcal:380,protein_g:13,carbohydrate_g:72,fat_g:3.6});
+  photoMeals.push({...plate,location:'Right bowl',box:[50,550,600,950],dishes:[plate.dishes[1]]});
+  const multi=await(await analyze()).json();
+  assert.equal(multi.profile,undefined);
+  assert.deepEqual(multi.meals.map(g=>[g.location,g.box,g.profile.quantity,entryTotals(g.profile).energy_kcal]),[
+    ['Left plate',plate.box,300,380],['Right bowl',[50,550,600,950],100,120]
+  ]);
+  assert.deepEqual(multi.meals[1].profile.dishes.map(d=>d.name),['Dal']);
   plate.dishes[0].per100.fat_g=null;
   assert.equal((await analyze()).status,502);
-  plate.dishes=[];
+  photoMeals.length=0;
   assert.equal((await analyze()).status,422);
 });

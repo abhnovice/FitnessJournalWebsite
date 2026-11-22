@@ -2,6 +2,7 @@
   const $=id=>document.getElementById(id), keys=['energy_kcal','protein_g','carbohydrate_g','fat_g'],fields=['food-kcal','food-protein','food-carbs','food-fat'];
   const page=$('nutrition-page'),form=$('food-form'),results=$('food-results'),diary=$('food-diary'),status=$('food-status'),error=$('food-error'),date=$('food-date');
   let profile=null,searchRevision=0,dayRevision=0,loaded=false,pendingId=null,saving=false,editing=false;
+  let activePhotoGroup=null;
   date.value=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const fmt=n=>Number(n).toLocaleString('en-IN',{maximumFractionDigits:1});
   const el=(tag,content,parent)=>{const node=document.createElement(tag);if(content!==undefined)node.textContent=content;if(parent)parent.append(node);return node;};
@@ -27,12 +28,13 @@
   }
   function calculate(){if(profile?.dishes){$('food-quantity-unit').textContent='g';calculateMeal();return;}const unit=$('food-unit').value;const n=Number($('food-kcal').value),q=Number($('food-quantity').value);$('food-quantity-unit').textContent=unit;$('food-calculation').textContent=$('food-kcal').value!==''&&q>0?fmt(n*q/100)+' kcal in '+fmt(q)+' '+unit:'Enter package values and your portion.';}
   const geminiEstimate=$('food-gemini-estimate');
-  function openProfile(p){
+  function openProfile(p,group=null){
+    activePhotoGroup=group;
     const wholeMeal=Boolean(p?.dishes);
     profile=p;pendingId=null;editing=false;form.hidden=false;
     form.classList.toggle('meal-review',wholeMeal);
     geminiEstimate.hidden=!p?.source?.startsWith('ML');geminiEstimate.disabled=false;
-    $('food-review-title').textContent=wholeMeal?'Review your meal':'Confirm your food and portion';
+    $('food-review-title').textContent=group?'Review meal '+group.number+' · '+group.location:wholeMeal?'Review your meal':'Confirm your food and portion';
     $('food-log').textContent=wholeMeal?'Log meal':'Log this portion';
     $('food-name').value=p?.name||'';
     $('food-source').textContent=(p?.source||'Manual package entry')+(p?.is_estimate?' · approximate':'');
@@ -87,9 +89,37 @@
     }catch(e){if(revision===searchRevision)failure(e);}
     finally{if(!saving)geminiEstimate.disabled=false;}
   };
+  function showPhotoMeals(meals,image){
+    el('h3','Meals in this photo',results);
+    el('p','Review and log each portion you ate.',results);
+    const map=el('div',undefined,results);map.className='meal-photo-map';
+    const photo=el('img',undefined,map);photo.src='data:image/jpeg;base64,'+image;
+    photo.alt='Meal photo with numbered meal locations';
+    for(const [index,meal] of meals.entries()){
+      const number=index+1,p=meal.profile;
+      if(meal.box){
+        const [top,left,bottom,right]=meal.box;
+        const box=el('span',undefined,map);box.className='meal-photo-box';box.setAttribute('aria-hidden','true');
+        Object.assign(box.style,{top:top/10+'%',left:left/10+'%',height:(bottom-top)/10+'%',width:(right-left)/10+'%'});
+        el('b',String(number),box);
+      }
+      const row=el('div',undefined,results);row.className='food-result';
+      const info=el('div',undefined,row);
+      el('p','Meal '+number+' · '+meal.location,info).className='meal-location';
+      el('strong',p.name,info);
+      const totals=keys.map(k=>fmt(p.nutrition[k]*p.quantity/100));
+      el('p','Estimated '+totals[0]+' kcal · Protein '+totals[1]+' g · Carbs '+totals[2]+' g · Fat '+totals[3]+' g',info);
+      const details=el('details',undefined,info);el('summary','Dishes and likely ingredients',details);displayDishes(details,p.dishes);
+      const button=el('button','Review meal '+number,row);button.type='button';
+      const group={number,location:meal.location,button,id:crypto.randomUUID()};
+      button.onclick=()=>{if(saving)return;clear();openProfile(p,group);};
+    }
+    results.scrollIntoView({block:'start'});
+  }
   function showMatches(data,path,body,requestedGemini=false){
     results.replaceChildren();results.hidden=false;status.textContent='';
     if(data.warnings?.length)error.textContent=data.warnings.join('\n');
+    if(data.meals){showPhotoMeals(data.meals,body.image);return;}
     if(data.profile){openProfile(data.profile);return;}
     if(!data.candidates?.length){
       el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);
@@ -160,7 +190,7 @@
     try{
       let data;
       if(path==='photo'&&body.mode==='meal'){
-        status.textContent='Estimating the dishes and nutrition for your whole meal…';
+        status.textContent='Finding the meals and estimating each portion…';
         data=await postFood(path,body);
       }else if(path==='photo'){
         data=await browserPhoto(body,message=>{if(revision===searchRevision)status.textContent=message;});
@@ -182,9 +212,20 @@
   async function loadFoods(force=false){if(foodsLoading||foodsLoaded&&!force)return;foodsLoading=true;try{const data=await api('foods');savedFoods=data.foods;foodsLoaded=true;renderFoods();}catch{if(!foodsLoaded){const list=$('food-frequent');list.replaceChildren(el('p','Saved foods could not be loaded.'));const retry=el('button','Retry saved foods',list);retry.type='button';retry.onclick=()=>loadFoods();}}finally{foodsLoading=false;}}
   $('food-query').addEventListener('input',()=>{if(foodsLoaded)renderFoods();});
   form.onsubmit=async event=>{
-    event.preventDefault();if(saving||!loaded||!form.reportValidity())return;clear();pendingId ||= crypto.randomUUID();const entry={id:pendingId,date:date.value,meal:$('food-meal').value,name:$('food-name').value.trim(),unit:$('food-unit').value,quantity:Number($('food-quantity').value),nutrition:Object.fromEntries(keys.map((k,i)=>[k,Number($(fields[i]).value)])),source:profile?(editing?'Manual adjustment · '+profile.source:profile.source):'Manual package entry',is_estimate:profile?.is_estimate===true,...(profile?.dishes?{dishes:profile.dishes}:{})};
+    event.preventDefault();if(saving||!loaded||!form.reportValidity())return;clear();pendingId ||= activePhotoGroup?.id || crypto.randomUUID();const entry={id:pendingId,date:date.value,meal:$('food-meal').value,name:$('food-name').value.trim(),unit:$('food-unit').value,quantity:Number($('food-quantity').value),nutrition:Object.fromEntries(keys.map((k,i)=>[k,Number($(fields[i]).value)])),source:profile?(editing?'Manual adjustment · '+profile.source:profile.source):'Manual package entry',is_estimate:profile?.is_estimate===true,...(profile?.dishes?{dishes:profile.dishes}:{})};
     searchRevision++;saving=true;$('food-camera').disabled=true;date.disabled=true;$('food-manual').disabled=true;$('food-find').disabled=true;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=true);status.textContent='Saving this portion…';
-    try{await api('entries',{method:'POST',body:JSON.stringify(entry)});loadFoods(true);pendingId=null;form.hidden=true;results.replaceChildren();results.hidden=true;await loadDay();status.textContent=loaded?'Portion saved to your account.':'Portion saved. Retry the diary to refresh your daily totals.';}catch(e){failure(e);}finally{saving=false;$('food-camera').disabled=false;date.disabled=false;$('food-manual').disabled=false;$('food-find').disabled=false;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=false);$('food-log').disabled=!loaded;}
+    try{
+      await api('entries',{method:'POST',body:JSON.stringify(entry)});
+      const group=activePhotoGroup;
+      loadFoods(true);pendingId=null;activePhotoGroup=null;form.hidden=true;
+      if(group){
+        group.button.disabled=true;group.button.textContent='Logged';
+        group.button.setAttribute('aria-label','Meal '+group.number+' logged');
+        results.scrollIntoView({block:'start'});
+      }else{results.replaceChildren();results.hidden=true;}
+      await loadDay();
+      status.textContent=loaded?(group?'Meal '+group.number+' logged.':'Portion saved to your account.'):'Portion saved. Retry the diary to refresh your daily totals.';
+    }catch(e){failure(e);}finally{saving=false;$('food-camera').disabled=false;date.disabled=false;$('food-manual').disabled=false;$('food-find').disabled=false;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=false);$('food-log').disabled=!loaded;}
   };
   window.addEventListener('nutrition-open',()=>{if(page.hidden)return;clear();loadDay();loadFoods();});
   if(location.pathname.replace(/\/$/,'')==='/nutrition'){loadDay();loadFoods();}
@@ -316,7 +357,7 @@
         }
       }
       photoData=canvas.toDataURL('image/jpeg',0.85).split(',')[1];$('food-photo-preview').src=photoURL;$('food-photo-preview').hidden=false;
-      cameraStatus.textContent='Choose whether to analyze the whole meal or identify one food.';$('food-photo-identify').hidden=false;$('food-photo-meal').hidden=false;$('food-photo-notice').hidden=false;
+      cameraStatus.textContent='Choose whether to analyze the meals in this photo or identify one food.';$('food-photo-identify').hidden=false;$('food-photo-meal').hidden=false;$('food-photo-notice').hidden=false;
     }catch{if(revision===cameraRevision){clearPhoto();cameraStatus.textContent='This picture could not be opened. Try a JPEG, PNG or WebP image.';}}
   }
   $('food-picture-input').onchange=choosePicture;$('food-camera-input').onchange=choosePicture;
