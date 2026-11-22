@@ -37,3 +37,23 @@ test('model asset upload accepts only a known size and SHA-256',async()=>{
   assert.equal((await handleMLAsset(put(raw),storage,manifest)).status,204);assert.equal(saved,true);
   assert.equal((await handleMLAsset(new Request('https://site.example/ml-assets/v1/unknown.bin'),storage,manifest)).status,404);
 });
+
+test('requested Gemini match and estimate bypass an exact local match',async()=>{
+  const name='Chapati/Roti';
+  const replies=[
+    {is_food:true,matches:[{name,reason:'Flatbread'}]},
+    {can_estimate:true,unit:'g',preparation:'Plain',assumptions:'No added oil',nutrition:{energy_kcal:255,protein_g:8,carbohydrate_g:45,fat_g:4}}
+  ];
+  globalThis.fetch=async(url,options)=>{
+    assert.match(String(url),/generativelanguage/);
+    assert.ok(JSON.parse(options.body).contents[0].parts[0].text.includes(name));
+    return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(replies.shift())}]}}]});
+  };
+  const match=await(await request('search',{query:name,provider:'gemini'})).json();
+  assert.equal(match.candidates[0].source,'Gemini');
+  const estimate=await(await request('confirm',{name:match.candidates[0].name,provider:'gemini'})).json();
+  assert.equal(estimate.profile.source,'Gemini estimate');
+  assert.equal(estimate.profile.is_estimate,true);
+  assert.equal(estimate.profile.nutrition.energy_kcal,255);
+  assert.equal(replies.length,0);
+});

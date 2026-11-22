@@ -9,11 +9,12 @@
   const clear=()=>{status.textContent='';error.textContent='';};
   async function api(path,options={}){let r;try{r=await fetch('/api/nutrition/'+path,{credentials:'same-origin',cache:'no-store',...options,headers:{'content-type':'application/json',...options.headers}});}catch{throw new Error('Connection unavailable. Keep this page open and retry; no save has been confirmed.');}let data;try{data=await r.json();}catch{throw new Error('The service could not complete this request. Please retry.');}if(!r.ok)throw new Error(data.error||'Request failed. Please retry.');return data;}
   function calculate(){const unit=$('food-unit').value;const n=Number($('food-kcal').value),q=Number($('food-quantity').value);$('food-quantity-unit').textContent=unit;$('food-calculation').textContent=$('food-kcal').value!==''&&q>0?fmt(n*q/100)+' kcal in '+fmt(q)+' '+unit:'Enter package values and your portion.';}
-  function openProfile(p){profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=(p?.source||'Manual package entry')+(p?.is_estimate?' · approximate':'');$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>{const value=p?.nutrition?.[keys[i]];$(id).value=value===null||value===undefined?'':Math.round(value*10)/10;});$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
+  const geminiEstimate=$('food-gemini-estimate');
+  function openProfile(p){geminiEstimate.hidden=!p?.source?.startsWith('ML');geminiEstimate.disabled=false;profile=p;pendingId=null;editing=false;form.hidden=false;$('food-name').value=p?.name||'';$('food-source').textContent=(p?.source||'Manual package entry')+(p?.is_estimate?' · approximate':'');$('food-preparation').textContent=[p?.preparation,p?.assumptions].filter(Boolean).join('\n');$('food-unit').value=p?.unit||'g';fields.forEach((id,i)=>{const value=p?.nutrition?.[keys[i]];$(id).value=value===null||value===undefined?'':Math.round(value*10)/10;});$('food-quantity').value=100;calculate();$('food-name').focus({preventScroll:true});form.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
   const edited=event=>{pendingId=null;if([...fields,'food-name','food-unit'].includes(event.target.id))editing=true;calculate();};
   form.addEventListener('input',edited);form.addEventListener('change',edited);
   $('food-manual').onclick=()=>{searchRevision++;$('food-find').disabled=false;clear();results.hidden=true;openProfile(null);};
-  $('food-cancel').onclick=()=>{if(!saving)form.hidden=true;};
+  $('food-cancel').onclick=()=>{if(!saving){searchRevision++;form.hidden=true;}};
   async function loadDay(){
     const revision=++dayRevision,day=date.value;loaded=false;$('food-log').disabled=true;diary.replaceChildren(el('p','Loading your diary…'));['food-total-energy','food-total-protein','food-total-carbs','food-total-fat'].forEach(id=>$(id).textContent='—');
     if(!date.reportValidity())return;
@@ -23,12 +24,72 @@
     }catch(e){if(revision!==dayRevision)return;diary.replaceChildren(el('p','Could not load your diary. Retry to reconnect.'));const retry=el('button','Retry diary',diary);retry.type='button';retry.onclick=()=>{clear();loadDay();};failure(e);}
   }
   date.onchange=()=>{if(saving)return;clear();pendingId=null;loadDay();};
-  function showMatches(data){
-    results.hidden=false;status.textContent='';
-      if(data.warnings?.length)error.textContent=data.warnings.join('\n');
-      if(data.profile){openProfile(data.profile);return;}
-      if(data.candidates?.length){for(const candidate of data.candidates){const row=el('div',undefined,results);row.className='food-result';const copy=el('div',undefined,row);el('strong',candidate.name,copy);const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Gemini fallback';tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);const confirm=el('button','Confirm food & estimate',row);confirm.type='button';confirm.onclick=async()=>{const selected=++searchRevision;results.querySelectorAll('button').forEach(b=>b.disabled=true);clear();status.textContent='Estimating the confirmed food…';try{const result=await api('confirm',{method:'POST',body:JSON.stringify({name:candidate.name})});if(selected!==searchRevision)return;status.textContent='Review the nutrition, preparation and portion before logging.';openProfile(result.profile);}catch(e){if(selected===searchRevision)failure(e);}finally{if(selected===searchRevision)results.querySelectorAll('button').forEach(b=>b.disabled=false);}};}}
-      else{el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);if(data.name){const button=el('button','Enter nutrition for '+data.name,results);button.type='button';button.onclick=()=>openProfile({name:data.name,source:'Manual package entry'});}}
+  const postFood=(path,body)=>api(path,{method:'POST',body:JSON.stringify(body)});
+  geminiEstimate.onclick=async()=>{
+    const name=$('food-name').value.trim();
+    if(!name){$('food-name').reportValidity();return;}
+    const revision=++searchRevision;
+    geminiEstimate.disabled=true;clear();status.textContent='Asking Gemini for a nutrition estimate…';
+    const originalUnit=$('food-unit').value;
+    const inputs=[...form.querySelectorAll('input,select')];
+    const initialValues=inputs.map(input=>input.value);
+    try{
+      const {profile:next}=await postFood('confirm',{name,provider:'gemini'});
+      if(revision!==searchRevision||saving)return;
+      if(inputs.some((input,index)=>input.value!==initialValues[index])){
+        status.textContent='Your edits were kept. Ask Gemini again to use the current values.';return;
+      }
+      const quantity=$('food-quantity').value;
+      openProfile(next);
+      if(originalUnit===next.unit)$('food-quantity').value=quantity;
+      calculate();status.textContent='Review the Gemini estimate and portion before logging.';
+    }catch(e){if(revision===searchRevision)failure(e);}
+    finally{if(!saving)geminiEstimate.disabled=false;}
+  };
+  function showMatches(data,path,body,requestedGemini=false){
+    results.replaceChildren();results.hidden=false;status.textContent='';
+    if(data.warnings?.length)error.textContent=data.warnings.join('\n');
+    if(data.profile){openProfile(data.profile);return;}
+    if(!data.candidates?.length){
+      el('p',data.message||'No food recognized. Try a specific name or enter the package values manually.',results);
+      if(data.name){const button=el('button','Enter nutrition for '+data.name,results);button.type='button';button.onclick=()=>openProfile({name:data.name,source:'Manual package entry'});}
+      return;
+    }
+    function busy(value){results.querySelectorAll('button').forEach(button=>button.disabled=value);}
+    for(const candidate of data.candidates){
+      const row=el('div',undefined,results);row.className='food-result';
+      const copy=el('div',undefined,row);el('strong',candidate.name,copy);
+      const tag=el('span',candidate.source||'Gemini',copy);tag.className='food-badge';
+      tag.title=candidate.source==='ML'?Math.round(candidate.confidence*100)+'% '+candidate.score_kind:'Identified by Gemini';
+      tag.setAttribute('aria-label',tag.textContent+' · '+tag.title);el('p',candidate.reason,copy);
+      const confirm=el('button','Confirm food & estimate',row);confirm.type='button';
+      confirm.onclick=async()=>{
+        if(saving)return;
+        const revision=++searchRevision;busy(true);clear();status.textContent='Estimating the confirmed food…';
+        try{
+          const result=await postFood('confirm',{name:candidate.name,...(requestedGemini?{provider:'gemini'}:{})});
+          if(revision!==searchRevision)return;
+          openProfile(result.profile);
+          status.textContent='Review the nutrition, preparation and portion before logging.';
+        }catch(e){if(revision===searchRevision)failure(e);}
+        finally{busy(false);}
+      };
+    }
+    if(data.candidates.some(candidate=>candidate.source==='ML')){
+      const ask=el('button',path==='photo'?'Ask Gemini about this photo':'Ask Gemini for other matches',results);
+      ask.type='button';
+      ask.onclick=async()=>{
+        if(saving)return;
+        const revision=++searchRevision;busy(true);clear();status.textContent='Asking Gemini for food matches…';
+        try{
+          const alternative=await postFood(path,{...body,provider:'gemini'});
+          if(revision!==searchRevision)return;
+          if(alternative.candidates?.length){form.hidden=true;showMatches(alternative,path,null,true);}
+          else status.textContent='Gemini found no matches. You can still use the ML result.';
+        }catch(e){if(revision===searchRevision)failure(e);}
+        finally{busy(false);}
+      };
+    }
   }
   let photoWorker=null,mlRequest=null,mlSequence=0;
   function stopPhotoModel(){
@@ -54,7 +115,7 @@
     });
   }
   async function findFood(path,body){
-    const revision=++searchRevision;clear();form.hidden=true;results.replaceChildren();results.hidden=true;status.textContent='Finding your food…';$('food-find').disabled=true;
+    const revision=++searchRevision;clear();form.hidden=true;results.replaceChildren();results.hidden=true;status.textContent=path==='search'&&/^\d+$/.test(body.query)?'Looking up barcode '+body.query+'…':'Finding your food…';$('food-find').disabled=true;
     try{
       let data;
       if(path==='photo'){
@@ -62,7 +123,7 @@
         if(revision!==searchRevision)return;
         if(!data.candidates?.length){status.textContent='Local model could not recognize this reliably. Trying Gemini…';data=await api(path,{method:'POST',body:JSON.stringify(body)});data.warnings=[...(data.warnings||[]),'Local recognition did not pass its reliability checks; these suggestions use Gemini.'];}
       }else data=await api(path,{method:'POST',body:JSON.stringify(body)});
-      if(revision!==searchRevision)return;showMatches(data);
+      if(revision!==searchRevision)return;showMatches(data,path,body);
     }
     catch(e){if(revision===searchRevision)failure(e);}finally{if(revision===searchRevision)$('food-find').disabled=false;}
   }
@@ -78,26 +139,65 @@
   $('food-query').addEventListener('input',()=>{if(foodsLoaded)renderFoods();});
   form.onsubmit=async event=>{
     event.preventDefault();if(saving||!loaded||!form.reportValidity())return;clear();pendingId ||= crypto.randomUUID();const entry={id:pendingId,date:date.value,meal:$('food-meal').value,name:$('food-name').value.trim(),unit:$('food-unit').value,quantity:Number($('food-quantity').value),nutrition:Object.fromEntries(keys.map((k,i)=>[k,Number($(fields[i]).value)])),source:profile?(editing?'Manual adjustment · '+profile.source:profile.source):'Manual package entry',is_estimate:profile?.is_estimate===true};
-    saving=true;$('food-camera').disabled=true;date.disabled=true;$('food-manual').disabled=true;$('food-find').disabled=true;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=true);status.textContent='Saving this portion…';
-    try{await api('entries',{method:'POST',body:JSON.stringify(entry)});loadFoods(true);pendingId=null;form.hidden=true;await loadDay();status.textContent=loaded?'Portion saved to your account.':'Portion saved. Retry the diary to refresh your daily totals.';}catch(e){failure(e);}finally{saving=false;$('food-camera').disabled=false;date.disabled=false;$('food-manual').disabled=false;$('food-find').disabled=false;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=false);$('food-log').disabled=!loaded;}
+    searchRevision++;saving=true;$('food-camera').disabled=true;date.disabled=true;$('food-manual').disabled=true;$('food-find').disabled=true;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=true);status.textContent='Saving this portion…';
+    try{await api('entries',{method:'POST',body:JSON.stringify(entry)});loadFoods(true);pendingId=null;form.hidden=true;results.replaceChildren();results.hidden=true;await loadDay();status.textContent=loaded?'Portion saved to your account.':'Portion saved. Retry the diary to refresh your daily totals.';}catch(e){failure(e);}finally{saving=false;$('food-camera').disabled=false;date.disabled=false;$('food-manual').disabled=false;$('food-find').disabled=false;form.querySelectorAll('input,select,button').forEach(n=>n.disabled=false);$('food-log').disabled=!loaded;}
   };
   window.addEventListener('nutrition-open',()=>{if(page.hidden)return;clear();loadDay();loadFoods();});
   if(location.pathname.replace(/\/$/,'')==='/nutrition'){loadDay();loadFoods();}
   const cameraDialog=$('food-camera-dialog'),cameraStatus=$('food-camera-status'),video=$('food-camera-video');
-  let scannerControls=null,cameraRevision=0,photoData=null,photoURL=null,readerLoading=null;
+  let scanTimer=null,cameraRevision=0,photoData=null,photoURL=null,readerLoading=null,nativeLoading=null;
+  const productCode=value=>typeof value==='string'&&/^(?:\d{8}|\d{12,14})$/.test(value);
+  const scanActive=revision=>revision===cameraRevision&&cameraDialog.open;
   function reader(){
-    if(window.ZXingBrowser)return Promise.resolve(new window.ZXingBrowser.BrowserMultiFormatOneDReader());
-    readerLoading ||= new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='/barcode-reader.js';script.onload=()=>window.ZXingBrowser?resolve():reject(new Error('Barcode reader could not load.'));script.onerror=()=>reject(new Error('Barcode reader could not load. Type the barcode instead.'));document.head.append(script);}).catch(e=>{readerLoading=null;throw e;});
-    return readerLoading.then(()=>new window.ZXingBrowser.BrowserMultiFormatOneDReader());
+    readerLoading ||= (async()=>{
+      if(!window.ZXingBrowser)await new Promise((resolve,reject)=>{
+        const script=document.createElement('script');script.src='/barcode-reader.js';
+        script.onload=resolve;script.onerror=()=>{script.remove();reject(new Error('Barcode reader could not load.'));};
+        document.head.append(script);
+      });
+      const {BarcodeFormat,BrowserMultiFormatOneDReader}=window.ZXingBrowser;
+      // ZXing's browser bundle exports BarcodeFormat but omits DecodeHintType.
+      const possibleFormats=2;
+      const formats=['EAN_13','EAN_8','UPC_A','UPC_E','ITF','CODE_128','CODE_39'].map(name=>BarcodeFormat[name]);
+      return new BrowserMultiFormatOneDReader(new Map([[possibleFormats,formats]]));
+    })().catch(e=>{readerLoading=null;throw e;});
+    return readerLoading;
+  }
+  function nativeReader(){
+    nativeLoading ||= (async()=>{
+      if(!window.BarcodeDetector)return null;
+      const supported=await window.BarcodeDetector.getSupportedFormats();
+      const formats=['ean_13','ean_8','upc_a','upc_e','itf','code_128','code_39'].filter(f=>supported.includes(f));
+      return formats.length?new window.BarcodeDetector({formats}):null;
+    })().catch(()=>null);
+    return nativeLoading;
+  }
+  async function nativeCode(detector,source){
+    if(detector){
+      try{return (await detector.detect(source)).find(hit=>productCode(hit.rawValue))?.rawValue;}catch{}
+    }
+  }
+  function decodeFrame(decoder,canvas,source,width,height,band=false,rotate=false){
+    const h=band?Math.max(1,Math.round(height*0.48)):height;
+    const y=Math.floor((height-h)/2);
+    const wOut=rotate?h:width,hOut=rotate?width:h;
+    if(canvas.width!==wOut||canvas.height!==hOut){canvas.width=wOut;canvas.height=hOut;}
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});
+    ctx.save();
+    try{
+      if(rotate){ctx.translate(h,0);ctx.rotate(Math.PI/2);}
+      ctx.drawImage(source,0,y,width,h,0,0,width,h);
+    }finally{ctx.restore();}
+    try{return decoder.decodeFromCanvas(canvas).getText();}catch{return null;}
   }
   function stopCamera(){
-    cameraRevision++;scannerControls?.stop();scannerControls=null;
+    cameraRevision++;clearTimeout(scanTimer);scanTimer=null;
     const stream=video.srcObject;stream?.getTracks().forEach(track=>track.stop());video.srcObject=null;
-    $('food-scanner-view').hidden=true;$('food-scan-stop').hidden=true;
+    $('food-scanner-view').hidden=true;$('food-scan-stop').hidden=true;$('food-scan-start').disabled=false;
   }
   function clearPhoto(){photoData=null;if(photoURL)URL.revokeObjectURL(photoURL);photoURL=null;$('food-photo-preview').removeAttribute('src');$('food-photo-preview').hidden=true;$('food-photo-identify').hidden=true;$('food-photo-notice').hidden=true;}
   function acceptBarcode(code){
-    if(!/^(?:\d{8}|\d{12,14})$/.test(code))return false;
+    if(!productCode(code))return false;
     stopCamera();cameraDialog.close();$('food-query').value=code;renderFoods();$('food-search').requestSubmit();return true;
   }
   $('food-camera').onclick=()=>{if(saving)return;stopCamera();clearPhoto();cameraStatus.textContent='Scan a package barcode, or choose a picture of a barcode or food.';cameraDialog.showModal();};
@@ -108,17 +208,43 @@
     stopCamera();clearPhoto();const revision=cameraRevision;cameraStatus.textContent='Allow camera access to scan a product barcode.';
     if(!navigator.mediaDevices?.getUserMedia){cameraStatus.textContent='Live camera is unavailable in this browser. Choose a barcode picture or type the digits instead.';return;}
     $('food-scan-start').disabled=true;
+    const decoderReady=reader().catch(()=>null),nativeReady=nativeReader();
     try{
-      const codeReader=await reader();if(revision!==cameraRevision||!cameraDialog.open)return;
-      $('food-scanner-view').hidden=false;$('food-scan-stop').hidden=false;
-      const controls=await codeReader.decodeFromVideoDevice(undefined,video,(result,err,controls)=>{
-        if(revision!==cameraRevision){controls.stop();return;}
-        if(result){if(!acceptBarcode(result.getText()))cameraStatus.textContent='This is not a product barcode. Scan the barcode printed on the package.';}
+      const stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{
+        facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}
+      }});
+      if(!scanActive(revision)){stream.getTracks().forEach(t=>t.stop());return;}
+      video.srcObject=stream;$('food-scanner-view').hidden=false;$('food-scan-stop').hidden=false;
+      const track=stream.getVideoTracks()[0];
+      if(track?.getCapabilities?.().focusMode?.includes('continuous')){
+        track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(()=>{});
+      }
+      await video.play();
+      if(!scanActive(revision))return;
+      cameraStatus.textContent='Fit the whole barcode in the frame, including the space at both ends.';
+      let decoder=null,detector=null,attempt=0;
+      decoderReady.then(value=>{decoder=value;});nativeReady.then(value=>{detector=value;});
+      Promise.all([decoderReady,nativeReady]).then(([fallback,native])=>{
+        if(scanActive(revision)&&!fallback&&!native){stopCamera();cameraStatus.textContent='The barcode reader could not load. Try again or enter the digits.';}
       });
-      if(revision!==cameraRevision||!cameraDialog.open){controls.stop();video.srcObject?.getTracks().forEach(t=>t.stop());return;}
-      scannerControls=controls;cameraStatus.textContent='Point the rear camera at a product barcode. Recognition starts automatically.';
-    }catch(e){if(revision===cameraRevision){stopCamera();cameraStatus.textContent=e.name==='NotAllowedError'?'Camera access was not allowed. Choose a picture or enable camera access in your browser.':e.name==='NotFoundError'?'No camera was found. Choose a picture instead.':'Could not start the scanner. Choose a clear barcode picture or type the digits instead.';}}
-    finally{$('food-scan-start').disabled=false;}
+      const canvas=document.createElement('canvas');
+      async function scan(){
+        if(!scanActive(revision))return;
+        if(video.readyState>=2&&video.videoWidth){
+          const code=await nativeCode(detector,video);
+          if(!scanActive(revision)||acceptBarcode(code))return;
+          // Use the guide area for speed, then periodically check the full frame and vertical labels.
+          if(decoder&&(!detector||attempt%3===0)){
+            const pass=detector?attempt/3:attempt;
+            const fallback=decodeFrame(decoder,canvas,video,video.videoWidth,video.videoHeight,pass%4<2,pass%4===3);
+            if(acceptBarcode(fallback))return;
+          }
+          attempt++;
+        }
+        scanTimer=setTimeout(scan,110);
+      }
+      await scan();
+    }catch(e){if(scanActive(revision)){stopCamera();cameraStatus.textContent=e.name==='NotAllowedError'?'Camera access was not allowed. Choose a picture or enable camera access in your browser.':e.name==='NotFoundError'?'No camera was found. Choose a picture instead.':'Could not start the scanner. Choose a clear barcode picture or type the digits instead.';}}
   };
   $('food-photo-take').onclick=()=>{$('food-camera-input').click();};
   $('food-picture-pick').onclick=()=>{$('food-picture-input').click();};
@@ -130,10 +256,22 @@
     cameraStatus.textContent='Checking the picture for a barcode…';
     try{
       const image=new Image();photoURL=URL.createObjectURL(file);image.src=photoURL;await image.decode();if(revision!==cameraRevision)return;
-      const canvas=document.createElement('canvas'),scale=Math.min(1,1600/Math.max(image.naturalWidth,image.naturalHeight));canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      const native=await nativeReader();
+      if(!scanActive(revision))return;
+      const nativeValue=await nativeCode(native,image);
+      if(!scanActive(revision)||acceptBarcode(nativeValue))return;
+      const canvas=document.createElement('canvas'),scale=Math.min(1,1600/Math.max(image.naturalWidth,image.naturalHeight));
+      canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+      canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+      const decoder=await reader().catch(()=>null);
+      if(!scanActive(revision))return;
+      if(decoder){
+        const frame=document.createElement('canvas');
+        for(const rotate of [false,true]){
+          if(acceptBarcode(decodeFrame(decoder,frame,canvas,canvas.width,canvas.height,false,rotate)))return;
+        }
+      }
       photoData=canvas.toDataURL('image/jpeg',0.85).split(',')[1];$('food-photo-preview').src=photoURL;$('food-photo-preview').hidden=false;
-      try{const codeReader=await reader();if(revision!==cameraRevision)return;const result=codeReader.decodeFromCanvas(canvas);if(acceptBarcode(result.getText()))return;}catch{}
-      if(revision!==cameraRevision||!cameraDialog.open)return;
       cameraStatus.textContent='For a barcode, try a closer, sharper picture. For food, choose Identify food.';$('food-photo-identify').hidden=false;$('food-photo-notice').hidden=false;
     }catch{if(revision===cameraRevision){clearPhoto();cameraStatus.textContent='This picture could not be opened. Try a JPEG, PNG or WebP image.';}}
   }
