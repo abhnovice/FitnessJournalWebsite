@@ -177,3 +177,30 @@ test('every displayed week contains scheduled days, including the final partial 
   const phases=createTrainingPlan();for(const phase of phases){assert.equal(phase.weeks,Math.ceil(phase.days/7));for(let week=0;week<phase.weeks;week++)assert.ok(phase.items.some(item=>Math.floor(item.day/7)===week));}
   assert.equal(phases.at(-1).weeks,2);assert.equal(phases.at(-1).days,12);
 });
+
+test('whole meal photo aggregates portions and retains dish descriptions in one diary entry',async t=>{
+  const image={mimeType:'image/jpeg',image:'/9j/',mode:'meal'};
+  const plate={name:'Rice and dal',dishes:[
+    {name:'Rice',ingredients:['rice'],preparation:'Possibly steamed.',grams:200,
+      per100:{energy_kcal:130,protein_g:3,carbohydrate_g:28,fat_g:0.3}},
+    {name:'Dal',ingredients:['lentils','cumin'],preparation:'Possibly simmered with a cumin tempering.',grams:100,
+      per100:{energy_kcal:120,protein_g:7,carbohydrate_g:16,fat_g:3}}
+  ]};
+  t.mock.method(globalThis,'fetch',async(url,options)=>{
+    assert.deepEqual(JSON.parse(options.body).contents[0].parts[1].inlineData,{mimeType:image.mimeType,data:image.image});
+    return Response.json({candidates:[{content:{parts:[{text:JSON.stringify(plate)}]}}]});
+  });
+  const analyze=()=>request('photo','POST',image,'meal-user',{GEMINI_MODEL:'test',GEMINI_API_KEY:'test'});
+  const {profile}=await(await analyze()).json();
+  const entry={...profile,date:'2026-11-22',id:'whole-meal-test',meal:'Lunch'};
+  assert.equal(entry.quantity,300);
+  for(let i=0;i<2;i++)assert.equal((await request('entries','POST',entry,'meal-user')).status,200);
+  const day=await(await request('entries?date=2026-11-22','GET',null,'meal-user')).json();
+  assert.equal(day.entries.length,1);
+  assert.deepEqual(day.entries[0].dishes,plate.dishes.map(({name,ingredients,preparation})=>({name,ingredients,preparation})));
+  assert.deepEqual(day.totals,{energy_kcal:380,protein_g:13,carbohydrate_g:72,fat_g:3.6});
+  plate.dishes[0].per100.fat_g=null;
+  assert.equal((await analyze()).status,502);
+  plate.dishes=[];
+  assert.equal((await analyze()).status,422);
+});
