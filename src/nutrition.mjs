@@ -1,3 +1,4 @@
+import {handleAdherence,proofPath} from './adherence.mjs';
 import {lookupFoods,lookupNutrition} from './food-lookup.mjs';
 // Worker adaptation of abhnovice/Nutrition-Module/external_services.py.
 // No keys, provider payloads, or credential-bearing URLs go to the browser.
@@ -209,6 +210,7 @@ export async function handleNutrition(request,env){
   if(!['GET','POST','DELETE'].includes(request.method))return reply({error:'Method not allowed.'},405);
   if(request.method!=='GET' && request.headers.get('origin') && request.headers.get('origin')!==url.origin)return reply({error:'Request origin is not allowed.'},403);
   try {
+    if(url.pathname===proofPath || url.pathname.startsWith(proofPath+'/')) return await handleAdherence(request,env,user,url,{dateOK,FoodError,reply,generateAI});
     if(url.pathname==='/api/nutrition/foods'&&request.method==='GET'){
       if(!env.DB)throw new FoodError('Saved foods are unavailable.',503);
       const rows=await env.DB.prepare('SELECT entry FROM nutrition_entries WHERE user_id = ? ORDER BY created_at DESC, id DESC LIMIT 1000').bind(user).all();
