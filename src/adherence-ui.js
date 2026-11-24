@@ -1,138 +1,65 @@
 (() => {
-  const get = id => document.getElementById(id);
-  const date = get('food-date'), list = get('baseline-meals'), status = get('baseline-status');
-  const generate = get('baseline-generate'), result = get('baseline-result'), count = get('baseline-count');
-  const retry = get('baseline-retry');
-  const statusLabels = {visible:'visible', partial:'partial match', unclear:'unclear', absent:'not seen'};
-  const rows = new Map();
-  let sequence = 0, state = null, busy = false;
-  const endpoint = (day, meal) => '/api/nutrition/adherence'+(meal?'/photo':'')+
-    '?date='+encodeURIComponent(day)+(meal?'&meal='+encodeURIComponent(meal):'');
-  function node(tag,content,parent) {
-    const element = document.createElement(tag);
-    if(content) element.textContent = content;
-    parent.append(element);
-    return element;
+  const get=id=>document.getElementById(id);
+  const day=get('food-date'), list=get('baseline-meals'), notes=get('baseline-adjustments');
+  const generate=get('baseline-generate'), result=get('baseline-result'), status=get('baseline-status');
+  let revision=0, ready=false;
+  function add(parent,tag,text){
+    const n=document.createElement(tag);n.textContent=text;parent.append(n);return n;
   }
-  async function request(url,options={}) {
-    const response = await fetch(url,{cache:'no-store',...options});
-    const data = await response.json();
-    if(!response.ok) throw Error(data.error || 'Could not complete the request. Please retry.');
-    return data;
+  function clear(){
+    revision++;ready=false;generate.disabled=true;result.hidden=true;
+    list.replaceChildren();notes.replaceChildren();get('legacy-photos').replaceChildren();
+    get('baseline-count').textContent='';status.textContent='';
   }
-  async function jpeg(file) {
-    const image = new Image(), url = URL.createObjectURL(file);
-    try {
-      image.src = url;
-      await image.decode();
-      const scale = Math.min(1,1200/Math.max(image.width,image.height));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.max(1,Math.round(image.width*scale));
-      canvas.height = Math.max(1,Math.round(image.height*scale));
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(image,0,0,canvas.width,canvas.height);
-      const blob = await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.78));
-      if(!blob) throw Error();
-      return blob;
-    } catch { throw Error('Could not open this picture. Try a JPEG, PNG or WebP photo.'); }
-    finally { URL.revokeObjectURL(url); }
-  }
-  function render() {
-    const report = state?.report;
-    const total = Object.keys(state?.photos || {}).length;
-    count.textContent = state ? total+' of '+baselineMeals.length+' meals photographed' : '';
-    result.hidden = !report;
-    get('baseline-number').textContent = report ? report.score+'%' : '';
-    generate.disabled = busy || !state;
-    generate.textContent = report ? 'Review saved score' : 'Generate end-of-day score';
-    for(const meal of baselineMeals) {
-      const row = rows.get(meal.id), etag = state?.photos[meal.id];
-      const url = etag && endpoint(date.value,meal.id)+'&v='+encodeURIComponent(etag);
-      row.preview.hidden = !etag;
-      if(url && row.preview.getAttribute('href')!==url) {
-        row.preview.href=url;
-        row.image.src=url;
-      } else if(!url) {
-        row.preview.removeAttribute('href');
-        row.image.removeAttribute('src');
+  window.addEventListener('diary-loading',clear);
+  async function olderPhotos(date,entries,version){
+    const holder=get('legacy-photos');
+    try{
+      const r=await fetch('/api/nutrition/adherence?date='+date,{cache:'no-store'});
+      if(!r.ok||version!==revision)return;
+      const previous=await r.json();if(version!==revision)return;
+      const pending=baselineMeals.filter(m=>previous.photos[m.id]&&!entries.some(e=>e.legacySlot===m.id));
+      if(!pending.length)return;
+      add(holder,'p','Earlier checklist photos · review and log these to include them in this diary.');
+      for(const m of pending){
+        const button=add(holder,'button','Review '+m.label.toLowerCase()+' photo');
+        button.type='button';button.onclick=()=>window.dispatchEvent(new CustomEvent('review-legacy-photo',{detail:{date,slot:m.id}}));
       }
-      row.upload.disabled = row.remove.disabled = busy || !state;
-      row.upload.textContent = etag ? 'Replace photo' : 'Add photo';
-      row.remove.hidden = !etag;
-      const review = report?.rows.find(r=>r.id===meal.id);
-      row.review.replaceChildren();
-      if(review) {
-        node('strong',Math.round(review.fraction*100)+'% meal match',row.review);
-        node('span',review.missing?'No photo for this meal.':review.observation,row.review);
-        if(!review.missing) node('small',Object.entries(meal.foods).map(([id,name])=>name+' · '+statusLabels[review.matches[id]]).join(' / '),row.review);
+    }catch{/* The diary and its current photos are independent of the previous checklist. */}
+  }
+  window.addEventListener('diary-updated',({detail:data})=>{
+    if(data.date!==day.value)return;
+    clear();ready=true;generate.disabled=false;
+    const {checklist:c}=data;
+    const photographed=data.entries.filter(e=>e.evidence).length;
+    get('baseline-count').textContent=photographed+' photo-backed '+(photographed===1?'entry':'entries')+' · '+c.coverage+'% of planned foods covered';
+    for(const meal of baselineMeals){
+      const card=add(list,'article','');add(card,'h3',meal.label);
+      for(const id of Object.keys(meal.foods)){
+        const amt=c.portions[id],line=add(card,'div','');line.className='baseline-check';
+        add(line,'b',amt>=1?'✓':amt>0?'◐':'○');
+        const note=amt===0?(data.finalized?'missing photo evidence':'awaiting photo'):amt===1?'complete':Math.round(100*amt)+'% of target'+(amt>1?' · over target':' · short');
+        add(line,'span',portionTargets[id]+' · '+note);
       }
     }
-  }
-  async function load() {
-    const version = ++sequence, day = date.value;
-    state = null; busy = true; retry.hidden = true;
-    status.textContent = day ? 'Loading meal photos…' : 'Choose a diary date.';
-    render();
-    if(!day) return;
-    try {
-      const data = await request(endpoint(day));
-      if(version!==sequence) return;
-      state = data; status.textContent = '';
-    } catch(e) {
-      if(version===sequence) {
-        status.textContent = e.message;
-        retry.hidden = false;
-      }
-    } finally { if(version===sequence) {busy=false;render();} }
-  }
-  async function act(meal,method,file) {
-    if(busy || !state) return;
-    const day = date.value, version = ++sequence;
-    busy = true; retry.hidden = true;
-    status.textContent = !meal?'Reviewing the day’s meal photos…':file?'Saving meal photo…':'Removing meal photo…';
-    render();
-    try {
-      const options = {method};
-      if(file) options.body = await jpeg(file);
-      const response = await request(endpoint(day,meal),options);
-      if(version!==sequence) return;
-      if(meal) {await load();return;}
-      state = response;
-      status.textContent = 'End-of-day score saved.';
-    } catch(e) {
-      if(version===sequence) {status.textContent=e.message;retry.hidden=false;}
-    } finally { if(version===sequence) {busy=false;render();} }
-  }
-  for(const meal of baselineMeals) {
-    const item = node('article','',list);
-    const header=node('div','',item);
-    header.className='baseline-meal-head';
-    node('h3',meal.label,header);
-    node('p',meal.plan,item).className='food-muted';
-    const controls = node('div','',item);
-    controls.className='baseline-controls';
-    const preview = node('a','',controls);
-    preview.target='_blank';preview.rel='noopener';preview.hidden=true;
-    const image = node('img','',preview);
-    image.alt='View '+meal.label.toLowerCase()+' photo';
-    const input=node('input','',controls);
-    input.type='file';input.accept='image/*';input.hidden=true;
-    const upload=node('button','Add photo',controls);
-    upload.type='button';upload.disabled=true;upload.onclick=()=>input.click();
-    upload.setAttribute('aria-label','Add or replace '+meal.label.toLowerCase()+' photo');
-    input.onchange=()=>{const file=input.files[0];input.value='';if(file)act(meal.id,'POST',file);};
-    const remove=node('button','Remove',controls);
-    remove.className='baseline-remove';remove.type='button';remove.hidden=true;
-    remove.setAttribute('aria-label','Remove '+meal.label.toLowerCase()+' photo');
-    remove.onclick=()=>act(meal.id,'DELETE');
-    const review=node('div','',item);review.className='baseline-review';
-    rows.set(meal.id,{preview,image,upload,remove,review});
-  }
-  generate.onclick=()=>{if(state?.report)result.scrollIntoView({block:'center'});else act(null,'POST');};
-  retry.onclick=load;
-  date.addEventListener('change',load);
-  window.addEventListener('nutrition-open',()=>{if(!busy)load();});
-  if(location.pathname.replace(/\/$/,'')==='/nutrition') load();
+    if(c.extras.length)add(notes,'p','Additional food and drink · '+c.extras.map(x=>x.name+' ('+x.servings+' serving'+(x.servings===1?'':'s')+')').join(', '));
+    if(c.unverified.length)add(notes,'p','Logged without photo credit · '+c.unverified.join(', '));
+    const over=Object.keys(c.portions).filter(k=>c.portions[k]>1);
+    if(over.length)add(notes,'p','Above plan · '+over.map(k=>portionTargets[k]+' (+'+Math.round((c.portions[k]-1)*100)+'%)').join(', '));
+    result.hidden=!data.finalized;
+    get('baseline-number').textContent=data.finalized?c.score+'%':'';
+    generate.hidden=data.finalized;
+    olderPhotos(data.date,data.entries,revision);
+  });
+  generate.onclick=async()=>{
+    if(!ready)return;
+    const version=revision;generate.disabled=true;status.textContent='Saving score…';
+    try{
+      const r=await fetch('/api/nutrition/diary-score?date='+day.value,{method:'POST'});
+      const data=await r.json();if(version!==revision)return;
+      if(!r.ok)throw Error(data.error||'Could not save the score. Try again.');
+      window.dispatchEvent(new CustomEvent('diary-updated',{detail:data}));
+      status.textContent='Score saved for this diary date.';
+    }catch(e){if(version===revision){status.textContent=e.message;generate.disabled=false;}}
+  };
 })();

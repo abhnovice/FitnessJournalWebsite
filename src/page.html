@@ -230,11 +230,22 @@ __NUTRITION_HTML__
   const milestonePortal=document.createElement('div');milestonePortal.className='milestone-portal';milestonePortal.hidden=true;milestonePortal.innerHTML='<div class="milestone-portal-card" role="dialog" aria-modal="true" aria-labelledby="milestone-portal-title"><svg class="milestone-portal-ring" viewBox="0 0 72 72" aria-hidden="true"><circle cx="36" cy="36" r="30"></circle><circle class="progress" cx="36" cy="36" r="30"></circle><path class="check" d="M24 37l8 8 17-19"></path></svg><h2 id="milestone-portal-title"></h2><div class="milestone-portal-stats"></div><p class="milestone-portal-reward" hidden></p><button type="button">Continue</button></div>';document.body.append(milestonePortal);
   let milestoneScrollY=0;const closeMilestonePortal=()=>{milestonePortal.classList.remove('is-visible');const delay=matchMedia('(prefers-reduced-motion: reduce)').matches?0:240;setTimeout(()=>{milestonePortal.hidden=true;document.documentElement.style.overflow='';document.body.style.overflow='';document.body.style.position='';document.body.style.top='';document.body.style.width='';window.scrollTo(0,milestoneScrollY);frame.contentWindow?.postMessage({channel:'training-milestone-v1',type:'dismiss'},'*');},delay);};milestonePortal.querySelector('button').addEventListener('click',closeMilestonePortal);milestonePortal.addEventListener('click',event=>{if(event.target===milestonePortal)closeMilestonePortal();});
   const openMilestonePortal=data=>{const title=milestonePortal.querySelector('h2'),stats=milestonePortal.querySelector('.milestone-portal-stats'),reward=milestonePortal.querySelector('.milestone-portal-reward');title.textContent=data.title;stats.replaceChildren();for(const [label,value] of data.stats){const cell=document.createElement('span'),strong=document.createElement('strong');strong.textContent=value;cell.append(strong,label);stats.append(cell);}reward.hidden=!data.reward;reward.textContent=data.reward?'Unlocked: '+data.reward:'';milestoneScrollY=window.scrollY;document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';document.body.style.position='fixed';document.body.style.top=-milestoneScrollY+'px';document.body.style.width='100%';milestonePortal.hidden=false;requestAnimationFrame(()=>milestonePortal.classList.add('is-visible'));milestonePortal.querySelector('button').focus({preventScroll:true});};
+  let diaryDaysRevision=0;
+  async function refreshDiaryDays(){
+    const revision=++diaryDaysRevision;
+    try{
+      const response=await fetch('/api/nutrition/diary-days',{cache:'no-store'});
+      if(!response.ok)return;
+      const {days}=await response.json();
+      if(revision===diaryDaysRevision)frame.contentWindow?.postMessage({channel:'training-navigation-v1',type:'diary-days',days},'*');
+    }catch{}
+  }
+  window.addEventListener('diary-updated',refreshDiaryDays);
   globalThis.addEventListener('message',event=>{
     if(event.source!==frame.contentWindow||event.origin!=='null')return;
     if(event.data?.channel==='training-milestone-v1'){if(event.data.type==='show'&&event.data.milestone)openMilestonePortal(event.data.milestone);return;}
     if(event.data?.channel==='training-navigation-v1'){
-      if(event.data.type==='ready'){showPage(currentPage,false);applyTheme(themeSelect.value);}
+      if(event.data.type==='ready'){refreshDiaryDays();showPage(currentPage,false);applyTheme(themeSelect.value);}
       else if(event.data.type==='navigate'&&Object.hasOwn(routes,event.data.page))showPage(event.data.page);
       else if(event.data.type==='focus-week'&&currentPage==='foundation'&&Number.isFinite(event.data.top)&&event.data.top>=0&&event.data.top<=10000){const top=event.data.top;requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,window.scrollY+frame.getBoundingClientRect().top+top-76),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));}
       return;

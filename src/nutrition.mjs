@@ -1,4 +1,6 @@
 import {handleAdherence,proofPath} from './adherence.mjs';
+import {analyzeDiaryProof} from './diary-proof.mjs';
+import {diaryChecklist,baselineMeals} from './baseline.mjs';
 import {lookupFoods,lookupNutrition} from './food-lookup.mjs';
 // Worker adaptation of abhnovice/Nutrition-Module/external_services.py.
 // No keys, provider payloads, or credential-bearing URLs go to the browser.
@@ -234,24 +236,79 @@ export async function handleNutrition(request,env){
       const b=await bodyJSON(request);if(!text(b.name,120))throw new FoodError('Confirm a valid food name.',400);
       return reply(await estimateFood(b.name.trim(),env,b.provider==='gemini'));
     }
-    if(url.pathname!=='/api/nutrition/entries')return reply({error:'Not found.'},404);
+    if(url.pathname==='/api/nutrition/diary-days' && request.method==='GET'){
+      const result=await env.DB.prepare('SELECT DISTINCT day FROM nutrition_entries WHERE user_id = ? ORDER BY day DESC LIMIT 84').bind(user).all();
+      return reply({days:result.results.map(r=>r.day)});
+    }
+    const scorePath=url.pathname==='/api/nutrition/diary-score';
+    const photoPath=url.pathname==='/api/nutrition/diary-photo';
+    if(!scorePath && !photoPath && url.pathname!=='/api/nutrition/entries')return reply({error:'Not found.'},404);
     if(!env.DB)throw new FoodError('Meal storage is unavailable.',503);
-    if(request.method==='GET'){
-      const date=url.searchParams.get('date');if(!dateOK(date))throw new FoodError('Choose a valid diary date.',400);
-      const result=await env.DB.prepare('SELECT entry FROM nutrition_entries WHERE user_id = ? AND day = ? ORDER BY created_at, id').bind(user,date).all();
+    const day=url.searchParams.get('date');
+    if((scorePath||request.method!=='POST')&&!dateOK(day))throw new FoodError('Choose a valid diary date.',400);
+    const prefix=date=>'baseline/diary/'+encodeURIComponent(user)+'/'+date+'/';
+    if(photoPath){
+      if(request.method!=='GET')throw new FoodError('Method not allowed.',405);
+      const record=await env.DB.prepare('SELECT entry FROM nutrition_entries WHERE user_id = ? AND day = ? AND id = ?').bind(user,day,url.searchParams.get('id')).first();
+      const entry=record&&JSON.parse(record.entry);
+      const photo=entry?.evidence && await env.BUCKET.get(prefix(day)+entry.evidence.file);
+      if(!photo)throw new FoodError('Photo unavailable.',404);
+      return new Response(photo.body,{headers:{'content-type':'image/jpeg','cache-control':'private, no-store','x-content-type-options':'nosniff'}});
+    }
+    if(scorePath || request.method==='GET'){
+      if(scorePath&&request.method!=='POST')throw new FoodError('Method not allowed.',405);
+      const result=await env.DB.prepare('SELECT entry FROM nutrition_entries WHERE user_id = ? AND day = ? ORDER BY created_at, id').bind(user,day).all();
       const entries=(result.results||[]).map(r=>JSON.parse(r.entry));
+      const checklist=diaryChecklist(entries);
+      const signature=JSON.stringify(entries.map(e=>[e.id,e.evidence?.file||'',e.quantity,e.planRole||'',e.name]));
+      const key=prefix(day)+'score.json';
+      let finalized=false;
+      if(scorePath){
+        if(!env.BUCKET) throw new FoodError('Score storage is unavailable.',503);
+        await env.BUCKET.put(key,JSON.stringify({signature,score:checklist.score}));
+        finalized=true;
+      }else if(env.BUCKET){
+        const saved=await env.BUCKET.get(key);
+        finalized=saved && (await saved.json()).signature===signature;
+      }
       const totals=Object.fromEntries(NUTRIENTS.map(k=>[k,Math.round(entries.reduce((sum,e)=>sum+e.nutrition[k]*e.quantity/100,0)*10)/10]));
-      return reply({date,entries,totals});
+      return reply({date:day,entries,totals,checklist,finalized:Boolean(finalized)});
     }
     if(request.method==='POST'){
-      const e=await bodyJSON(request,64000);if(!validateEntry(e))throw new FoodError('Check the food, date, portion and nutrition values.',400);
+      const e=await bodyJSON(request,4200000);if(!validateEntry(e))throw new FoodError('Check the food, date, portion and nutrition values.',400);
+      const existing=()=>env.DB.prepare('SELECT entry FROM nutrition_entries WHERE user_id = ? AND id = ?').bind(user,e.id).first();
+      const prior=await existing();
+      if(prior)return reply({ok:true,entry:JSON.parse(prior.entry)});
       const entry={id:e.id,date:e.date,meal:e.meal,name:e.name.trim(),unit:e.unit,quantity:e.quantity,nutrition:Object.fromEntries(NUTRIENTS.map(k=>[k,e.nutrition[k]])),source:e.source,is_estimate:e.is_estimate,...(e.dishes?{dishes:e.dishes.map(({name,ingredients,preparation})=>({name,ingredients,preparation}))}:{})};
-      await env.DB.prepare('INSERT INTO nutrition_entries (user_id, day, id, entry, created_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id, id) DO NOTHING').bind(user,e.date,e.id,JSON.stringify(entry),new Date().toISOString()).run();
-      return reply({ok:true,entry});
+      if(['planned','extra'].includes(e.planRole))entry.planRole=e.planRole;
+      let key;
+      if(e.photo){
+        const review=await analyzeDiaryProof(entry,e.photo,env,{generateAI,FoodError});
+        if(e.autoMeal){
+          const ranked=baselineMeals.map(m=>({id:m.id,amount:review.matches.filter(x=>Object.hasOwn(m.foods,x.food)).reduce((n,x)=>n+x.servings,0)})).sort((a,b)=>b.amount-a.amount);
+          entry.meal=ranked[0].amount>0?({breakfast:'Breakfast',lunch:'Lunch',dinner:'Dinner'}[ranked[0].id]||'Snack'):'Snack';
+        }
+        const file=e.id+'-'+crypto.randomUUID()+'.jpg';
+        key=prefix(e.date)+file;
+        await env.BUCKET.put(key,Uint8Array.from(atob(e.photo.image),c=>c.charCodeAt(0)),{httpMetadata:{contentType:'image/jpeg'}});
+        entry.evidence={file,...review};
+        if(baselineMeals.some(m=>m.id===e.photo.legacySlot))entry.legacySlot=e.photo.legacySlot;
+      }
+      try{
+        await env.DB.prepare('INSERT INTO nutrition_entries (user_id, day, id, entry, created_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id, id) DO NOTHING').bind(user,e.date,e.id,JSON.stringify(entry),new Date().toISOString()).run();
+      }catch(err){
+        if(key && (await existing())?.entry!==JSON.stringify(entry))await env.BUCKET.delete(key);
+        throw err;
+      }
+      const stored=JSON.parse((await existing()).entry);
+      if(key && stored.evidence?.file!==entry.evidence.file)await env.BUCKET.delete(key);
+      return reply({ok:true,entry:stored});
     }
-    const date=url.searchParams.get('date'),id=url.searchParams.get('id');
-    if(!dateOK(date)||!/^[a-zA-Z0-9-]{8,64}$/.test(id||''))throw new FoodError('Invalid diary entry.',400);
-    await env.DB.prepare('DELETE FROM nutrition_entries WHERE user_id = ? AND day = ? AND id = ?').bind(user,date,id).run();
+    const id=url.searchParams.get('id');
+    if(!/^[a-zA-Z0-9-]{8,64}$/.test(id||''))throw new FoodError('Invalid diary entry.',400);
+    const removed=await env.DB.prepare('DELETE FROM nutrition_entries WHERE user_id = ? AND day = ? AND id = ? RETURNING entry').bind(user,day,id).first();
+    const file=removed && JSON.parse(removed.entry).evidence?.file;
+    if(file)await env.BUCKET.delete(prefix(day)+file);
     return reply({ok:true});
   }catch(error){return reply({error:error instanceof FoodError?error.message:'Meal storage is temporarily unavailable. Your entry has not been confirmed saved.'},error instanceof FoodError?error.status:503);}
 }
